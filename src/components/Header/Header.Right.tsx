@@ -14,7 +14,7 @@ import {
   Text
 } from "@chakra-ui/react";
 import { FC, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 import LanguageSwitch from "@/components/Form/Switch/LangaugeSwitch";
 import { BsCheck2Circle, BsChevronDown } from "react-icons/bs";
@@ -31,7 +31,7 @@ interface IRightHeader {
 export const RightHeader: FC<IRightHeader> = () => {
   const initialFocusRef = useRef();
   // const { initData } = useStoreInitData();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
     <HStack gap={8}>

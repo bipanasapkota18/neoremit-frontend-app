@@ -73,7 +73,7 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                       border={"none"}
                       onChange={handleColorChange}
                       value={value ?? ""}
-                      errorBorderColor={colorScheme.red_500}
+                      errorBorderColor={colorScheme.danger_500}
                       disabled={disabled}
                       sx={{
                         "&::-webkit-color-swatch-wrapper": {
@@ -104,7 +104,7 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                     onChange={onChange}
                     value={value ?? ""}
                     isInvalid={!!error}
-                    errorBorderColor={colorScheme.red_500}
+                    errorBorderColor={colorScheme.danger_500}
                     boxShadow="inset 0px 1px 1px rgba(0, 0, 0, 0.12)"
                     disabled={disabled}
                     variant={variant}
@@ -123,7 +123,7 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                     }}
                     value={value ?? ""}
                     isInvalid={!!error}
-                    errorBorderColor={colorScheme.red_500}
+                    errorBorderColor={colorScheme.danger_500}
                     disabled={disabled}
                     variant={variant}
                     {...extraProps}

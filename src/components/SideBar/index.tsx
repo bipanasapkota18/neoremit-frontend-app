@@ -89,7 +89,7 @@ export default function Sidebar({
         <Image
           maxW="50%"
           h="50px"
-          alt={"mofin-logo"}
+          alt={"neo-logo"}
           src={imageAssets.Logo}
           objectFit="contain"
           m="auto"
@@ -114,7 +114,7 @@ export default function Sidebar({
               opacity: 0.1
             },
             "&::-webkit-scrollbar-thumb": {
-              background: colorScheme.purple_100,
+              background: colorScheme.primary_100,
               borderRadius: 20
             }
           }}

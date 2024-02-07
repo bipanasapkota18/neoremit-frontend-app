@@ -13,12 +13,8 @@ function Home() {
       <Container p={8} bg="white" rounded="md" shadow="md">
         <Heading mb={4}>Home</Heading>
         <HStack spacing={4}>
-          <Button colorScheme="blue" onClick={() => navigate("/")}>
-            Dashboard
-          </Button>
-          <Button colorScheme="blue" onClick={() => navigate("/login")}>
-            Login
-          </Button>
+          <Button onClick={() => navigate("/")}>Dashboard</Button>
+          <Button onClick={() => navigate("/login")}>Login</Button>
         </HStack>
       </Container>
     </Flex>

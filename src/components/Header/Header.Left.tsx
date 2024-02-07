@@ -2,11 +2,11 @@ import { Flex, IconButton } from "@chakra-ui/react";
 import { HiMenuAlt1 } from "react-icons/hi";
 
 export const LeftHeader = ({
-  handleDrawerToggle,
-  width
+  handleDrawerToggle
+  // width
 }: {
   handleDrawerToggle: () => void;
-  width: number;
+  // width: number;
 }) => {
   return (
     <Flex align="center">

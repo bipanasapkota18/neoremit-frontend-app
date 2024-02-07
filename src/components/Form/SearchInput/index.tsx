@@ -89,7 +89,7 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
                   value={value}
                   type={type}
                   isInvalid={!!error}
-                  errorBorderColor={colorScheme.red_500}
+                  errorBorderColor={colorScheme.danger_500}
                   backgroundColor="white"
                   disabled={disabled}
                   {...extraProps}
@@ -136,7 +136,7 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
           onChange={handleChange}
           value={value}
           type={type}
-          errorBorderColor={colorScheme.red_500}
+          errorBorderColor={colorScheme.danger_500}
           backgroundColor="white"
           disabled={disabled}
           onKeyDown={event => {
