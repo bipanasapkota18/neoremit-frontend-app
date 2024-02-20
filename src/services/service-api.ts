@@ -4,7 +4,7 @@ export const api = {
   init: "/init"
 };
 
-export interface TemplateProjectResponse<T = any> {
+export interface NeoResponse<T = any> {
   data: T;
   status: 0 | 1;
   message: string;

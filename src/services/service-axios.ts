@@ -9,7 +9,7 @@ export const baseURL = import.meta.env.VITE_APP_BACKEND_API;
  * Axios HTTP Client
  * {@link https://github.com/axios/axios#request-config Axios Request Config}
  */
-const TemplateProjectHttpClient = axios.create({
+const NeoHttpClient = axios.create({
   baseURL,
   timeout: THREE_MINUTES
 });
@@ -17,7 +17,7 @@ const TemplateProjectHttpClient = axios.create({
 /**
  * Pass Integito API Key in Header
  */
-TemplateProjectHttpClient.interceptors.request.use(async config => {
+NeoHttpClient.interceptors.request.use(async config => {
   const token = TokenService.getToken()?.access_token;
 
   if (config && config.headers) {
@@ -31,7 +31,7 @@ TemplateProjectHttpClient.interceptors.request.use(async config => {
   return config;
 });
 
-export { TemplateProjectHttpClient };
+export { NeoHttpClient };
 
 export function toFormData<T>(data: Record<string, any>) {
   const formData = new FormData();

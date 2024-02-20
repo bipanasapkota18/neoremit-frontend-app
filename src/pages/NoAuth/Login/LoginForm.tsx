@@ -12,10 +12,16 @@ import CheckBox from "@neo/components/Form/Checkbox";
 import TextInput from "@neo/components/Form/TextInput";
 import { NAVIGATION_ROUTES } from "@neo/pages/App/navigationRoutes";
 import loginSchema from "@neo/schema/auth/login";
+import { useLoginMutation } from "@neo/services/service-auth";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { svgAssets } from "../../../assets/images/svgs/index";
 
+interface LoginPageProps {
+  email: string;
+  password: string;
+  remember?: boolean | undefined;
+}
 const defaultValues = {
   email: "",
   password: "",
@@ -23,15 +29,23 @@ const defaultValues = {
 };
 
 const LoginForm = () => {
-  const navigate = useNavigate();
+  const { mutateAsync: login } = useLoginMutation();
+
   const [flag, setFlag] = useBoolean();
   const { control, handleSubmit } = useForm({
     defaultValues,
     resolver: yupResolver(loginSchema)
   });
 
-  const handleLogin = () => {
-    navigate("/");
+  const handleLogin = async (data: LoginPageProps) => {
+    try {
+      await login({
+        username: data.email,
+        password: data.password
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
