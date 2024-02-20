@@ -11,8 +11,9 @@
     "lint": "yarn lint:fix && yarn lint:format",
     "lint:fix": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore",
     "lint:format": "prettier  --loglevel warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" ",
+    "preview": "vite preview",
     "cm": "cz",
-    "preview": "vite preview"
+    "postinstall": "npx husky install"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
@@ -25,6 +26,7 @@
     "convert": "^4.14.1",
     "framer-motion": "^11.0.3",
     "fs": "^0.0.1-security",
+    "husky": "^9.0.11",
     "jotai": "^2.6.3",
     "path": "^0.12.7",
     "react": "^18.2.0",
@@ -66,6 +68,13 @@
     "vite-plugin-checker": "^0.5.1",
     "vite-plugin-pwa": "^0.16.4",
     "vite-plugin-svgr": "^2.2.1"
+  },
+  "husky": {
+    "hooks": {
+      "prepare-commit-msg": "exec < /dev/tty && npx cz --hook || true",
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
