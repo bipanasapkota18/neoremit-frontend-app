@@ -26,8 +26,8 @@ const AuthPageWrapper = ({
       backgroundColor="#F7FAFC"
       height="100vh"
       maxWidth={"100%"}
-      backgroundImage={`url(${imageAssets.LoginBackground})`}
-      backgroundPosition={"-100% 100%"}
+      backgroundImage={`url(${imageAssets.LoginBackground}) `}
+      backgroundPosition={"100% 100%"}
       backgroundRepeat={"no-repeat"}
       backgroundSize={"cover"}
     >
