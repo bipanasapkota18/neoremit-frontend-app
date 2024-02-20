@@ -44,6 +44,7 @@ const SwitchInput: React.FC<SwitchInputProps & SwitchProps> = ({
               {label}
             </FormLabel>
             <Switch
+              color={colorScheme.primary_400}
               id={name}
               placeholder=" "
               height={"inherit"}
