@@ -6,7 +6,7 @@ export const colorScheme = {
   sideBar_text: "#4A5568",
   button_color: "#EDF2F7",
   chakraScheme: "blue",
-
+  // gray_100: "#f2f2f2",
   //primary
   primary_50: "#EFEAF4",
   primary_100: "#CCBFDC",
@@ -47,14 +47,12 @@ export const colorScheme = {
   danger_800: "#C62828",
   danger_900: "#B71C1C",
 
-  gray_100: "#f2f2f2",
+  gray_100: "#EDF2F7",
   gray_200: "#e6e6e6",
   gray_300: "#cccccc",
   gray_400: "#b3b3b3",
   gray_500: "#999999",
   gray_600: "#808080",
-  gray_700: "#666666",
-  gray_800: "#4d4d4d",
   gray_900: "#333333",
 
   blue_50: "#E3F2FD",
@@ -121,5 +119,18 @@ export const colorScheme = {
   purple_600: "#8E24AA",
   purple_700: "#7B1FA2",
   purple_800: "#6A1B9A",
-  purple_900: "#4A148C"
+  purple_900: "#4A148C",
+
+  //DataTable Colors
+  column_heading: "#F7FAFC",
+  gray_800: "#1A202C",
+  gray_700: "#2D3748",
+  admin_background: "#FAFBFC",
+  search_icon: "#718096",
+
+  //filter
+  filter_btn: "#EFEAF4",
+
+  //goback button
+  btn_background: "#EFEAF4"
 };

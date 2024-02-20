@@ -13,7 +13,7 @@ function Dashboard() {
       <Container p={8} bg="white" rounded="md" shadow="md">
         <Heading mb={4}>Dashboard</Heading>
         <HStack spacing={4}>
-          <Button colorScheme="blue" onClick={() => navigate("/home")}>
+          <Button colorScheme="blue" onClick={() => navigate("/")}>
             Home
           </Button>
           <Button colorScheme="blue" onClick={() => navigate("/login")}>

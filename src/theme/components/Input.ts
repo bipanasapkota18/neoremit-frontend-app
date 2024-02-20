@@ -3,13 +3,14 @@ import { colorScheme } from "../colorScheme";
 
 export const InputConfig: ComponentStyleConfig = {
   baseStyle: {
-    fontWeight: 500,
-    borderRadius: 8
+    fontWeight: 400,
+    padding: "0px, 0px, 0px, 16px"
   },
   variants: {
     default: props => ({
       ...ChakraTheme.components.Input.variants?.outline(props),
       field: {
+        borderRadius: "16px",
         ...ChakraTheme.components.Input.variants?.outline(props).field,
         _focusVisible: {
           ...ChakraTheme.components.Input.variants?.outline(props).field

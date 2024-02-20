@@ -1,9 +1,11 @@
-import LayoutWrapper from "@/components/LayoutWrapper";
-import { Authorities } from "@/services/service-token";
+import LayoutWrapper from "@neo/components/LayoutWrapper";
+import { Authorities } from "@neo/services/service-token";
 import { lazy } from "react";
+import Currency from "../Authorized/MasterData/Currency";
+import ForgotPassword from "../NoAuth/ForgotPassword";
 import { NAVIGATION_ROUTES } from "./navigationRoutes";
-const Dashboard = lazy(() => import("@/pages/Authorized/Dashboard"));
-const Home = lazy(() => import("@/pages/Authorized/Home"));
+const Dashboard = lazy(() => import("@neo/pages/Authorized/Dashboard"));
+const Home = lazy(() => import("@neo/pages/Authorized/Home"));
 
 export const appRoutes = [
   {
@@ -19,7 +21,16 @@ export const appRoutes = [
         path: NAVIGATION_ROUTES.HOME,
         element: <Home />,
         accessor: [Authorities.client, Authorities.gateway]
+      },
+      {
+        path: NAVIGATION_ROUTES.CURRENCY_SETUP,
+        element: <Currency />,
+        accessor: [Authorities.client, Authorities.gateway]
       }
     ]
+  },
+  {
+    path: NAVIGATION_ROUTES.FORGOT_PASSWORD,
+    element: <ForgotPassword />
   }
 ];

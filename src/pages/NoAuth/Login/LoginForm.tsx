@@ -1,16 +1,20 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
 import {
   Button,
-  HStack,
   Link as ChakraLink,
+  HStack,
+  IconButton,
   Stack,
-  VStack
+  VStack,
+  useBoolean
 } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import TextInput from "@/components/Form/TextInput";
-import loginSchema from "@/schema/auth/login";
-import CheckBox from "@/components/Form/Checkbox";
+import CheckBox from "@neo/components/Form/Checkbox";
+import TextInput from "@neo/components/Form/TextInput";
+import { NAVIGATION_ROUTES } from "@neo/pages/App/navigationRoutes";
+import loginSchema from "@neo/schema/auth/login";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { svgAssets } from "../../../assets/images/svgs/index";
 
 const defaultValues = {
   email: "",
@@ -20,13 +24,13 @@ const defaultValues = {
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  const [flag, setFlag] = useBoolean();
   const { control, handleSubmit } = useForm({
     defaultValues,
     resolver: yupResolver(loginSchema)
   });
 
-  const handleLogin = (data: any) => {
-    console.log(data);
+  const handleLogin = () => {
     navigate("/");
   };
 
@@ -40,6 +44,7 @@ const LoginForm = () => {
     >
       <Stack gap={"16px"} width={"100%"}>
         <TextInput
+          startIcon={<svgAssets.EmailIcon />}
           type="text"
           name="email"
           label={"Email"}
@@ -47,17 +52,35 @@ const LoginForm = () => {
           isRequired
         />
         <TextInput
-          type="password"
+          startIcon={<svgAssets.PasswordIcon />}
+          type={flag ? "text" : "password"}
           name="password"
           label={"Password"}
           control={control}
           isRequired
+          endIcons={
+            <IconButton
+              tabIndex={-1}
+              colorScheme={"black"}
+              size="xs"
+              variant="link"
+              aria-label="password-control"
+              onClick={setFlag.toggle}
+              icon={
+                flag ? (
+                  <svgAssets.EyeIcon height={"20px"} width={"20px"} />
+                ) : (
+                  <svgAssets.EyeSlashIcon height={"20px"} width={"20px"} />
+                )
+              }
+            />
+          }
         />
         <HStack justifyContent={"space-between"}>
           <CheckBox name="remember" label="Remember me" control={control} />
           <ChakraLink
             as={Link}
-            // to={ROUTES.AUTH.FORGOT_PASSWORD}
+            to={NAVIGATION_ROUTES.FORGOT_PASSWORD}
             whiteSpace={"nowrap"}
             fontWeight={"500"}
             color="primary.500"

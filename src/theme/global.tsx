@@ -1,6 +1,6 @@
 import { css, Global } from "@emotion/react";
 
-import Mulish from "@/assets/fonts/Mulish/Mulish-Regular.ttf";
+import Mulish from "@neo/assets/fonts/Mulish/Mulish-Regular.ttf";
 
 const globalStyles = () => {
   return (

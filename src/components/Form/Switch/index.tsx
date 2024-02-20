@@ -1,4 +1,3 @@
-import { colorScheme } from "@/theme/colorScheme";
 import {
   FormControl,
   FormErrorMessage,
@@ -7,6 +6,7 @@ import {
   Switch,
   SwitchProps
 } from "@chakra-ui/react";
+import { colorScheme } from "@neo/theme/colorScheme";
 import React from "react";
 import { Control, Controller } from "react-hook-form";
 
@@ -50,7 +50,7 @@ const SwitchInput: React.FC<SwitchInputProps & SwitchProps> = ({
               onChange={onChange}
               isChecked={value}
               isInvalid={!!error}
-              errorBorderColor={colorScheme.red_500}
+              errorBorderColor={colorScheme.danger_500}
               disabled={disabled}
               {...extraProps}
             />

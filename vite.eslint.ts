@@ -22,7 +22,7 @@ export default (
         },
         async transform({
           code,
-          path: filepath,
+          path: filepath
         }: {
           code: string;
           path: string;
@@ -35,7 +35,7 @@ export default (
             await fs.readFile(filepath, { encoding: "utf8" }),
             {
               filePath: filepath,
-              warnIgnored: false,
+              warnIgnored: false
             }
           );
 
@@ -48,8 +48,8 @@ export default (
           }
 
           return code;
-        },
-      },
-    ],
+        }
+      }
+    ]
   };
 };

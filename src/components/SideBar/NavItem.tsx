@@ -1,5 +1,4 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { colorScheme } from "@/theme/colorScheme";
 import {
   Box,
   chakra,
@@ -10,6 +9,8 @@ import {
   useDisclosure,
   VStack
 } from "@chakra-ui/react";
+import { sidebarAssets } from "@neo/assets/images/svgs/Sidebar";
+import { colorScheme } from "@neo/theme/colorScheme";
 import { Dispatch, Fragment, SetStateAction, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 
@@ -226,7 +227,7 @@ export default function NavItem({
           </HStack>
           {isNotLink && (
             <Icon
-              // as={svgAssets.SidebarDropdown}
+              as={sidebarAssets.SidebarDropdown}
               width={"24px"}
               height={"24px"}
               // transform={isOpen ? "rotate(90deg)" : ""}

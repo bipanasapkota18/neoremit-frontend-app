@@ -5,28 +5,28 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: "module",
     ecmaFeatures: {
-      jsx: true,
-    },
+      jsx: true
+    }
   },
   settings: {
     react: {
-      version: "detect",
+      version: "detect"
     },
     "import/resolver": {
       typescript: {},
       node: {
         paths: ["src"],
-        extensions: [".js", ".jsx", ".ts", ".tsx"],
+        extensions: [".js", ".jsx", ".ts", ".tsx"]
       },
       alias: {
-        map: [["@", "./src"]],
-      },
-    },
+        map: [["@neo", "./src"]]
+      }
+    }
   },
   env: {
     browser: true,
     amd: true,
-    node: true,
+    node: true
   },
   extends: [
     "eslint:recommended",
@@ -34,7 +34,7 @@ module.exports = {
     // "plugin:import/recommended",
     "plugin:jsx-a11y/recommended",
     "plugin:@typescript-eslint/recommended",
-    "eslint-config-prettier", // Make sure this is always the last element in the array.
+    "eslint-config-prettier" // Make sure this is always the last element in the array.
   ],
   plugins: ["react", "import", "jsx-a11y", "@typescript-eslint", "prettier"],
   rules: {
@@ -44,8 +44,8 @@ module.exports = {
     "prettier/prettier": [
       "error",
       {
-        endOfLine: "auto",
-      },
+        endOfLine: "auto"
+      }
     ],
     "@typescript-eslint/no-unused-vars": ["warn"],
     "@typescript-eslint/no-explicit-any": "off",
@@ -56,8 +56,8 @@ module.exports = {
       {
         components: ["Link"],
         specialLink: ["hrefLeft", "hrefRight"],
-        aspects: ["invalidHref", "preferButton"],
-      },
-    ],
-  },
+        aspects: ["invalidHref", "preferButton"]
+      }
+    ]
+  }
 };

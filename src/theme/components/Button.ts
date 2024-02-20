@@ -1,4 +1,4 @@
-import { ComponentStyleConfig, theme as ChakraTheme } from "@chakra-ui/react";
+import { theme as ChakraTheme, ComponentStyleConfig } from "@chakra-ui/react";
 import { colorScheme } from "../colorScheme";
 
 export const ButtonConfig: ComponentStyleConfig = {
@@ -29,6 +29,33 @@ export const ButtonConfig: ComponentStyleConfig = {
       _active: {
         bg: colorScheme.purple_400
       }
+    }),
+    light: () => ({
+      background: colorScheme.btn_background,
+      color: colorScheme.primary_400,
+      fontSize: "14px",
+      fontWeight: 700,
+      lineHeight: "17.57px"
+    }),
+    filter: () => ({
+      background: colorScheme.filter_btn,
+      borderRadius: "30px",
+      padding: "14px 32px",
+      color: colorScheme.primary_400,
+      fontSize: "17px",
+      display: "flex",
+      gap: "8px",
+      fontWeight: 600,
+      lineHeight: "normal"
+    }),
+    search: () => ({
+      // bg: colorScheme.primary_400,
+      color: colorScheme.search_icon,
+      display: "flex",
+      width: "24px",
+      height: "24px",
+      justifyContent: "center",
+      alignItems: "center"
     })
   },
 

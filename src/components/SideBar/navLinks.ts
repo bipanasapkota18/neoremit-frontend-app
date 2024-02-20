@@ -1,27 +1,43 @@
-import { NAVIGATION_ROUTES } from "@/pages/App/navigationRoutes";
+import { sidebarAssets } from "@neo/assets/images/svgs/Sidebar";
+import { NAVIGATION_ROUTES } from "@neo/pages/App/navigationRoutes";
 import { ComponentProps } from "react";
 import { FaIcons } from "react-icons/fa";
 import NavItem from "./NavItem";
 
 export const navLinks = [
   {
-    icon: FaIcons,
+    icon: sidebarAssets.Dashboard,
     href: NAVIGATION_ROUTES.HOME,
-    label: "Home"
+    label: "Dashboard"
   },
 
   {
-    icon: FaIcons,
+    icon: sidebarAssets.ProfileCircle,
     href: NAVIGATION_ROUTES.COLLAPSE,
-    label: "Collapse",
+    label: "User Management",
     isNotLink: true,
     childNav: [
       {
-        icon: FaIcons,
-        href: NAVIGATION_ROUTES.DASHBOARD,
-        label: "Dashboard"
+        icon: sidebarAssets.Ellipse,
+        href: NAVIGATION_ROUTES.USER_MANAGEMENT.ROLES,
+        label: "Roles"
+      },
+      {
+        icon: sidebarAssets.Ellipse,
+        href: NAVIGATION_ROUTES.USER_MANAGEMENT.USER,
+        label: "User"
       }
     ]
+  },
+  {
+    icon: sidebarAssets.Partners,
+    href: NAVIGATION_ROUTES.PARTNERS,
+    label: "Partners"
+  },
+  {
+    icon: sidebarAssets.Currency,
+    href: NAVIGATION_ROUTES.CURRENCY_SETUP,
+    label: "Currency"
   },
   {
     icon: FaIcons,

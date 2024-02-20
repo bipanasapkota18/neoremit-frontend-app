@@ -1,17 +1,16 @@
-import { colorScheme } from "@/theme/colorScheme";
-import { Search2Icon } from "@chakra-ui/icons";
 import {
   FormControl,
   FormErrorMessage,
   FormHelperText,
-  FormLabel,
   IconButton,
   Input,
   InputGroup,
+  InputLeftElement,
   InputProps,
-  InputRightElement,
   Spinner
 } from "@chakra-ui/react";
+import { ReactComponent as SearchIcon } from "@neo/assets/images/svgs/search-icon.svg";
+import { colorScheme } from "@neo/theme/colorScheme";
 import { debounce } from "lodash";
 import React, { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { Control, Controller } from "react-hook-form";
@@ -81,11 +80,12 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
                 <Input
                   ml={0.5}
                   h={"98%"}
-                  placeholder=" "
+                  placeholder={label}
                   onChange={e => {
                     onSearch(e.target.value);
                     onChange(e);
                   }}
+                  borderRadius={"30px"}
                   value={value}
                   type={type}
                   isInvalid={!!error}
@@ -94,25 +94,26 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
                   disabled={disabled}
                   {...extraProps}
                 />
-                <FormLabel>{label}</FormLabel>
+                {/* <FormLabel>{label}</FormLabel> */}
 
-                <InputRightElement color="#FFFFFF" mr={2}>
+                <InputLeftElement color="#FFFFFF" mr={2}>
                   <IconButton
                     type="submit"
                     top="6%"
                     size="md"
                     h={"85%"}
+                    variant={"search"}
                     aria-label="customerCode"
                     disabled={extraProps.isDisabled}
                     icon={
                       isLoading ? (
-                        <Spinner pos="absolute" size="md" />
+                        <Spinner color="red" pos="absolute" size="md" />
                       ) : (
-                        <Search2Icon width={18} height={18} />
+                        <SearchIcon width={18} height={18} />
                       )
                     }
                   />
-                </InputRightElement>
+                </InputLeftElement>
               </InputGroup>
               <FormErrorMessage>{error ? error?.message : ""}</FormErrorMessage>
               {helperText ? <FormHelperText>{helperText}</FormHelperText> : ""}
@@ -128,17 +129,18 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
       id={name}
       maxW={"350px !important"}
     >
-      <InputGroup maxW={"350px"} h={"46px"}>
+      <InputGroup gap={"8px"} maxW={"350px"} h={"46px"}>
         <Input
           ml={0.5}
           h={"98%"}
-          placeholder=" "
+          placeholder={label}
           onChange={handleChange}
           value={value}
           type={type}
           errorBorderColor={colorScheme.danger_500}
-          backgroundColor="white"
+          backgroundColor={colorScheme.column_heading}
           disabled={disabled}
+          borderRadius={"30px"}
           onKeyDown={event => {
             if (event.key === "Enter") {
               onSearch(searchString);
@@ -146,11 +148,12 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
           }}
           {...extraProps}
         />
-        <FormLabel>{label}</FormLabel>
+        {/* <FormLabel>{label}</FormLabel> */}
 
-        <InputRightElement color="#FFFFFF" mr={2}>
+        <InputLeftElement padding=" 0px 8px 0px 24px" color="#FFFFFF" mr={2}>
           <IconButton
             type="submit"
+            variant={"search"}
             top="6%"
             size="md"
             h={"85%"}
@@ -161,11 +164,11 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
               isDebouncing ? (
                 <Spinner pos="absolute" size="md" />
               ) : (
-                <Search2Icon width={18} height={18} />
+                <SearchIcon width={"24px"} height={"24px"} />
               )
             }
           />
-        </InputRightElement>
+        </InputLeftElement>
       </InputGroup>
       {helperText ? <FormHelperText>{helperText}</FormHelperText> : ""}
     </FormControl>

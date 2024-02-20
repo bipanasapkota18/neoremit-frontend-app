@@ -1,5 +1,5 @@
-import { colorScheme } from "@/theme/colorScheme";
 import chakraUiTheme from "@chakra-ui/theme";
+import { colorScheme } from "@neo/theme/colorScheme";
 import { PropsValue, StylesConfig } from "react-select";
 const fontSizes = {
   sm: "0.875rem",
@@ -64,10 +64,10 @@ export const useCustomStyles = (error?: any) => {
     ) => ({
       ...provided,
       borderWidth: "2px",
-      borderColor: error ? colorScheme.red_500 : "inherit",
+      borderColor: error ? colorScheme.danger_500 : "inherit",
       ...(isDisabled && inheritControlBG ? { backgroundColor: "inherit" } : {}),
       "&:hover": {
-        borderColor: error ? colorScheme.red_600 : "inherit",
+        borderColor: error ? colorScheme.danger_600 : "inherit",
         backgroundColor: isSingleTimeDropdown
           ? `${chakraUiTheme.baseTheme.colors.gray["100"]}`
           : "inherit",

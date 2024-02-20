@@ -1,7 +1,16 @@
 export const NAVIGATION_ROUTES = {
   LOGIN: "/login",
-  HOME: "/home",
+  HOME: "/",
   DASHBOARD: "/dashbaord",
   COLLAPSE: "/collapse",
-  EXAMPLE: "/example"
+  EXAMPLE: "/example",
+  FORGOT_PASSWORD: "/forgot-password",
+
+  //masterdata
+  USER_MANAGEMENT: {
+    ROLES: "/roles",
+    USER: "/user"
+  },
+  CURRENCY_SETUP: "/currency",
+  PARTNERS: "/partners"
 };

@@ -1,4 +1,3 @@
-import { colorScheme } from "@/theme/colorScheme";
 import {
   Avatar,
   AvatarBadge,
@@ -13,10 +12,11 @@ import {
   Stack,
   Text
 } from "@chakra-ui/react";
+import { colorScheme } from "@neo/theme/colorScheme";
 import { FC, useRef } from "react";
 // import { useNavigate } from "react-router-dom";
 
-import LanguageSwitch from "@/components/Form/Switch/LangaugeSwitch";
+import LanguageSwitch from "@neo/components/Form/Switch/LangaugeSwitch";
 import { BsCheck2Circle, BsChevronDown } from "react-icons/bs";
 import { GoBell } from "react-icons/go";
 import { HeaderAnchor } from "./Header";
