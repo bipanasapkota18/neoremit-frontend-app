@@ -5,7 +5,6 @@ import Currency from "../Authorized/MasterData/Currency";
 import ForgotPassword from "../NoAuth/ForgotPassword";
 import { NAVIGATION_ROUTES } from "./navigationRoutes";
 const Dashboard = lazy(() => import("@neo/pages/Authorized/Dashboard"));
-const Home = lazy(() => import("@neo/pages/Authorized/Home"));
 
 export const appRoutes = [
   {
@@ -17,11 +16,7 @@ export const appRoutes = [
         element: <Dashboard />,
         accessor: [Authorities.client, Authorities.gateway]
       },
-      {
-        path: NAVIGATION_ROUTES.HOME,
-        element: <Home />,
-        accessor: [Authorities.client, Authorities.gateway]
-      },
+
       {
         path: NAVIGATION_ROUTES.CURRENCY_SETUP,
         element: <Currency />,
