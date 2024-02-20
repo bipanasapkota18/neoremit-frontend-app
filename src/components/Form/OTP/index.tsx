@@ -5,7 +5,6 @@ import {
   FormHelperText,
   PinInput
 } from "@chakra-ui/react";
-import React from "react";
 import { Control, Controller } from "react-hook-form";
 import OTPInput from "./OTPInput";
 interface OTPProps {
@@ -41,7 +40,7 @@ const OTPComponent = ({
               id={name}
               maxW={"350px !important"}
             >
-              <Flex gap={"30px"}>
+              <Flex gap={{ base: "30px", sm: "40px", md: "40px" }}>
                 <PinInput
                   placeholder=""
                   otp

@@ -11,7 +11,10 @@ import { AuthPageProps } from "../../ForgotPassword/ForgotPasswordForm";
 const defaultValues = {
   otp_code: ""
 };
-const OTP = ({ setScreen }: AuthPageProps) => {
+interface OTPProps extends AuthPageProps {
+  email: string;
+}
+const OTP = ({ setScreen, email }: OTPProps) => {
   const schema = yup.object().shape({
     otp_code: yup.string().required().min(5)
   });
@@ -31,12 +34,14 @@ const OTP = ({ setScreen }: AuthPageProps) => {
   return (
     <Fragment>
       <VStack alignItems="flex-start" gap={1}>
-        <Text fontSize="2xl" fontWeight="600" color="grey.800">
+        <Text fontSize="2xl" fontWeight={800} color={colorScheme.gray_700}>
           OTP verification
         </Text>
-        <Text fontWeight="400" fontSize="md" color="grey.700">
-          Please enter the OTP verification code we sent to Gmail ,
-          ab*******123@gmail.com
+        <Text fontWeight="400" fontSize="md" color={colorScheme.gray_700}>
+          Please enter the OTP verification code we sent to Gmail , {""}
+          <Text as={"span"} fontWeight={600} color={colorScheme.gray_700}>
+            {email}
+          </Text>
         </Text>
       </VStack>
       <VStack
@@ -46,19 +51,22 @@ const OTP = ({ setScreen }: AuthPageProps) => {
         onSubmit={handleSubmit(handleOtpValidation)}
       >
         <Stack gap={5} alignItems={"center"} width={"100%"}>
-          <Flex>
+          <Flex
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            alignSelf="stretch"
+          >
             <OTPComponent control={control} name="otp_code" />
           </Flex>
-          <Flex gap={"24px"}>
-            {/* {time > 0 && ( */}
+          <Flex gap={"24px"} alignItems={"flex-start"} alignSelf={"stretch"}>
             <Text textAlign={"center"} cursor={"pointer"} fontWeight={700}>
               Resend OTP code in:
               <Text as="span" pl={1} color={colorScheme.primary_400}>
                 {minutes}:{formattedSeconds}
               </Text>
             </Text>
-            {/* )} */}
-            <Text>Resend</Text>
+            <Text marginLeft={"auto"}>Resend</Text>
           </Flex>
         </Stack>
         <Button

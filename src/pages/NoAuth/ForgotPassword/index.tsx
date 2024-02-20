@@ -13,14 +13,15 @@ const ForgotPassword = () => {
   const navigate = useNavigate();
 
   const [screen, setScreen] = useState("registerForm");
+  const [email, setEmail] = useState("");
   const SwitchComponent = () => {
     switch (screen) {
       case "otp":
-        return <OTP type="forgot" setScreen={setScreen} />;
+        return <OTP type="forgot" setScreen={setScreen} email={email} />;
       case "passwordForm":
         return <SetPassword />;
       default:
-        return <ForgotPasswordForm setScreen={setScreen} />;
+        return <ForgotPasswordForm setScreen={setScreen} setEmail={setEmail} />;
     }
   };
   return (

@@ -14,8 +14,14 @@ export interface AuthPageProps {
 const defaultValues = {
   email: ""
 };
+interface ForgotPasswordFormProps extends AuthPageProps {
+  setEmail: (value: string) => void;
+}
 
-const ForgotPasswordForm = ({ setScreen }: AuthPageProps) => {
+const ForgotPasswordForm = ({
+  setScreen,
+  setEmail
+}: ForgotPasswordFormProps) => {
   const schema = yup.object().shape({
     email: yup
       .string()
@@ -27,7 +33,8 @@ const ForgotPasswordForm = ({ setScreen }: AuthPageProps) => {
     defaultValues,
     resolver: yupResolver(schema)
   });
-  const submitHandler = () => {
+  const submitHandler = (data: typeof defaultValues) => {
+    setEmail(data?.email);
     setScreen("otp");
   };
   return (

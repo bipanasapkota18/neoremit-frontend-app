@@ -1,6 +1,7 @@
 import { Center, HStack, Image, Stack, VStack } from "@chakra-ui/react";
 import { imageAssets } from "@neo/assets/images";
 import { svgAssets } from "@neo/assets/images/svgs";
+import useWindowSize from "@neo/hooks/useWindowResize";
 import React from "react";
 import Banner from "../Banner";
 // import Banner from "../Banner";
@@ -17,6 +18,8 @@ const AuthPageWrapper = ({
   isPassword,
   screen
 }: IChildrenType) => {
+  const window = useWindowSize();
+  hasSideDiv = window.width > 768 ? hasSideDiv : false;
   return (
     <Center
       position="relative"
