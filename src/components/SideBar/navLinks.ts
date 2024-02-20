@@ -7,7 +7,7 @@ import NavItem from "./NavItem";
 export const navLinks = [
   {
     icon: sidebarAssets.Dashboard,
-    href: NAVIGATION_ROUTES.HOME,
+    href: NAVIGATION_ROUTES.DASHBOARD,
     label: "Dashboard"
   },
 
@@ -38,6 +38,11 @@ export const navLinks = [
     icon: sidebarAssets.Currency,
     href: NAVIGATION_ROUTES.CURRENCY_SETUP,
     label: "Currency"
+  },
+  {
+    icon: sidebarAssets.Currency,
+    href: NAVIGATION_ROUTES.RELATIONSHIP,
+    label: "Relationship"
   },
   {
     icon: FaIcons,
