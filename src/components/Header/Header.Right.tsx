@@ -1,4 +1,3 @@
-import { colorScheme } from "@/theme/colorScheme";
 import {
   Avatar,
   AvatarBadge,
@@ -13,12 +12,12 @@ import {
   Stack,
   Text
 } from "@chakra-ui/react";
+import { colorScheme } from "@neo/theme/colorScheme";
 import { FC, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 
-import LanguageSwitch from "@/components/Form/Switch/LangaugeSwitch";
 import { BsCheck2Circle, BsChevronDown } from "react-icons/bs";
 import { GoBell } from "react-icons/go";
+import SearchInput from "../Form/SearchInput";
 import { HeaderAnchor } from "./Header";
 
 interface IRightHeader {
@@ -30,12 +29,10 @@ interface IRightHeader {
 
 export const RightHeader: FC<IRightHeader> = () => {
   const initialFocusRef = useRef();
-  // const { initData } = useStoreInitData();
-  const navigate = useNavigate();
 
   return (
     <HStack gap={8}>
-      <LanguageSwitch />
+      <SearchInput type="text" name="search" label="Search" width={"100%"} />
       <Popover initialFocusRef={initialFocusRef.current} placement="bottom">
         <PopoverTrigger>
           <IconButton
@@ -159,19 +156,6 @@ export const RightHeader: FC<IRightHeader> = () => {
           </PopoverBody>
         </PopoverContent>
       </Popover>
-      {/* <Tooltip label="View Profile">
-        <Avatar
-          cursor={"pointer"}
-          onClick={() => navigate("/user-profile")}
-          src={""}
-          // src={
-          //   initData?.profileImage &&
-          //   `${baseURL}document/internal-user/profile?image=${initData?.profileImage}`
-          // }
-        >
-          <AvatarBadge boxSize="1.25em" bg="green.500" />
-        </Avatar>
-      </Tooltip> */}
     </HStack>
   );
 };

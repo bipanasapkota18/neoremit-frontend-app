@@ -2,29 +2,59 @@ export const colorScheme = {
   primary: "#000000",
   text: "#000000",
   scrollBar_100: "#111111",
-  white: "#fff",
+  white: "#FFFFFF",
+  sideBar_text: "#4A5568",
+  button_color: "#EDF2F7",
   chakraScheme: "blue",
+  // gray_100: "#f2f2f2",
+  //primary
+  primary_50: "#EFEAF4",
+  primary_100: "#CCBFDC",
+  primary_200: "#B39FCB",
+  primary_300: "#7B59A4",
+  primary_400: "#5A2F8D",
+  primary_500: "#5A2F8D",
+  primary_600: "#522B80",
+  primary_700: "#402164",
+  primary_800: "#321A4E",
+  primary_900: "#26143B",
 
-  gray_100: "#f2f2f2",
+  //secondary
+  secondary_50: "#FFF6EB",
+  secondary_100: "#FFE3C0",
+  secondary_200: "#FFD6A2",
+  secondary_300: "#FFC378",
+  secondary_400: "#FFB75D",
+  secondary_500: "#FFA535",
+  secondary_600: "#E89630",
+  secondary_700: "#B57526",
+  secondary_800: "#8C5B1D",
+  secondary_900: "#6B4516",
+
+  //gradient
+  gradient_primary:
+    " linear-gradient(70.69deg, #FE9C3B -0.72%, #F5427A 107.09%)",
+
+  //danger
+  danger_50: "#FFEBEE",
+  danger_100: "#FFCDD2",
+  danger_200: "#EF9A9A",
+  danger_300: "#E57373",
+  danger_400: "#EF5350",
+  danger_500: "#F44336",
+  danger_600: "#E53935",
+  danger_700: "#D32F2F",
+  danger_800: "#C62828",
+  danger_900: "#B71C1C",
+
+  gray_100: "#EDF2F7",
   gray_200: "#e6e6e6",
   gray_300: "#cccccc",
   gray_400: "#b3b3b3",
   gray_500: "#999999",
   gray_600: "#808080",
-  gray_700: "#666666",
-  gray_800: "#4d4d4d",
   gray_900: "#333333",
 
-  red_50: "#FFEBEE",
-  red_100: "#FFCDD2",
-  red_200: "#EF9A9A",
-  red_300: "#E57373",
-  red_400: "#EF5350",
-  red_500: "#F44336",
-  red_600: "#E53935",
-  red_700: "#D32F2F",
-  red_800: "#C62828",
-  red_900: "#B71C1C",
   blue_50: "#E3F2FD",
   blue_100: "#BBDEFB",
   blue_200: "#90CAF9",
@@ -35,6 +65,7 @@ export const colorScheme = {
   blue_700: "#1976D2",
   blue_800: "#1565C0",
   blue_900: "#0D47A1",
+
   green_50: "#E8F5E9",
   green_100: "#C8E6C9",
   green_200: "#A5D6A7",
@@ -45,6 +76,7 @@ export const colorScheme = {
   green_700: "#388E3C",
   green_800: "#2E7D32",
   green_900: "#1B5E20",
+
   yellow_50: "#FFFDE7",
   yellow_100: "#FFF9C4",
   yellow_200: "#FFF59D",
@@ -55,6 +87,7 @@ export const colorScheme = {
   yellow_700: "#FBC02D",
   yellow_800: "#F9A825",
   yellow_900: "#F57F17",
+
   orange_50: "#FFF3E0",
   orange_100: "#FFE0B2",
   orange_200: "#FFCC80",
@@ -65,6 +98,7 @@ export const colorScheme = {
   orange_700: "#F57C00",
   orange_800: "#EF6C00",
   orange_900: "#E65100",
+
   teal_50: "#E0F2F1",
   teal_100: "#B2DFDB",
   teal_200: "#80CBC4",
@@ -75,6 +109,7 @@ export const colorScheme = {
   teal_700: "#00796B",
   teal_800: "#00695C",
   teal_900: "#004D40",
+
   purple_50: "#F3E5F5",
   purple_100: "#E1BEE7",
   purple_200: "#CE93D8",
@@ -84,5 +119,18 @@ export const colorScheme = {
   purple_600: "#8E24AA",
   purple_700: "#7B1FA2",
   purple_800: "#6A1B9A",
-  purple_900: "#4A148C"
+  purple_900: "#4A148C",
+
+  //DataTable Colors
+  column_heading: "#F7FAFC",
+  gray_800: "#1A202C",
+  gray_700: "#2D3748",
+  admin_background: "#FAFBFC",
+  search_icon: "#718096",
+
+  //filter
+  filter_btn: "#EFEAF4",
+
+  //goback button
+  btn_background: "#EFEAF4"
 };

@@ -1,9 +1,7 @@
-import { colorScheme } from "@/theme/colorScheme";
 import {
   FormControl,
   FormErrorMessage,
   FormHelperText,
-  FormLabel,
   Input,
   InputGroup,
   InputLeftElement,
@@ -12,6 +10,7 @@ import {
   Textarea,
   TextareaProps
 } from "@chakra-ui/react";
+import { colorScheme } from "@neo/theme/colorScheme";
 import React from "react";
 import { Control, Controller } from "react-hook-form";
 
@@ -73,17 +72,8 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                       border={"none"}
                       onChange={handleColorChange}
                       value={value ?? ""}
-                      errorBorderColor={colorScheme.red_500}
+                      errorBorderColor={colorScheme.danger_500}
                       disabled={disabled}
-                      sx={{
-                        "&::-webkit-color-swatch-wrapper": {
-                          padding: 0
-                        },
-                        "&::-webkit-color-swatch": {
-                          borderRadius: "50%",
-                          border: "1px solid rgba(0,0,0,0.2)"
-                        }
-                      }}
                       {...extraProps}
                     />
                   </InputRightElement>
@@ -104,7 +94,7 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                     onChange={onChange}
                     value={value ?? ""}
                     isInvalid={!!error}
-                    errorBorderColor={colorScheme.red_500}
+                    errorBorderColor={colorScheme.danger_500}
                     boxShadow="inset 0px 1px 1px rgba(0, 0, 0, 0.12)"
                     disabled={disabled}
                     variant={variant}
@@ -113,7 +103,7 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                 ) : (
                   <Input
                     paddingLeft={startIcon ? 9 : ""}
-                    placeholder={noFloating ? label : " "}
+                    placeholder={label}
                     type={type}
                     height={"inherit"}
                     onChange={onChange}
@@ -123,14 +113,13 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                     }}
                     value={value ?? ""}
                     isInvalid={!!error}
-                    errorBorderColor={colorScheme.red_500}
+                    errorBorderColor={colorScheme.danger_500}
                     disabled={disabled}
                     variant={variant}
                     {...extraProps}
                   />
                 )}
 
-                {!noFloating && <FormLabel>{label}</FormLabel>}
                 {endIcons ? (
                   <InputRightElement onClick={onIconClick} top="8%">
                     {endIcons}
@@ -142,7 +131,7 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
 
               <FormErrorMessage>{error ? error?.message : ""}</FormErrorMessage>
               {helperText ? (
-                <FormHelperText color={colorScheme.gray_400} mt={0} ml={2}>
+                <FormHelperText color={colorScheme.sideBar_text} mt={0} ml={2}>
                   {helperText}
                 </FormHelperText>
               ) : (

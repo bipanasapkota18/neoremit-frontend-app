@@ -1,8 +1,18 @@
-import { imageAssets } from "@/assets/images";
-import { colorScheme } from "@/theme/colorScheme";
-import { Flex, Image, VStack } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  HStack,
+  Icon,
+  Image,
+  Text,
+  VStack
+} from "@chakra-ui/react";
+import { imageAssets } from "@neo/assets/images";
+import { svgAssets } from "@neo/assets/images/svgs";
+import { NAVIGATION_ROUTES } from "@neo/pages/App/navigationRoutes";
+import { colorScheme } from "@neo/theme/colorScheme";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import NavItem from "./NavItem";
 import { navLinks } from "./navLinks";
 
@@ -66,7 +76,9 @@ export default function Sidebar({
       return navLabelValue.value ?? null;
     }
   };
-
+  const handleLogout = () => {
+    //
+  };
   return (
     <Flex
       pos="fixed"
@@ -89,7 +101,7 @@ export default function Sidebar({
         <Image
           maxW="50%"
           h="50px"
-          alt={"mofin-logo"}
+          alt={"neo-logo"}
           src={imageAssets.Logo}
           objectFit="contain"
           m="auto"
@@ -114,7 +126,7 @@ export default function Sidebar({
               opacity: 0.1
             },
             "&::-webkit-scrollbar-thumb": {
-              background: colorScheme.purple_100,
+              background: colorScheme.primary_100,
               borderRadius: 20
             }
           }}
@@ -136,6 +148,36 @@ export default function Sidebar({
               />
             );
           })}
+          <Button
+            as={NavLink}
+            to={NAVIGATION_ROUTES.LOGIN}
+            onClick={handleLogout}
+            background={colorScheme.white}
+            _hover={{ background: colorScheme.danger_100 }}
+            borderRadius={0}
+            size={"lg"}
+          >
+            <HStack justifyContent="space-between">
+              <HStack alignItems="center" flex={1}>
+                <Icon as={svgAssets.Logout} fontSize="xl" mb={1} />
+                <HStack
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                  w={"100%"}
+                >
+                  <Text
+                    color={colorScheme.danger_500}
+                    fontSize="md"
+                    fontWeight="medium"
+                    whiteSpace="nowrap"
+                    transition={animate}
+                  >
+                    LOGOUT
+                  </Text>
+                </HStack>
+              </HStack>
+            </HStack>
+          </Button>
         </VStack>
       </VStack>
     </Flex>

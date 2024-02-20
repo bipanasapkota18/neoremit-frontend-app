@@ -1,4 +1,4 @@
-import { colorScheme } from "@/theme/colorScheme";
+import { colorScheme } from "@neo/theme/colorScheme";
 import { CloseIcon } from "@chakra-ui/icons";
 import {
   Alert,

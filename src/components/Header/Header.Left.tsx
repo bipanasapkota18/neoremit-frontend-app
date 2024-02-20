@@ -9,7 +9,7 @@ export const LeftHeader = ({
   width: number;
 }) => {
   return (
-    <Flex align="center">
+    <Flex align="center" width={width}>
       <IconButton
         variant="link"
         aria-label="Minify sidebar"

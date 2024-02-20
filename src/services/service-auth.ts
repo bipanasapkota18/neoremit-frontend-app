@@ -1,4 +1,4 @@
-import { toastFail, toastSuccess } from "@/utility/Toast";
+import { toastFail, toastSuccess } from "@neo/utility/Toast";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";

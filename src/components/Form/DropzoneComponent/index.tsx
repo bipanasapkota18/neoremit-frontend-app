@@ -14,8 +14,8 @@ import convert from "convert";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Control, Controller } from "react-hook-form";
 
-import { svgAssets } from "@/assets/images/svgs";
-import { colorScheme } from "@/theme/colorScheme";
+import { svgAssets } from "@neo/assets/images/svgs";
+import { colorScheme } from "@neo/theme/colorScheme";
 import Dropzone, { Accept, DropEvent, FileRejection } from "react-dropzone";
 import { FaExpandAlt } from "react-icons/fa";
 import CropPlugin from "./plugins/CropPlugin/CropPlugin";
@@ -252,7 +252,9 @@ export function DropzoneComponentControlled({
                   <Box
                     {...getRootProps()}
                     border="2px dashed "
-                    borderColor={errorMessage ? colorScheme.red_500 : "#D1D5DB"}
+                    borderColor={
+                      errorMessage ? colorScheme.danger_500 : "#D1D5DB"
+                    }
                     padding={6}
                     borderRadius={"3px"}
                     height={"100%"}
@@ -264,7 +266,7 @@ export function DropzoneComponentControlled({
                     {error ? error?.message : ""}
                   </FormErrorMessage>
 
-                  <Text mt={errorMessage && 1} color={colorScheme.red_500}>
+                  <Text mt={errorMessage && 1} color={colorScheme.danger_500}>
                     {errorMessage}
                   </Text>
 

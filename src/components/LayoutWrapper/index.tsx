@@ -1,12 +1,13 @@
-import AppBar from "@/components/Header/AppBar";
-import Header from "@/components/Header/Header";
-import Sidebar from "@/components/SideBar";
-import useWindowSize from "@/hooks/useWindowResize";
 import { Box, Flex, Image } from "@chakra-ui/react";
+import AppBar from "@neo/components/Header/AppBar";
+import Header from "@neo/components/Header/Header";
+import Sidebar from "@neo/components/SideBar";
+import useWindowSize from "@neo/hooks/useWindowResize";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { Outlet } from "react-router-dom";
 
-import { imageAssets } from "@/assets/images";
+import { imageAssets } from "@neo/assets/images";
+import { colorScheme } from "@neo/theme/colorScheme";
 import ErrorBoundary from "../ErrorBoundry";
 
 const sidebarAnimate = "all .25s ease";
@@ -85,7 +86,12 @@ const LayoutWrapper: React.FC = () => {
               </Flex>
             }
           >
-            <Box px={6} pt={8} bg="gray.50">
+            <Box
+              minHeight={"90vh"}
+              px={6}
+              pt={8}
+              bg={colorScheme.admin_background}
+            >
               <Outlet />
             </Box>
           </Suspense>

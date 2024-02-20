@@ -1,15 +1,15 @@
+import { Flex, Spinner } from "@chakra-ui/react";
 import {
   logoutAllTabs,
   useAuthentication,
   useLogoutMutation
-} from "@/services/service-auth";
-import { useFetchInitData } from "@/services/service-init";
-import { Flex, Spinner } from "@chakra-ui/react";
+} from "@neo/services/service-auth";
+import { useFetchInitData } from "@neo/services/service-init";
 import { Suspense, lazy, useEffect } from "react";
 import { Outlet, Route, Routes } from "react-router-dom";
 import { appRoutes } from "./appRoutes";
 import { NAVIGATION_ROUTES } from "./navigationRoutes";
-const Login = lazy(() => import("@/pages/NoAuth/Login"));
+const Login = lazy(() => import("@neo/pages/NoAuth/Login"));
 
 export default function App() {
   // Check if app is authenticated

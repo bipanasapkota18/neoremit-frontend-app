@@ -1,4 +1,4 @@
-import { ISelectOptions } from "@/utility/format";
+import { ISelectOptions } from "@neo/utility/format";
 import {
   Alert,
   AlertIcon,

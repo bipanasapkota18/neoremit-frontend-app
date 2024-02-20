@@ -1,8 +1,8 @@
-import { api } from "@/services/service-api";
-import { authTokenKey } from "@/services/service-auth";
-import TokenService from "@/services/service-token";
-import { globalStyles, theme } from "@/theme";
 import { Button, ChakraProvider, HStack, Text } from "@chakra-ui/react";
+import { api } from "@neo/services/service-api";
+import { authTokenKey } from "@neo/services/service-auth";
+import TokenService from "@neo/services/service-token";
+import { globalStyles, theme } from "@neo/theme";
 import { AxiosError } from "axios";
 import { ErrorBoundary } from "react-error-boundary";
 import { HelmetProvider } from "react-helmet-async";

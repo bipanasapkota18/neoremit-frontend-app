@@ -1,4 +1,4 @@
-import App from "@/pages/App";
+import App from "@neo/pages/App";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import Provider from "./providers";

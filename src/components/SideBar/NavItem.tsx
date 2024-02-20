@@ -1,6 +1,4 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { colorScheme } from "@/theme/colorScheme";
-import { ArrowRightIcon } from "@chakra-ui/icons";
 import {
   Box,
   chakra,
@@ -11,6 +9,8 @@ import {
   useDisclosure,
   VStack
 } from "@chakra-ui/react";
+import { sidebarAssets } from "@neo/assets/images/svgs/Sidebar";
+import { colorScheme } from "@neo/theme/colorScheme";
 import { Dispatch, Fragment, SetStateAction, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 
@@ -52,7 +52,7 @@ const notActiveLink = {
     visibility: "hidden"
   },
   "&:hover": {
-    background: colorScheme.purple_400,
+    background: colorScheme.primary_300,
     color: colorScheme.white,
     "& p": {
       color: colorScheme.white
@@ -120,7 +120,7 @@ export default function NavItem({
             ? false
             : window.location.href.includes(href))
             ? {
-                background: colorScheme.purple_400,
+                background: colorScheme.primary_300,
                 "& p": {
                   color: colorScheme.white
                 },
@@ -129,13 +129,13 @@ export default function NavItem({
                 },
                 "& > div:first-of-type": {
                   visibility: "visible",
-                  background: colorScheme.purple_500,
+                  background: colorScheme.primary_400,
                   width: 2
                 }
               }
             : {
                 "&:hover": {
-                  background: colorScheme.purple_400,
+                  background: colorScheme.primary_300,
                   color: colorScheme.white,
                   "& p": {
                     color: colorScheme.white
@@ -151,8 +151,8 @@ export default function NavItem({
             ? notActiveLink
             : {
                 background: isChild
-                  ? colorScheme.purple_400
-                  : colorScheme.purple_500,
+                  ? colorScheme.primary_300
+                  : colorScheme.primary_400,
 
                 "& p": {
                   color: colorScheme.white
@@ -163,7 +163,7 @@ export default function NavItem({
                 "& > div:first-of-type": {
                   visibility: "visible",
                   width: 1,
-                  background: colorScheme.purple_100
+                  background: colorScheme.primary_100
                 }
               }
         }
@@ -182,7 +182,7 @@ export default function NavItem({
           w={1}
           top={0}
           right={0}
-          bg={colorScheme.purple_100}
+          // bg={colorScheme.purple_100}
           borderTopLeftRadius={10}
           borderBottomLeftRadius={10}
         />
@@ -196,7 +196,7 @@ export default function NavItem({
               w={"100%"}
             >
               <Text
-                color={colorScheme.gray_500}
+                color={colorScheme.sideBar_text}
                 fontSize="md"
                 fontWeight="medium"
                 whiteSpace="nowrap"
@@ -211,8 +211,8 @@ export default function NavItem({
                     w: "30px",
                     h: "25px",
                     textAlign: "center",
-                    background: colorScheme.yellow_400,
-                    color: colorScheme.purple_800,
+                    background: colorScheme.white,
+                    color: colorScheme.sideBar_text,
                     fontWeight: "bold",
                     borderRadius: 10,
                     display: "flex",
@@ -227,9 +227,10 @@ export default function NavItem({
           </HStack>
           {isNotLink && (
             <Icon
-              as={ArrowRightIcon}
-              color="gray.500"
-              transform={isOpen ? "rotate(90deg)" : ""}
+              as={sidebarAssets.SidebarDropdown}
+              width={"24px"}
+              height={"24px"}
+              transform={isOpen ? "" : "rotate(-90deg)"}
             />
           )}
         </HStack>
@@ -240,9 +241,8 @@ export default function NavItem({
         style={{
           width: "inherit",
           overflow: "visible",
-          boxShadow: `inset 5px 2px 15px ${colorScheme.purple_100}`,
-          margin: "0px",
-          padding: "10px 0px"
+
+          margin: "0px"
         }}
       >
         <VStack w="95%" m="auto">

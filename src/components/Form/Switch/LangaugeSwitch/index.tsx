@@ -1,4 +1,4 @@
-import { imageAssets } from "@/assets/images";
+import { imageAssets } from "@neo/assets/images";
 import { Switch } from "@chakra-ui/react";
 import { useState } from "react";
 

@@ -6,17 +6,17 @@ import svgr from "vite-plugin-svgr";
 
 export default defineConfig(() => {
   return {
-    server: { open: true, port: 5000 },
+    server: { open: true, port: 6001 },
     plugins: [
       svgr(),
       react(),
-      checker({ eslint: { lintCommand: "eslint src" }, overlay: false }),
+      checker({ eslint: { lintCommand: "eslint src" }, overlay: false })
     ],
     publicDir: "public",
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, "src"),
-      },
-    },
+        "@neo": path.resolve(__dirname, "src")
+      }
+    }
   };
 });
