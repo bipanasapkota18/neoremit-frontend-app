@@ -230,7 +230,7 @@ export default function NavItem({
               as={sidebarAssets.SidebarDropdown}
               width={"24px"}
               height={"24px"}
-              // transform={isOpen ? "rotate(90deg)" : ""}
+              transform={isOpen ? "" : "rotate(-90deg)"}
             />
           )}
         </HStack>

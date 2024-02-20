@@ -122,7 +122,6 @@ const Currency = () => {
             <HStack
               display="flex"
               padding="24px 20px"
-              // justifyContent="space-between"
               width={"100%"}
               alignItems="center"
               gap="16px"

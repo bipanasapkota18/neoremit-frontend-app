@@ -1,7 +1,7 @@
 import { Center, HStack, Image, Stack, VStack } from "@chakra-ui/react";
+import { imageAssets } from "@neo/assets/images";
+import { svgAssets } from "@neo/assets/images/svgs";
 import React from "react";
-import { imageAssets } from "@/assets/images";
-import { svgAssets } from "@/assets/images/svgs";
 // import Banner from "../Banner";
 
 interface IChildrenType {
@@ -14,13 +14,11 @@ const AuthPageWrapper = ({ children, hasSideDiv = true }: IChildrenType) => {
       position="relative"
       backgroundColor="#F7FAFC"
       height="100vh"
-      // width={"100%"}
       backgroundImage={`url(${imageAssets.Background})`}
       backgroundPosition={"-100% 100%"}
       backgroundRepeat={"no-repeat"}
       objectFit={"cover"}
     >
-      {/* <Box width="100%" height="100%" position="absolute"></Box> */}
       <Stack
         zIndex={1}
         gap={0}

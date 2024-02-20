@@ -94,7 +94,6 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
                   disabled={disabled}
                   {...extraProps}
                 />
-                {/* <FormLabel>{label}</FormLabel> */}
 
                 <InputLeftElement color="#FFFFFF" mr={2}>
                   <IconButton
@@ -148,7 +147,6 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
           }}
           {...extraProps}
         />
-        {/* <FormLabel>{label}</FormLabel> */}
 
         <InputLeftElement padding=" 0px 8px 0px 24px" color="#FFFFFF" mr={2}>
           <IconButton
