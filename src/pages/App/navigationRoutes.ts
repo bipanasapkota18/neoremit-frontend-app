@@ -13,7 +13,8 @@ export const NAVIGATION_ROUTES = {
   MASTER_DATA: {
     CURRENCY_SETUP: "/currency",
     PURPOSE_OF_PAYMENT: "/purpose-of-payment",
-    RELATIONSHIP: "/relationship"
+    RELATIONSHIP: "/relationship",
+    DOCUMENT_SETUP: "/document-setup"
   },
   PARTNERS: "/partners"
 };

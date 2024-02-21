@@ -3,6 +3,9 @@ import { lazy } from "react";
 
 import { NAVIGATION_ROUTES } from "./navigationRoutes";
 
+const Document = lazy(
+  () => import("@neo/pages/Authorized/MasterData/DocumentSetup")
+);
 const Dashboard = lazy(() => import("@neo/pages/Authorized/Dashboard"));
 const Currency = lazy(
   () => import("@neo/pages/Authorized/MasterData/Currency")
@@ -14,6 +17,7 @@ const Relationship = lazy(
 const PurposeOfPayment = lazy(
   () => import("@neo/pages/Authorized/MasterData/PurposeOfPayment")
 );
+
 export const appRoutes = [
   {
     path: "/",
@@ -35,6 +39,10 @@ export const appRoutes = [
       {
         path: NAVIGATION_ROUTES.MASTER_DATA.PURPOSE_OF_PAYMENT,
         element: <PurposeOfPayment />
+      },
+      {
+        path: NAVIGATION_ROUTES.MASTER_DATA.DOCUMENT_SETUP,
+        element: <Document />
       }
     ]
   }
