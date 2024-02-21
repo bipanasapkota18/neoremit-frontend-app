@@ -11,6 +11,9 @@ const Currency = lazy(
 const Relationship = lazy(
   () => import("@neo/pages/Authorized/MasterData/Relationship")
 );
+const PurposeOfPayment = lazy(
+  () => import("@neo/pages/Authorized/MasterData/PurposeOfPayment")
+);
 export const appRoutes = [
   {
     path: "/",
@@ -22,12 +25,16 @@ export const appRoutes = [
       },
 
       {
-        path: NAVIGATION_ROUTES.CURRENCY_SETUP,
+        path: NAVIGATION_ROUTES.MASTER_DATA.CURRENCY_SETUP,
         element: <Currency />
       },
       {
-        path: NAVIGATION_ROUTES.RELATIONSHIP,
+        path: NAVIGATION_ROUTES.MASTER_DATA.RELATIONSHIP,
         element: <Relationship />
+      },
+      {
+        path: NAVIGATION_ROUTES.MASTER_DATA.PURPOSE_OF_PAYMENT,
+        element: <PurposeOfPayment />
       }
     ]
   }
