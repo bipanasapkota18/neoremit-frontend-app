@@ -126,11 +126,5 @@ export const colorScheme = {
   gray_800: "#1A202C",
   gray_700: "#2D3748",
   admin_background: "#FAFBFC",
-  search_icon: "#718096",
-
-  //filter
-  filter_btn: "#EFEAF4",
-
-  //goback button
-  btn_background: "#EFEAF4"
+  search_icon: "#718096"
 };
