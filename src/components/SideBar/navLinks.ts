@@ -30,20 +30,29 @@ export const navLinks = [
     ]
   },
   {
+    icon: sidebarAssets.MasterData,
+    href: NAVIGATION_ROUTES.COLLAPSE,
+    label: "Master Data",
+    isNotLink: true,
+    childNav: [
+      {
+        icon: sidebarAssets.Currency,
+        href: NAVIGATION_ROUTES.CURRENCY_SETUP,
+        label: "Currency"
+      },
+      {
+        icon: sidebarAssets.Currency,
+        href: NAVIGATION_ROUTES.RELATIONSHIP,
+        label: "Relationship"
+      }
+    ]
+  },
+  {
     icon: sidebarAssets.Partners,
     href: NAVIGATION_ROUTES.PARTNERS,
     label: "Partners"
   },
-  {
-    icon: sidebarAssets.Currency,
-    href: NAVIGATION_ROUTES.CURRENCY_SETUP,
-    label: "Currency"
-  },
-  {
-    icon: sidebarAssets.Currency,
-    href: NAVIGATION_ROUTES.RELATIONSHIP,
-    label: "Relationship"
-  },
+
   {
     icon: FaIcons,
     href: NAVIGATION_ROUTES.EXAMPLE,
