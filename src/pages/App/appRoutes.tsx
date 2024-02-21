@@ -7,7 +7,7 @@ const Dashboard = lazy(() => import("@neo/pages/Authorized/Dashboard"));
 const Currency = lazy(
   () => import("@neo/pages/Authorized/MasterData/Currency")
 );
-const ForgotPassword = lazy(() => import("@neo/pages/NoAuth/ForgotPassword"));
+
 const Relationship = lazy(
   () => import("@neo/pages/Authorized/MasterData/Relationship")
 );
@@ -30,9 +30,5 @@ export const appRoutes = [
         element: <Relationship />
       }
     ]
-  },
-  {
-    path: NAVIGATION_ROUTES.FORGOT_PASSWORD,
-    element: <ForgotPassword />
   }
 ];
