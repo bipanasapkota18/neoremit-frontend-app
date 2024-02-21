@@ -64,12 +64,12 @@ const Modal = ({
             borderRadius={"full"}
           />
         </HStack>
-        <Divider />
+        <Divider color={"#EDF2F7"} />
 
         <ModalBody py={4} px={0}>
           {children}
         </ModalBody>
-        <Divider />
+        <Divider color={"#EDF2F7"} />
 
         <ModalFooter
           display="flex"

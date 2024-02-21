@@ -5,12 +5,15 @@ export const NAVIGATION_ROUTES = {
   EXAMPLE: "/example",
   FORGOT_PASSWORD: "/forgot-password",
 
-  //masterdata
   USER_MANAGEMENT: {
     ROLES: "/roles",
     USER: "/user"
   },
-  CURRENCY_SETUP: "/currency",
-  PARTNERS: "/partners",
-  RELATIONSHIP: "/relationship"
+  //masterdata
+  MASTER_DATA: {
+    CURRENCY_SETUP: "/currency",
+    PURPOSE_OF_PAYMENT: "/purpose-of-payment",
+    RELATIONSHIP: "/relationship"
+  },
+  PARTNERS: "/partners"
 };
