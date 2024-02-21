@@ -4,7 +4,7 @@ import { colorScheme } from "../colorScheme";
 export const ButtonConfig: ComponentStyleConfig = {
   baseStyle: {
     fontWeight: 500,
-    borderRadius: 8,
+    borderRadius: "30px",
     padding: 2,
     lineHeight: 0,
     px: 20
@@ -16,29 +16,32 @@ export const ButtonConfig: ComponentStyleConfig = {
       letterSpacing: "0.4px",
       lineHeight: 0,
       color: colorScheme.button_color,
-      borderRadius: "30px",
+      // borderRadius: "30px",
       height: "52px",
       padding: "20px, 0px, 20px, 0px",
 
       _hover: {
-        bg: colorScheme.purple_600,
+        bg: colorScheme.primary_600,
+        // borderRadius: "30px",
         _disabled: {
-          bg: colorScheme.purple_400
+          bg: colorScheme.primary_600
         }
       },
       _active: {
-        bg: colorScheme.purple_400
+        bg: colorScheme.primary_600,
+        boxShadow:
+          "0px 2px 24px 0px rgba(0, 0, 0, 0.06), 0px 4px 8px 0px rgba(0, 0, 0, 0.17) inset"
       }
     }),
     light: () => ({
-      background: colorScheme.btn_background,
+      background: colorScheme.primary_50,
       color: colorScheme.primary_400,
       fontSize: "14px",
       fontWeight: 700,
       lineHeight: "17.57px"
     }),
     filter: () => ({
-      background: colorScheme.filter_btn,
+      background: colorScheme.primary_50,
       borderRadius: "30px",
       padding: "14px 32px",
       color: colorScheme.primary_400,

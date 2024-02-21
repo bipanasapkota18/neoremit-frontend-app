@@ -88,9 +88,7 @@ const Currency = () => {
         return (
           <Switch
             size="lg"
-            colorScheme="facebook"
             isChecked={data?.row?.original?.status === "Active"}
-            // disabled
           />
         );
       }

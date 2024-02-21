@@ -3,6 +3,7 @@ import { FormComponent } from "./Form/Form";
 import { colorScheme } from "./colorScheme";
 import { ButtonConfig } from "./components/Button";
 import { InputConfig } from "./components/Input";
+import Switch from "./components/Switch";
 import { TableConfig } from "./components/Table";
 export { globalStyles } from "./global";
 
@@ -16,7 +17,8 @@ export const theme = extendTheme(
     components: {
       Button: ButtonConfig,
       Input: InputConfig,
-      Table: TableConfig
+      Table: TableConfig,
+      Switch: Switch
     },
     breakpoints: {
       sm: "320px",
