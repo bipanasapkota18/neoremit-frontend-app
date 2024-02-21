@@ -3,24 +3,13 @@ export interface TokenDetails {
   refresh_token: string;
 }
 
-export enum Authorities {
-  "gateway" = "gateway",
-  "client" = "client"
-}
-
-export interface TemplateProjectTokenDetails {
-  contactNo: string;
-  email: string;
-  id: null | number;
-  name: string;
-  profilePic: string;
-  role: string;
-  roleId: null | number;
-  schemeBased: boolean;
-  username: string;
-  workspace: Authorities;
-  exp: number;
-  workspacedataid: number;
+export interface NeoTokenDetails {
+  access_token: string;
+  refresh_token: string;
+  scope: string;
+  id_token: string;
+  token_type: string;
+  expires_in: string;
 }
 
 function setToken(token: TokenDetails) {
@@ -43,13 +32,13 @@ function getToken() {
   }
 }
 
-function getTokenDetails(): TemplateProjectTokenDetails | null {
+function getTokenDetails(): NeoTokenDetails | null {
   try {
     const token = getToken();
     return token
       ? (JSON.parse(
           window.atob(token.access_token.split(".")[1])
-        ) as TemplateProjectTokenDetails)
+        ) as NeoTokenDetails)
       : null;
   } catch (e) {
     return null;
@@ -59,16 +48,7 @@ function getTokenDetails(): TemplateProjectTokenDetails | null {
 function isAuthenticated() {
   const tokenDetails = getTokenDetails();
   if (tokenDetails) {
-    return tokenDetails.exp * 1000 > Date.now();
-  } else {
-    return false;
-  }
-}
-
-function checkRBAC(authorities: Authorities[]) {
-  const tokenDetails = getTokenDetails();
-  if (tokenDetails) {
-    return authorities.find(auth => auth === tokenDetails.workspace);
+    return +tokenDetails.expires_in * 1000 > Date.now();
   } else {
     return false;
   }
@@ -79,16 +59,11 @@ function clearToken() {
   localStorage.removeItem("refresh_token");
 }
 
-export const getRole = () => {
-  return getTokenDetails()?.workspacedataid;
-};
-
 const TokenService = {
   setToken,
   getToken,
   getTokenDetails,
   isAuthenticated,
-  checkRBAC,
   clearToken
 };
 

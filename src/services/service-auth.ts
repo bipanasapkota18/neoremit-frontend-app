@@ -4,12 +4,8 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 
 import { api } from "./service-api";
-import { TemplateProjectHttpClient } from "./service-axios";
-import TokenService, {
-  Authorities,
-  TemplateProjectTokenDetails,
-  TokenDetails
-} from "./service-token";
+import { NeoHttpClient } from "./service-axios";
+import TokenService, { NeoTokenDetails, TokenDetails } from "./service-token";
 
 import { BroadcastChannel } from "broadcast-channel";
 
@@ -17,16 +13,11 @@ const logoutChannel = new BroadcastChannel("logout");
 const loginChannel = new BroadcastChannel("login");
 
 export interface LoginDetails {
-  workspace: string;
-  workspaceDataId: string | null;
   username: string;
   password: string;
 }
 
-type TemplateProjectUserTokenDetails = TemplateProjectTokenDetails & {
-  isClient: boolean;
-  isGateway: boolean;
-};
+type NeoUserTokenDetails = NeoTokenDetails;
 
 export const authTokenKey = "authToken";
 const authTokenDetails = "authTokenDetails";
@@ -42,23 +33,18 @@ const initLogout = () => {
 
 const useLogoutMutation = (noToast?: boolean) => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  const role = getRole();
   return useMutation(initLogout, {
     onSuccess: () => {
       logoutChannel.postMessage("Logout");
       queryClient.clear();
       queryClient.setQueryData(authTokenKey, () => false);
-      role.isGateway
-        ? navigate("/gateway/login/", { replace: true })
-        : navigate("/", { replace: true });
       !noToast && toastSuccess("Logged out Succesfully");
     }
   });
 };
 
 const initLogin = (loginData: LoginDetails) => {
-  return TemplateProjectHttpClient.post<TokenDetails>(api.login, loginData);
+  return NeoHttpClient.post<TokenDetails>(api.login, loginData);
 };
 
 const useLoginMutation = () => {
@@ -75,10 +61,7 @@ const useLoginMutation = () => {
       };
       TokenService.setToken(tokens);
       queryClient.setQueryData(authTokenKey, () => true);
-      localStorage.setItem(
-        "lastLoginRole",
-        TokenService.getTokenDetails()?.workspace ?? ""
-      );
+
       navigate("/", { replace: true });
     },
     onError: error => {
@@ -94,17 +77,14 @@ const useLoginMutation = () => {
 
 const initRefreshToken = async () => {
   try {
-    const response = await TemplateProjectHttpClient.get<TokenDetails>(
-      api.refreshToken,
-      {
-        params: {
-          refreshToken: TokenService.getToken()?.refresh_token
-        },
-        headers: {
-          Authorization: ""
-        }
+    const response = await NeoHttpClient.get<TokenDetails>(api.refreshToken, {
+      params: {
+        refreshToken: TokenService.getToken()?.refresh_token
+      },
+      headers: {
+        Authorization: ""
       }
-    );
+    });
     const tokens = {
       access_token: response.data.access_token,
       refresh_token: response.data.refresh_token
@@ -119,7 +99,10 @@ const initRefreshToken = async () => {
 const checkAuthentication = async () => {
   if (TokenService.isAuthenticated()) {
     const tokenInfo = TokenService.getTokenDetails();
-    if (tokenInfo && tokenInfo.exp * 1000 < Date.now() + 5 * 60 * 1000) {
+    if (
+      tokenInfo &&
+      +tokenInfo.expires_in * 1000 < Date.now() + 5 * 60 * 1000
+    ) {
       return initRefreshToken();
     }
     return Promise.resolve(true);
@@ -140,37 +123,16 @@ const useAuthentication = () => {
     onSuccess: () => {
       const tokenDetails = TokenService.getTokenDetails();
       if (tokenDetails) {
-        queryClient.setQueryData<TemplateProjectUserTokenDetails>(
-          authTokenDetails,
-          {
-            ...tokenDetails,
-            isClient: !!tokenDetails?.workspace.includes(Authorities.client),
-            isGateway: !!tokenDetails?.workspace.includes(Authorities.gateway)
-          }
-        );
+        queryClient.setQueryData<NeoUserTokenDetails>(authTokenDetails, {
+          ...tokenDetails
+        });
       }
     }
   });
 };
 
 const useLoginTokenDetailQuery = () => {
-  return useQuery<unknown, unknown, TemplateProjectUserTokenDetails>(
-    authTokenDetails
-  );
-};
-
-export const checkRole = (role: string) => {
-  const tokenDetails = TokenService.getTokenDetails();
-  if (role.includes(tokenDetails?.workspace ?? "")) return true;
-  return false;
-};
-
-export const getRole = () => {
-  const tokenDetails = TokenService.getTokenDetails();
-  return {
-    isClient: !!tokenDetails?.workspace.includes(Authorities.client),
-    isGateway: !!tokenDetails?.workspace.includes(Authorities.gateway)
-  };
+  return useQuery<unknown, unknown, NeoUserTokenDetails>(authTokenDetails);
 };
 
 export const logoutAllTabs = () => {

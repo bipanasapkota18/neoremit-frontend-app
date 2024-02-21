@@ -1,8 +1,8 @@
 import { AxiosError } from "axios";
 import { atom, useSetAtom } from "jotai";
 import { useQuery } from "react-query";
-import { TemplateProjectResponse, api } from "./service-api";
-import { TemplateProjectHttpClient } from "./service-axios";
+import { NeoResponse, api } from "./service-api";
+import { NeoHttpClient } from "./service-axios";
 
 export interface Module {
   moduleCode: string;
@@ -14,9 +14,7 @@ export interface IInitData {
 }
 
 const fetchInitData = () => () => {
-  return TemplateProjectHttpClient.get<TemplateProjectResponse<IInitData>>(
-    api.init
-  );
+  return NeoHttpClient.get<NeoResponse<IInitData>>(api.init);
 };
 
 const useFetchInitData = (enabled?: boolean) => {
