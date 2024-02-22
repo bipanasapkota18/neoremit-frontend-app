@@ -26,7 +26,7 @@ const AddDocument = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onAddDocument)}>
-        <SimpleGrid columns={2} spacing={"16px"}>
+        <SimpleGrid columns={2} spacing={"30px"}>
           <GridItem colSpan={2}>
             <TextInput
               size={"lg"}
@@ -34,6 +34,7 @@ const AddDocument = () => {
               label="Document Name"
               control={control}
               type="text"
+              isRequired
             />
           </GridItem>
           <GridItem colSpan={2}>
@@ -56,6 +57,7 @@ const AddDocument = () => {
               label="Document Size(in Kb)"
               control={control}
               type="text"
+              isRequired
             />
           </GridItem>
         </SimpleGrid>
