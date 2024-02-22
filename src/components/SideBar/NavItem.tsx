@@ -52,7 +52,7 @@ const notActiveLink = {
     visibility: "hidden"
   },
   "&:hover": {
-    background: colorScheme.primary_300,
+    background: colorScheme.primary_400,
     color: colorScheme.white,
     "& p": {
       color: colorScheme.white
@@ -135,7 +135,7 @@ export default function NavItem({
               }
             : {
                 "&:hover": {
-                  background: colorScheme.primary_300,
+                  background: colorScheme.primary_400,
                   color: colorScheme.white,
                   "& p": {
                     color: colorScheme.white
@@ -151,7 +151,7 @@ export default function NavItem({
             ? notActiveLink
             : {
                 background: isChild
-                  ? colorScheme.primary_300
+                  ? colorScheme.primary_400
                   : colorScheme.primary_400,
 
                 "& p": {

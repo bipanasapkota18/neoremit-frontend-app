@@ -25,6 +25,7 @@ const AddCurrency = () => {
               label="Currency Name"
               control={control}
               type="text"
+              isRequired
             />
           </GridItem>
           <GridItem colSpan={1}>
@@ -34,6 +35,7 @@ const AddCurrency = () => {
               label="Currency Code"
               control={control}
               type="text"
+              isRequired
             />
           </GridItem>
           <GridItem colSpan={1}>
@@ -43,6 +45,7 @@ const AddCurrency = () => {
               label="Currency Symbol"
               control={control}
               type="text"
+              isRequired
             />
           </GridItem>
         </SimpleGrid>

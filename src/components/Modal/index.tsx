@@ -83,7 +83,9 @@ const Modal = ({
             padding={"16px 32px"}
             fontWeight={600}
             color={"#E53E3E"}
+            _hover={{ bg: "#FFF5F5" }}
             bg={"#FFF5F5"}
+            _active={{ bg: "#FFF5F5" }}
             fontSize={"17px"}
             onClick={handleClose}
           >
