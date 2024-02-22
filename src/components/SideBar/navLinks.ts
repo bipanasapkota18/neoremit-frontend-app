@@ -49,6 +49,11 @@ export const navLinks = [
         icon: sidebarAssets.Currency,
         href: NAVIGATION_ROUTES.MASTER_DATA.PURPOSE_OF_PAYMENT,
         label: "Purpose of Payment"
+      },
+      {
+        icon: sidebarAssets.Currency,
+        href: NAVIGATION_ROUTES.MASTER_DATA.DOCUMENT_SETUP,
+        label: "Document Setup"
       }
     ]
   },

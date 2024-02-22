@@ -126,5 +126,7 @@ export const colorScheme = {
   gray_800: "#1A202C",
   gray_700: "#2D3748",
   admin_background: "#FAFBFC",
-  search_icon: "#718096"
+  search_icon: "#718096",
+  //Text INput border
+  input_border: "#E2E8F0"
 };

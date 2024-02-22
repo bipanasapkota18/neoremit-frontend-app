@@ -2,7 +2,7 @@ import { extendTheme } from "@chakra-ui/react";
 import { FormComponent } from "./Form/Form";
 import { colorScheme } from "./colorScheme";
 import { ButtonConfig } from "./components/Button";
-import { InputConfig } from "./components/Input";
+import Input from "./components/Input";
 import Switch from "./components/Switch";
 import { TableConfig } from "./components/Table";
 export { globalStyles } from "./global";
@@ -16,7 +16,7 @@ export const theme = extendTheme(
     shadows: { outline: "0 0 0 3px var(--chakra-colors-purple-100)" },
     components: {
       Button: ButtonConfig,
-      Input: InputConfig,
+      Input: Input,
       Table: TableConfig,
       Switch: Switch
     },

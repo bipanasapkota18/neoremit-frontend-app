@@ -131,7 +131,8 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
       <InputGroup gap={"8px"} maxW={"350px"} h={"46px"}>
         <Input
           ml={0.5}
-          h={"98%"}
+          pl={12}
+          h={"100%"}
           placeholder={label}
           onChange={handleChange}
           value={value}

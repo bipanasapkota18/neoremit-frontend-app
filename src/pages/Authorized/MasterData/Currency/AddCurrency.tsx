@@ -17,30 +17,30 @@ const AddCurrency = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onAddCurrency)}>
-        <SimpleGrid columns={2} spacing={"16px"}>
+        <SimpleGrid columns={2} gap={"30px"}>
           <GridItem colSpan={2}>
             <TextInput
               size={"lg"}
               name="currencyName"
-              label="Currency Name"
+              label="Enter Currency Name"
               control={control}
               type="text"
             />
           </GridItem>
-          <GridItem colSpan={1}>
+          <GridItem colSpan={2}>
             <TextInput
               size={"lg"}
               name="currencyCode"
-              label="Currency Code"
+              label="Enter Currency Code"
               control={control}
               type="text"
             />
           </GridItem>
-          <GridItem colSpan={1}>
+          <GridItem colSpan={2}>
             <TextInput
               size={"lg"}
               name="currencySymbol"
-              label="Currency Symbol"
+              label="Enter Currency Symbol"
               control={control}
               type="text"
             />
