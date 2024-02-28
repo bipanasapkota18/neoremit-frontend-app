@@ -9,6 +9,7 @@ const { definePartsStyle, defineMultiStyleConfig } =
 const baseStyle = definePartsStyle({
   field: {
     border: "1px solid",
+    minHeight: "56px",
     borderColor: colorScheme.input_border,
     borderRadius: "16px",
     padding: "8px 16px",
@@ -51,8 +52,7 @@ const md = defineStyle({
   p: "12px 16px"
 });
 const lg = defineStyle({
-  p: 4,
-  minHeight: "56px"
+  p: 4
 });
 
 const sizes = {

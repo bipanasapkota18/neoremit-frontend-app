@@ -81,7 +81,8 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                   </InputRightElement>
                 ) : startIcon ? (
                   <InputLeftElement
-                    top="12%"
+                    marginRight={"25px !important"}
+                    top="20%"
                     pointerEvents="none"
                     onClick={onIconClick}
                   >
@@ -121,7 +122,11 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                     {...extraProps}
                   />
                 )}
-                {!noFloating && <FormLabel>{label}</FormLabel>}
+                {!noFloating && (
+                  <FormLabel position={"absolute"} left={"60px"}>
+                    {label}
+                  </FormLabel>
+                )}
                 {endIcons ? (
                   <InputRightElement onClick={onIconClick} top="8%">
                     {endIcons}
