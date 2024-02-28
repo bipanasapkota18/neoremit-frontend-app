@@ -9,9 +9,7 @@ import { Suspense, lazy, useEffect } from "react";
 import { Outlet, Route, Routes } from "react-router-dom";
 import { appRoutes } from "./appRoutes";
 import { NAVIGATION_ROUTES } from "./navigationRoutes";
-
 const Login = lazy(() => import("@neo/pages/NoAuth/Login"));
-const ForgotPassword = lazy(() => import("@neo/pages/NoAuth/ForgotPassword"));
 
 export default function App() {
   // Check if app is authenticated
@@ -91,12 +89,23 @@ export default function App() {
             </>
           ) : (
             <Route path="/" element={<Outlet />}>
+              <>
+                {appRoutes.map((route, index) => (
+                  <Route key={index} path={route.path} element={route.element}>
+                    {route.children &&
+                      route.children.map((childRoute, childIndex) => (
+                        <Route
+                          key={childIndex}
+                          path={childRoute.path}
+                          element={childRoute.element}
+                          {...(childRoute.index && { index: childRoute.index })}
+                        />
+                      ))}
+                  </Route>
+                ))}
+              </>
               <Route index element={<Login />} />
               <Route path={NAVIGATION_ROUTES.LOGIN} element={<Login />} />
-              <Route
-                path={NAVIGATION_ROUTES.FORGOT_PASSWORD}
-                element={<ForgotPassword />}
-              />
             </Route>
           )}
         </Routes>
