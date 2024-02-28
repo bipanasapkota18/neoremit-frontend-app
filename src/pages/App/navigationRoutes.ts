@@ -14,7 +14,8 @@ export const NAVIGATION_ROUTES = {
     CURRENCY_SETUP: "/currency",
     PURPOSE_OF_PAYMENT: "/purpose-of-payment",
     RELATIONSHIP: "/relationship",
-    DOCUMENT_SETUP: "/document-setup"
+    DOCUMENT_SETUP: "/document-setup",
+    SOURCE_OF_FUND: "/source-of-fund"
   },
   PARTNERS: "/partners"
 };

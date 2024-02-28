@@ -54,6 +54,11 @@ export const navLinks = [
         icon: sidebarAssets.Ellipse,
         href: NAVIGATION_ROUTES.MASTER_DATA.DOCUMENT_SETUP,
         label: "Document Setup"
+      },
+      {
+        icon: sidebarAssets.Ellipse,
+        href: NAVIGATION_ROUTES.MASTER_DATA.SOURCE_OF_FUND,
+        label: "Source of Fund"
       }
     ]
   },
