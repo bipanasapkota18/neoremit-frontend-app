@@ -1,5 +1,7 @@
+import { colorScheme } from "../colorScheme";
+
 const activeLabelStyles = {
-  transform: "scale(0.85) translateY(-30px)"
+  transform: "scale(0.85) translateY(-12px)"
 };
 
 const Form = {
@@ -16,15 +18,18 @@ const Form = {
             ...activeLabelStyles
           },
         label: {
-          top: 1,
+          top: 2.5,
           left: 0,
           zIndex: 2,
-          color: "gray.500",
+          color: `${colorScheme.gray_700}`,
           position: "absolute",
           backgroundColor: "white",
+          fontSize: "14px",
+          fontWeight: 400,
+          lineHeight: "normal",
           pointerEvents: "none",
           mx: 3,
-          px: 1,
+          px: "6px",
           my: 2,
           transformOrigin: "left top"
         }

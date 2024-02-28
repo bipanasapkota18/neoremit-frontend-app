@@ -17,6 +17,9 @@ const Relationship = lazy(
 const PurposeOfPayment = lazy(
   () => import("@neo/pages/Authorized/MasterData/PurposeOfPayment")
 );
+const SourceOfFund = lazy(
+  () => import("@neo/pages/Authorized/MasterData/SourceOfFund/index")
+);
 
 export const appRoutes = [
   {
@@ -43,6 +46,10 @@ export const appRoutes = [
       {
         path: NAVIGATION_ROUTES.MASTER_DATA.DOCUMENT_SETUP,
         element: <Document />
+      },
+      {
+        path: NAVIGATION_ROUTES.MASTER_DATA.SOURCE_OF_FUND,
+        element: <SourceOfFund />
       }
     ]
   }
