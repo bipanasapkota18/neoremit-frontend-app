@@ -2,6 +2,7 @@ import {
   FormControl,
   FormErrorMessage,
   FormHelperText,
+  FormLabel,
   Input,
   InputGroup,
   InputLeftElement,
@@ -67,6 +68,7 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                 {colorInput ? (
                   <InputRightElement top="6%" right="2%">
                     <Input
+                      placeholder={label}
                       type={"color"}
                       p={0}
                       border={"none"}
@@ -89,7 +91,7 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                 {type == "textarea" ? (
                   <Textarea
                     paddingLeft={startIcon ? 9 : ""}
-                    placeholder=" "
+                    placeholder={label}
                     height={"inherit"}
                     onChange={onChange}
                     value={value ?? ""}
@@ -103,7 +105,7 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                 ) : (
                   <Input
                     paddingLeft={startIcon ? 9 : ""}
-                    placeholder={label}
+                    placeholder={""}
                     type={type}
                     height={"inherit"}
                     onChange={onChange}
@@ -119,7 +121,7 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                     {...extraProps}
                   />
                 )}
-
+                {!noFloating && <FormLabel>{label}</FormLabel>}
                 {endIcons ? (
                   <InputRightElement onClick={onIconClick} top="8%">
                     {endIcons}

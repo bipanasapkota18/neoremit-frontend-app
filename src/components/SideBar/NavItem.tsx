@@ -38,7 +38,7 @@ interface NavItemProps {
 const notActiveLink = {
   background: colorScheme.white,
   "& p": {
-    color: "gray.500"
+    color: colorScheme.sideBar_text
   },
   "& div": {
     "& > svg > path": {
@@ -52,7 +52,7 @@ const notActiveLink = {
     visibility: "hidden"
   },
   "&:hover": {
-    background: colorScheme.primary_300,
+    background: colorScheme.primary_400,
     color: colorScheme.white,
     "& p": {
       color: colorScheme.white
@@ -135,7 +135,7 @@ export default function NavItem({
               }
             : {
                 "&:hover": {
-                  background: colorScheme.primary_300,
+                  background: colorScheme.primary_400,
                   color: colorScheme.white,
                   "& p": {
                     color: colorScheme.white
@@ -151,7 +151,7 @@ export default function NavItem({
             ? notActiveLink
             : {
                 background: isChild
-                  ? colorScheme.primary_300
+                  ? colorScheme.primary_400
                   : colorScheme.primary_400,
 
                 "& p": {
@@ -196,14 +196,15 @@ export default function NavItem({
               w={"100%"}
             >
               <Text
-                color={colorScheme.sideBar_text}
-                fontSize="md"
-                fontWeight="medium"
+                // color={colorScheme.sideBar_text}
+                fontSize="12px"
+                fontWeight={800}
+                letterSpacing={"0.12px"}
                 whiteSpace="nowrap"
                 visibility={collapsed ? "hidden" : "visible"}
                 transition={animate}
               >
-                {label}
+                {label.toUpperCase()}
               </Text>
               {labelSideData && (
                 <Box

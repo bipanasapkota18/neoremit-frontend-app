@@ -36,17 +36,17 @@ export const navLinks = [
     isNotLink: true,
     childNav: [
       {
-        icon: sidebarAssets.Currency,
+        icon: sidebarAssets.Ellipse,
         href: NAVIGATION_ROUTES.MASTER_DATA.CURRENCY_SETUP,
         label: "Currency"
       },
       {
-        icon: sidebarAssets.Currency,
+        icon: sidebarAssets.Ellipse,
         href: NAVIGATION_ROUTES.MASTER_DATA.RELATIONSHIP,
         label: "Relationship"
       },
       {
-        icon: sidebarAssets.Currency,
+        icon: sidebarAssets.Ellipse,
         href: NAVIGATION_ROUTES.MASTER_DATA.PURPOSE_OF_PAYMENT,
         label: "Purpose of Payment"
       },

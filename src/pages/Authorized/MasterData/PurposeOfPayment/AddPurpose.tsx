@@ -16,7 +16,7 @@ const AddPurpose = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onAddPurpose)}>
-        <SimpleGrid columns={2} spacing={"16px"}>
+        <SimpleGrid columns={2} spacing={"30px"}>
           <GridItem colSpan={2}>
             <TextInput
               size={"lg"}
@@ -24,6 +24,7 @@ const AddPurpose = () => {
               label="Enter Purpose"
               control={control}
               type="text"
+              isRequired
             />
           </GridItem>
           <GridItem colSpan={2}>
@@ -33,6 +34,7 @@ const AddPurpose = () => {
               label="Enter Code"
               control={control}
               type="text"
+              isRequired
             />
           </GridItem>
         </SimpleGrid>
