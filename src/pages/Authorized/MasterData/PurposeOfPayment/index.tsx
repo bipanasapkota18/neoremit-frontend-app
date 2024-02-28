@@ -5,7 +5,8 @@ import {
   Flex,
   HStack,
   Switch,
-  useDisclosure
+  useDisclosure,
+  useMediaQuery
 } from "@chakra-ui/react";
 import { svgAssets } from "@neo/assets/images/svgs";
 import BreadCrumb from "@neo/components/BreadCrumb";
@@ -21,6 +22,8 @@ import AddPurpose from "./AddPurpose";
 const PurposeOfPayment = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { pathname } = useLocation();
+  const [isDesktop] = useMediaQuery("(min-width: 1000px)");
+
   const onEditPurposeOfPayment = () => {
     //
   };
@@ -112,7 +115,12 @@ const PurposeOfPayment = () => {
               gap="16px"
               alignSelf="stretch"
             >
-              <SearchInput label="Search" name="search" type="text" />
+              {isDesktop ? (
+                <SearchInput label="Search" name="search" type="text" />
+              ) : (
+                ""
+              )}
+
               <FilterButton
                 onClick={() => {
                   //
@@ -122,7 +130,8 @@ const PurposeOfPayment = () => {
             <Button
               marginRight="auto"
               marginLeft={"auto"}
-              width={{ sm: "50%", md: "80%", lg: "20%" }}
+              overflow={"hidden"}
+              width={{ sm: "100%", md: "100%", lg: "90%" }}
               leftIcon={<svgAssets.AddButton />}
               onClick={onOpen}
             >
