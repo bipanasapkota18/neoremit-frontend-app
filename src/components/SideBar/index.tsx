@@ -170,6 +170,7 @@ export default function Sidebar({
                     fontSize="md"
                     fontWeight="medium"
                     whiteSpace="nowrap"
+                    display={isCollapsed && !isHovered ? "none" : "block"}
                     transition={animate}
                   >
                     LOGOUT

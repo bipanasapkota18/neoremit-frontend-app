@@ -38,7 +38,7 @@ const useLogoutMutation = (noToast?: boolean) => {
       logoutChannel.postMessage("Logout");
       queryClient.clear();
       queryClient.setQueryData(authTokenKey, () => false);
-      !noToast && toastSuccess("Logged out Succesfully");
+      !noToast && toastSuccess("Logged out Successfully");
     }
   });
 };
