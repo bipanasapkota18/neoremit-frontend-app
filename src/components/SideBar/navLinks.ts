@@ -13,7 +13,7 @@ export const navLinks = [
 
   {
     icon: sidebarAssets.ProfileCircle,
-    href: NAVIGATION_ROUTES.COLLAPSE,
+    // href: NAVIGATION_ROUTES.COLLAPSE,
     label: "User Management",
     isNotLink: true,
     childNav: [
@@ -31,7 +31,7 @@ export const navLinks = [
   },
   {
     icon: sidebarAssets.MasterData,
-    href: NAVIGATION_ROUTES.COLLAPSE,
+    // href: NAVIGATION_ROUTES.COLLAPSE,
     label: "Master Data",
     isNotLink: true,
     childNav: [
@@ -51,7 +51,7 @@ export const navLinks = [
         label: "Purpose of Payment"
       },
       {
-        icon: sidebarAssets.Currency,
+        icon: sidebarAssets.Ellipse,
         href: NAVIGATION_ROUTES.MASTER_DATA.DOCUMENT_SETUP,
         label: "Document Setup"
       }

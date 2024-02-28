@@ -1,4 +1,3 @@
-import { ISelectOptions } from "@neo/utility/format";
 import {
   Alert,
   AlertIcon,
@@ -7,6 +6,7 @@ import {
   FormErrorMessage,
   FormHelperText
 } from "@chakra-ui/react";
+import { ISelectOptions } from "@neo/utility/format";
 import React, { useState } from "react";
 import { Control, Controller } from "react-hook-form";
 import {

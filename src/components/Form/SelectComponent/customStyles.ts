@@ -1,4 +1,3 @@
-import chakraUiTheme from "@chakra-ui/theme";
 import { colorScheme } from "@neo/theme/colorScheme";
 import { PropsValue, StylesConfig } from "react-select";
 const fontSizes = {
@@ -31,9 +30,7 @@ export const useCustomStyles = (error?: any) => {
       //flex: 1,
       width: isSingleTimeDropdown ? "60px" : "100%",
       backgroundColor: "#F7FAFC",
-      borderColor: hideContainerBorder
-        ? "white"
-        : `${chakraUiTheme.baseTheme.colors.gray["200"]}`,
+      borderColor: hideContainerBorder ? "white" : `${colorScheme.gray_200}`,
       height: "100%"
     }),
     input: (provided, { selectProps: { size } }) => ({
@@ -45,7 +42,7 @@ export const useCustomStyles = (error?: any) => {
     }),
     menu: (provided, { selectProps: { isSingleTimeDropdown } }) => ({
       ...provided,
-      boxShadow: `0 0 0 1px ${chakraUiTheme.baseTheme.colors.gray["200"]}, 0 1px 1px ${chakraUiTheme.baseTheme.colors.gray["200"]}`,
+      boxShadow: `0 0 0 1px ${colorScheme.gray_200}, 0 1px 1px ${colorScheme.gray_200}`,
       width: isSingleTimeDropdown ? "80px" : "100%",
       borderRadius: "6px",
       zIndex: 10
@@ -69,7 +66,7 @@ export const useCustomStyles = (error?: any) => {
       "&:hover": {
         borderColor: error ? colorScheme.danger_600 : "inherit",
         backgroundColor: isSingleTimeDropdown
-          ? `${chakraUiTheme.baseTheme.colors.gray["100"]}`
+          ? `${colorScheme.gray_100}`
           : "inherit",
         ...(isDisabled
           ? {
@@ -178,9 +175,9 @@ export const useCustomStyles = (error?: any) => {
     }),
     indicatorsContainer: provided => ({
       ...provided,
-      color: chakraUiTheme.baseTheme.colors.gray["200"],
+      color: colorScheme.gray_200,
       "&:hover": {
-        color: chakraUiTheme.baseTheme.colors.gray["200"]
+        color: colorScheme.gray_200
       }
     }),
     loadingMessage: (provided, { selectProps: { size } }) => {

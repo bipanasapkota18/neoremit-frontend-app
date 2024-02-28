@@ -1,18 +1,19 @@
-import { GridItem, Select, SimpleGrid } from "@chakra-ui/react";
-// import Select from "@neo/components/Form/SelectComponent";
+import { GridItem, SimpleGrid } from "@chakra-ui/react";
+import Select from "@neo/components/Form/SelectComponent";
 import TextInput from "@neo/components/Form/TextInput";
 import { useForm } from "react-hook-form";
 
-export interface ISelectOptions<T extends number | string | boolean> {
-  label: string;
-  value: T;
+interface ISelectOptions {
+  label?: string;
+  value?: string;
 }
+
 const defaultValues = {
   documentName: "",
-  extensions: null as ISelectOptions<string> | null,
+  extensions: "",
   currencyCode: ""
 };
-const extensionOptions = [
+const extensionOptions: ISelectOptions[] = [
   { label: "pdf", value: "pdf" },
   { label: "docx", value: "docx" }
 ];
@@ -39,16 +40,12 @@ const AddDocument = () => {
           </GridItem>
           <GridItem colSpan={2}>
             <Select
-              size={"lg"}
               name="extensions"
-              placeholder="Select Extension"
-            >
-              {extensionOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </Select>
+              placeholder="Extensions"
+              options={extensionOptions ?? []}
+              control={control}
+              isMulti
+            />
           </GridItem>
           <GridItem colSpan={2}>
             <TextInput

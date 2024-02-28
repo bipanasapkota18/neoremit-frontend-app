@@ -31,7 +31,7 @@ const Document = () => {
     {
       sn: 1,
       name: "Brother",
-      extension: "pdf",
+      extension: ["pdf", "docx"],
       size: "2MB",
       status: "Active"
     },
@@ -45,7 +45,7 @@ const Document = () => {
     {
       sn: 3,
       name: "Father",
-      extension: "pdf",
+      extension: ["pdf", "docx"],
       size: "2MB",
       status: "Active"
     },
@@ -73,7 +73,7 @@ const Document = () => {
     {
       sn: 7,
       name: "Sister",
-      extension: "pdf",
+      extension: ["pdf", "docx"],
       size: "2MB",
       status: "Active"
     }
@@ -93,7 +93,7 @@ const Document = () => {
       accessorKey: "extension"
     },
     {
-      header: "Document Size",
+      header: "Document Size( in MB)",
       accessorKey: "size"
     },
     {
