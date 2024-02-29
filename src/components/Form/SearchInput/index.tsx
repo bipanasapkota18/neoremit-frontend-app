@@ -138,7 +138,7 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
           value={value}
           type={type}
           errorBorderColor={colorScheme.danger_500}
-          backgroundColor={colorScheme.column_heading}
+          backgroundColor={colorScheme.gray_50}
           disabled={disabled}
           borderRadius={"30px"}
           onKeyDown={event => {

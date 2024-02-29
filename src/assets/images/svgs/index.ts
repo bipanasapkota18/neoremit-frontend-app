@@ -7,7 +7,7 @@ import { ReactComponent as EyeSlashIcon } from "@neo/assets/images/svgs/eye-slas
 import { ReactComponent as EyeIcon } from "@neo/assets/images/svgs/eye.svg";
 import { ReactComponent as Filter } from "@neo/assets/images/svgs/filter.svg";
 import { ReactComponent as ForgotPasswordBanner } from "@neo/assets/images/svgs/forgot_banner.svg";
-import ImagePlaceHolderDropzone from "@neo/assets/images/svgs/image_placeholder.svg";
+import { ReactComponent as ImagePlaceHolderDropzone } from "@neo/assets/images/svgs/image_placeholder.svg";
 import { ReactComponent as Line } from "@neo/assets/images/svgs/line.svg";
 import { ReactComponent as LoginBanner } from "@neo/assets/images/svgs/loginBanner.svg";
 import { ReactComponent as Logout } from "@neo/assets/images/svgs/logout.svg";
