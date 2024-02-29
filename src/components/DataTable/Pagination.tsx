@@ -38,7 +38,7 @@ function Pagination({ isBackendPaginated, pageIndex, table }: IPagination) {
       <Center
         h={"28px"}
         w={"60px"}
-        bg={colorScheme.column_heading}
+        bg={colorScheme.gray_50}
         // borderRadius={20}
         color={colorScheme.gray_700}
         cursor={"default"}

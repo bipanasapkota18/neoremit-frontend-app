@@ -72,7 +72,6 @@ const SourceOfFund = () => {
     {
       sn: 8,
       sourceOfFund: "Father",
-
       status: "Active"
     },
     {
@@ -90,6 +89,7 @@ const SourceOfFund = () => {
     {
       header: "Source of fund",
       accessorKey: "sourceOfFund",
+      size: 100,
       cell: (data: any) => {
         return <Text>{data?.row?.original?.sourceOfFund}</Text>;
       }
@@ -149,9 +149,10 @@ const SourceOfFund = () => {
               />
             </HStack>
             <Button
-              marginRight="auto"
-              marginLeft={"auto"}
-              width={{ sm: "50%", md: "80%", lg: "20%" }}
+              // marginRight="auto"
+              // marginLeft={"auto"}
+              // width={{ sm: "50%", md: "80%", lg: "20%" }}
+              minW={"max-content"}
               leftIcon={<svgAssets.AddButton />}
               onClick={onOpen}
             >

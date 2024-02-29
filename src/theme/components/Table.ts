@@ -19,7 +19,7 @@ export const TableConfig: ComponentStyleConfig = {
         fontSize: "14px",
         fontWeight: 700,
         fontStyle: "normal",
-        bg: colorScheme.column_heading
+        bg: colorScheme.gray_50
       },
       tbody: {
         tr: {
