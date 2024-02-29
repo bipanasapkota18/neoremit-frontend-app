@@ -10,7 +10,7 @@ import {
 import BreadCrumb from "@neo/components/BreadCrumb";
 import FilterButton from "@neo/components/Button/FilterButton";
 import { DataTable } from "@neo/components/DataTable";
-import ActionButtons from "@neo/components/DataTable/Action Buttons";
+import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
 import Modal from "@neo/components/Modal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
@@ -115,10 +115,18 @@ const Document = () => {
       accessorKey: "action",
       cell: () => {
         return (
-          <ActionButtons
-            onClickDelete={onDeleteDocument}
-            onClickEdit={onEditDocument}
-          />
+          <HStack>
+            <TableActionButton
+              onClickAction={onEditDocument}
+              icon={<svgAssets.EditButton />}
+              label="Edit"
+            />
+            <TableActionButton
+              onClickAction={onDeleteDocument}
+              icon={<svgAssets.DeleteButton />}
+              label="Edit"
+            />
+          </HStack>
         );
       }
     }

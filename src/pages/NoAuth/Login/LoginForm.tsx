@@ -61,7 +61,7 @@ const LoginForm = () => {
           startIcon={<svgAssets.EmailIcon />}
           type="text"
           name="email"
-          label="Email"
+          placeholder="Email"
           control={control}
           // isRequired
         />
@@ -69,7 +69,7 @@ const LoginForm = () => {
           startIcon={<svgAssets.PasswordIcon />}
           type={flag ? "text" : "password"}
           name="password"
-          label="Password"
+          placeholder="Password"
           control={control}
           endIcons={
             <IconButton
@@ -88,7 +88,6 @@ const LoginForm = () => {
               }
             />
           }
-          isRequired
         />
         <HStack justifyContent={"space-between"}>
           <CheckBox name="remember" label="Remember me" control={control} />

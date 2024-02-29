@@ -14,14 +14,8 @@ export interface AuthPageProps {
 const defaultValues = {
   email: ""
 };
-interface ForgotPasswordFormProps extends AuthPageProps {
-  setEmail: (value: string) => void;
-}
 
-const ForgotPasswordForm = ({
-  setScreen,
-  setEmail
-}: ForgotPasswordFormProps) => {
+const ForgotPasswordForm = ({ setScreen }: AuthPageProps) => {
   const schema = yup.object().shape({
     email: yup
       .string()
@@ -29,12 +23,16 @@ const ForgotPasswordForm = ({
       .email()
       .required("Please enter your email address.")
   });
-  const { handleSubmit, control } = useForm({
+  const {
+    handleSubmit,
+    control,
+    formState: { isValid }
+  } = useForm({
     defaultValues,
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema),
+    mode: "onChange"
   });
-  const submitHandler = (data: typeof defaultValues) => {
-    setEmail(data?.email);
+  const submitHandler = () => {
     setScreen("otp");
   };
   return (
@@ -58,11 +56,10 @@ const ForgotPasswordForm = ({
           startIcon={<svgAssets.EmailIcon />}
           type="text"
           name="email"
-          label={"Email"}
-          isRequired
+          placeholder={"Email"}
           control={control}
         />
-        <Button size={"lg"} type="submit">
+        <Button isDisabled={!isValid} size={"lg"} type="submit">
           Send Code
         </Button>
       </VStack>

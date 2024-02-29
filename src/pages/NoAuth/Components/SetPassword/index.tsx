@@ -70,7 +70,7 @@ const SetPassword = () => {
             startIcon={<svgAssets.PasswordIcon />}
             type={flag ? "text" : "password"}
             name="password"
-            label={"Password"}
+            placeholder={"Password"}
             control={control}
             size={"lg"}
             // helperText="Password must be at least 8 characters long"
@@ -98,7 +98,7 @@ const SetPassword = () => {
             startIcon={<svgAssets.PasswordIcon />}
             type={confirmFlag ? "text" : "password"}
             name="confirm_password"
-            label={"Confirm Password"}
+            placeholder={"Confirm Password"}
             control={control}
             size={"lg"}
             endIcons={

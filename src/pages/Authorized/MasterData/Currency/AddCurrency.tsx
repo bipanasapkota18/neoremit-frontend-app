@@ -1,13 +1,20 @@
 import { GridItem, SimpleGrid } from "@chakra-ui/react";
 import TextInput from "@neo/components/Form/TextInput";
+import Modal from "@neo/components/Modal";
 import { useForm } from "react-hook-form";
 
+interface AddCurrencyProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 const defaultValues = {
   currencyName: "",
+  currencyShortName: "",
   currencySymbol: "",
   currencyCode: ""
 };
-const AddCurrency = () => {
+
+const AddCurrency = ({ isOpen, onClose }: AddCurrencyProps) => {
   const { control, handleSubmit } = useForm({
     defaultValues: defaultValues
   });
@@ -16,11 +23,17 @@ const AddCurrency = () => {
   };
   return (
     <>
-      <form onSubmit={handleSubmit(onAddCurrency)}>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        submitButtonText="Save"
+        cancelButtonText="Cancel"
+        title="Add Currency"
+        onSubmit={handleSubmit(onAddCurrency)}
+      >
         <SimpleGrid columns={2} gap={"30px"}>
           <GridItem colSpan={2}>
             <TextInput
-              size={"lg"}
               name="currencyName"
               label="Enter Currency Name"
               control={control}
@@ -30,9 +43,8 @@ const AddCurrency = () => {
           </GridItem>
           <GridItem colSpan={2}>
             <TextInput
-              size={"lg"}
-              name="currencyCode"
-              label="Enter Currency Code"
+              name="currencyShortName"
+              label="Enter Short Name"
               control={control}
               type="text"
               isRequired
@@ -40,7 +52,6 @@ const AddCurrency = () => {
           </GridItem>
           <GridItem colSpan={2}>
             <TextInput
-              size={"lg"}
               name="currencySymbol"
               label="Enter Currency Symbol"
               control={control}
@@ -48,8 +59,17 @@ const AddCurrency = () => {
               isRequired
             />
           </GridItem>
+          <GridItem colSpan={2}>
+            <TextInput
+              name="currencyCode"
+              label="Enter Currency Code"
+              control={control}
+              type="text"
+              isRequired
+            />
+          </GridItem>
         </SimpleGrid>
-      </form>
+      </Modal>
     </>
   );
 };

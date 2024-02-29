@@ -11,10 +11,8 @@ import { AuthPageProps } from "../../ForgotPassword/ForgotPasswordForm";
 const defaultValues = {
   otp_code: ""
 };
-interface OTPProps extends AuthPageProps {
-  email: string;
-}
-const OTP = ({ setScreen, email }: OTPProps) => {
+
+const OTP = ({ setScreen }: AuthPageProps) => {
   const schema = yup.object().shape({
     otp_code: yup.string().required().min(5)
   });
@@ -38,10 +36,7 @@ const OTP = ({ setScreen, email }: OTPProps) => {
           OTP verification
         </Text>
         <Text fontWeight="400" fontSize="md" color={colorScheme.gray_700}>
-          Please enter the OTP verification code we sent to Gmail , {""}
-          <Text as={"span"} fontWeight={600} color={colorScheme.gray_700}>
-            {email}
-          </Text>
+          Please enter the OTP verification code we sent to your email
         </Text>
       </VStack>
       <VStack
