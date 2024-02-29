@@ -116,15 +116,25 @@ export function DropzoneComponentControlled({
       <>
         <svgAssets.ImagePlaceHolderDropzone />
         <Heading
-          fontSize={"14px"}
           display="flex"
+          flexDirection={"column"}
           justifyContent={"center"}
-          gap={1}
+          gap={"8px"}
+          alignItems={"center"}
         >
-          <Text color="#14B8A6" display={"inline-block"}>
-            Upload {isMultiple ? "files" : "a file"},
+          <Text fontSize={"20px"}> Select Image</Text>
+          <Text
+            fontSize={"14px"}
+            color={colorScheme.search_icon}
+            display={"inline-block"}
+          >
+            Drop {isMultiple ? "files" : "a file"}, here or click to
+            <Text as="span" cursor={"pointer"} color={colorScheme.primary_500}>
+              {" "}
+              browse{" "}
+            </Text>
+            through your machine
           </Text>
-          or click to select files
         </Heading>
         <VStack spacing={1}>
           {accept && (
@@ -251,10 +261,10 @@ export function DropzoneComponentControlled({
                 <section>
                   <Box
                     {...getRootProps()}
-                    border="2px dashed "
                     borderColor={
                       errorMessage ? colorScheme.danger_500 : "#D1D5DB"
                     }
+                    background={colorScheme.gray_50}
                     padding={6}
                     borderRadius={"3px"}
                     height={"100%"}

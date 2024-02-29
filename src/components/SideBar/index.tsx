@@ -131,12 +131,12 @@ export default function Sidebar({
             }
           }}
         >
-          {navLinks.map(nav => {
+          {navLinks.map((nav, index) => {
             return (
               <NavItem
                 {...nav}
                 labelSideData={pendingSidebarLabels(nav.label ?? "") ?? null}
-                key={nav.href}
+                key={index}
                 collapsed={isCollapsed && !isHovered}
                 animate={animate}
                 active={{

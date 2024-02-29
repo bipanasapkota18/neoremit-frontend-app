@@ -122,7 +122,7 @@ export const colorScheme = {
   purple_900: "#4A148C",
 
   //DataTable Colors
-  column_heading: "#F7FAFC",
+  gray_50: "#F7FAFC",
   gray_800: "#1A202C",
   gray_700: "#2D3748",
   admin_background: "#FAFBFC",
