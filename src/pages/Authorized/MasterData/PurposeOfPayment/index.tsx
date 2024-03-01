@@ -97,7 +97,7 @@ const PurposeOfPayment = () => {
             <TableActionButton
               onClickAction={onDeletePurposeOfPayment}
               icon={<svgAssets.DeleteButton />}
-              label="Edit"
+              label="Delete"
             />
           </HStack>
         );
@@ -136,10 +136,7 @@ const PurposeOfPayment = () => {
               />
             </HStack>
             <Button
-              marginRight="auto"
-              marginLeft={"auto"}
-              overflow={"hidden"}
-              width={{ sm: "100%", md: "100%", lg: "90%" }}
+              minW={"max-content"}
               leftIcon={<svgAssets.AddButton />}
               onClick={onOpen}
             >

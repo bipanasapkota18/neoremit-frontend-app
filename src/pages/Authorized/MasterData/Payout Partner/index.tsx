@@ -5,115 +5,64 @@ import {
   Flex,
   HStack,
   Switch,
-  useDisclosure
+  useDisclosure,
+  useMediaQuery
 } from "@chakra-ui/react";
+import { svgAssets } from "@neo/assets/images/svgs";
 import BreadCrumb from "@neo/components/BreadCrumb";
 import FilterButton from "@neo/components/Button/FilterButton";
 import { DataTable } from "@neo/components/DataTable";
 import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
-import Modal from "@neo/components/Modal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import { useLocation } from "react-router-dom";
-import { svgAssets } from "../../../../assets/images/svgs/index";
-import AddRelationship from "./AddRelationship";
+import AddPayoutPartner from "./AddPayoutPartner";
 
-const Relationship = () => {
+const PayoutPartner = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { pathname } = useLocation();
-  const onEditRelationship = () => {
+  const [isDesktop] = useMediaQuery("(min-width: 1000px)");
+
+  const onEditPayoutPartner = () => {
     //
   };
-  const onDeleteRelationship = () => {
+  const onDeletePayoutPartner = () => {
     //
   };
   const tableData = [
     {
       sn: 1,
-      name: "Brother",
-
+      name: "Nepali Rupee",
+      country: "Nepal",
+      payoutMethod: "Bank",
       status: "Active"
     },
     {
       sn: 2,
-      name: "Sister",
-
+      name: "US Dollar",
+      country: "Nepal",
+      payoutMethod: "Bank",
       status: "Active"
     },
     {
       sn: 3,
-      name: "Father",
-
+      name: "Euro",
+      country: "Nepal",
+      payoutMethod: "Bank",
       status: "Active"
     },
     {
       sn: 4,
-      name: "Mother",
+      name: "British Pound",
+      country: "Nepal",
+      payoutMethod: "Bank",
       status: "Active"
     },
     {
       sn: 5,
-      name: "Cousin",
-      status: "InActive"
-    },
-    {
-      sn: 6,
-      name: "Brother",
-
-      status: "Active"
-    },
-    {
-      sn: 7,
-      name: "Sister",
-
-      status: "Active"
-    },
-    {
-      sn: 8,
-      name: "Father",
-
-      status: "Active"
-    },
-    {
-      sn: 9,
-      name: "Mother",
-
-      status: "Active"
-    },
-    {
-      sn: 10,
-      name: "Cousin",
-
-      status: "InActive"
-    },
-    {
-      sn: 11,
-      name: "Brother",
-
-      status: "Active"
-    },
-    {
-      sn: 12,
-      name: "Sister",
-
-      status: "Active"
-    },
-    {
-      sn: 13,
-      name: "Father",
-
-      status: "Active"
-    },
-    {
-      sn: 14,
-      name: "Mother",
-
-      status: "Active"
-    },
-    {
-      sn: 15,
-      name: "Cousin",
-
+      name: "Australian Dollar",
+      country: "Nepal",
+      payoutMethod: "Bank",
       status: "InActive"
     }
   ];
@@ -123,21 +72,28 @@ const Relationship = () => {
       accessorKey: "sn"
     },
     {
-      header: "Relationship Name",
-      accessorKey: "name"
+      header: "Partner Name",
+      accessorKey: "name",
+      size: 40
     },
-
+    {
+      header: "Country",
+      accessorKey: "country",
+      size: 30
+    },
+    {
+      header: "Payout Method",
+      accessorKey: "payoutMethod",
+      size: 20
+    },
     {
       header: "Status",
       accessorKey: "status",
       cell: (data: any) => {
         return (
           <Switch
-            name="status"
             size="lg"
-            colorScheme="facebook"
             isChecked={data?.row?.original?.status === "Active"}
-            // disabled
           />
         );
       }
@@ -149,12 +105,12 @@ const Relationship = () => {
         return (
           <HStack>
             <TableActionButton
-              onClickAction={onEditRelationship}
+              onClickAction={onEditPayoutPartner}
               icon={<svgAssets.EditButton />}
               label="Edit"
             />
             <TableActionButton
-              onClickAction={onDeleteRelationship}
+              onClickAction={onDeletePayoutPartner}
               icon={<svgAssets.DeleteButton />}
               label="Delete"
             />
@@ -164,9 +120,10 @@ const Relationship = () => {
     }
   ];
   const activePath = breadcrumbTitle(pathname);
+
   return (
     <Flex direction={"column"} gap={"16px"}>
-      <BreadCrumb currentPage="Relationship" options={activePath} />
+      <BreadCrumb currentPage="Payout Partner" options={activePath} />
       <Card
         borderRadius={"16px"}
         boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"
@@ -181,7 +138,12 @@ const Relationship = () => {
               gap="16px"
               alignSelf="stretch"
             >
-              <SearchInput label="Search" name="search" type="text" />
+              {isDesktop ? (
+                <SearchInput label="Search" name="search" type="text" />
+              ) : (
+                ""
+              )}
+
               <FilterButton
                 onClick={() => {
                   //
@@ -193,7 +155,7 @@ const Relationship = () => {
               leftIcon={<svgAssets.AddButton />}
               onClick={onOpen}
             >
-              Add Relationship
+              Add Payout Of Partner
             </Button>
           </HStack>
           <DataTable
@@ -205,17 +167,15 @@ const Relationship = () => {
           />
         </CardBody>
       </Card>
-      <Modal
+
+      <AddPayoutPartner
         isOpen={isOpen}
-        onClose={onClose}
-        submitButtonText="Add"
-        cancelButtonText="Cancel"
-        title="Add Relationship"
-      >
-        <AddRelationship />
-      </Modal>
+        onClose={() => {
+          onClose();
+        }}
+      />
     </Flex>
   );
 };
 
-export default Relationship;
+export default PayoutPartner;

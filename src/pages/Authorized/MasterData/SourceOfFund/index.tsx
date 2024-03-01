@@ -124,7 +124,7 @@ const SourceOfFund = () => {
             <TableActionButton
               onClickAction={onDeleteSourceOfFund}
               icon={<svgAssets.DeleteButton />}
-              label="Edit"
+              label="Delete"
             />
           </HStack>
         );
@@ -157,9 +157,6 @@ const SourceOfFund = () => {
               />
             </HStack>
             <Button
-              // marginRight="auto"
-              // marginLeft={"auto"}
-              // width={{ sm: "50%", md: "80%", lg: "20%" }}
               minW={"max-content"}
               leftIcon={<svgAssets.AddButton />}
               onClick={onOpen}

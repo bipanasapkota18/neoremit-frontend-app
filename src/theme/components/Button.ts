@@ -15,7 +15,7 @@ export const ButtonConfig: ComponentStyleConfig = {
       bg: colorScheme.primary_400,
       letterSpacing: "0.4px",
       lineHeight: 0,
-      color: colorScheme.button_color,
+      color: colorScheme.gray_100,
       // borderRadius: "30px",
       height: "52px",
       padding: "20px, 0px, 20px, 0px",
