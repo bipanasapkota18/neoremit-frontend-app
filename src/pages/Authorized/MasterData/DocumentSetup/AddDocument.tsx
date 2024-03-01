@@ -1,8 +1,13 @@
 import { GridItem, SimpleGrid } from "@chakra-ui/react";
 import Select from "@neo/components/Form/SelectComponent";
 import TextInput from "@neo/components/Form/TextInput";
+import Modal from "@neo/components/Modal";
 import { useForm } from "react-hook-form";
 
+interface AddDocumentProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 interface ISelectOptions {
   label?: string;
   value?: string;
@@ -17,7 +22,7 @@ const extensionOptions: ISelectOptions[] = [
   { label: "pdf", value: "pdf" },
   { label: "docx", value: "docx" }
 ];
-const AddDocument = () => {
+const AddDocument = ({ isOpen, onClose }: AddDocumentProps) => {
   const { control, handleSubmit } = useForm({
     defaultValues: defaultValues
   });
@@ -26,7 +31,14 @@ const AddDocument = () => {
   };
   return (
     <>
-      <form onSubmit={handleSubmit(onAddDocument)}>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        submitButtonText="Save"
+        cancelButtonText="Cancel"
+        title="Add Document"
+        onSubmit={handleSubmit(onAddDocument)}
+      >
         <SimpleGrid columns={2} spacing={"30px"}>
           <GridItem colSpan={2}>
             <TextInput
@@ -58,7 +70,7 @@ const AddDocument = () => {
             />
           </GridItem>
         </SimpleGrid>
-      </form>
+      </Modal>
     </>
   );
 };

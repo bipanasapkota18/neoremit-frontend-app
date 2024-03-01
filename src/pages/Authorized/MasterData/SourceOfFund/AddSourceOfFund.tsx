@@ -1,13 +1,17 @@
 import { GridItem, SimpleGrid } from "@chakra-ui/react";
 import { DropzoneComponentControlled } from "@neo/components/Form/DropzoneComponent";
 import TextInput from "@neo/components/Form/TextInput";
+import Modal from "@neo/components/Modal";
 import { useForm } from "react-hook-form";
-
+interface AddSourceProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 const defaultValues = {
   relationName: "",
   sourceOfFundImage: ""
 };
-const AddSourceOfFund = () => {
+const AddSourceOfFund = ({ isOpen, onClose }: AddSourceProps) => {
   const { control, handleSubmit } = useForm({
     defaultValues: defaultValues
   });
@@ -16,7 +20,14 @@ const AddSourceOfFund = () => {
   };
   return (
     <>
-      <form onSubmit={handleSubmit(onAddSourceOfFund)}>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        submitButtonText="Save"
+        cancelButtonText="Cancel"
+        title="Add SourceOfFund"
+        onSubmit={handleSubmit(onAddSourceOfFund)}
+      >
         <SimpleGrid columns={2} spacing={"16px"}>
           <GridItem colSpan={2}>
             <DropzoneComponentControlled
@@ -38,7 +49,7 @@ const AddSourceOfFund = () => {
             />
           </GridItem>
         </SimpleGrid>
-      </form>
+      </Modal>
     </>
   );
 };

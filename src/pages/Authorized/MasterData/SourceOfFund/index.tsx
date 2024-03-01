@@ -13,7 +13,6 @@ import FilterButton from "@neo/components/Button/FilterButton";
 import { DataTable } from "@neo/components/DataTable";
 import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
-import Modal from "@neo/components/Modal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import { useLocation } from "react-router-dom";
 import { svgAssets } from "../../../../assets/images/svgs/index";
@@ -173,15 +172,8 @@ const SourceOfFund = () => {
           />
         </CardBody>
       </Card>
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        submitButtonText="Add"
-        cancelButtonText="Cancel"
-        title="Add SourceOfFund"
-      >
-        <AddSourceOfFund />
-      </Modal>
+
+      <AddSourceOfFund isOpen={isOpen} onClose={() => onClose()} />
     </Flex>
   );
 };
