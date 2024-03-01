@@ -5,15 +5,15 @@ import {
   Flex,
   HStack,
   Switch,
+  Text,
   useDisclosure
 } from "@chakra-ui/react";
 import { svgAssets } from "@neo/assets/images/svgs";
 import BreadCrumb from "@neo/components/BreadCrumb";
 import FilterButton from "@neo/components/Button/FilterButton";
 import { DataTable } from "@neo/components/DataTable";
-import ActionButtons from "@neo/components/DataTable/Action Buttons";
+import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
-import Modal from "@neo/components/Modal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import { useLocation } from "react-router-dom";
 import AddCurrency from "./AddCurrency";
@@ -71,19 +71,24 @@ const Currency = () => {
     },
     {
       header: "Name",
-      accessorKey: "name"
+      accessorKey: "name",
+      size: 90
     },
     {
-      header: "Code",
+      header: "Currency Short Name",
       accessorKey: "code"
     },
     {
-      header: "Symbol",
-      accessorKey: "symbol"
+      header: "Currency Symbol",
+      accessorKey: "symbol",
+      cell: (data: any) => {
+        return <Text fontWeight={800}>{data?.row?.original?.symbol}</Text>;
+      }
     },
     {
       header: "Status",
       accessorKey: "status",
+      size: 80,
       cell: (data: any) => {
         return (
           <Switch
@@ -98,10 +103,18 @@ const Currency = () => {
       accessorKey: "action",
       cell: () => {
         return (
-          <ActionButtons
-            onClickDelete={onDeleteCurrency}
-            onClickEdit={onEditCurrency}
-          />
+          <HStack>
+            <TableActionButton
+              onClickAction={onEditCurrency}
+              icon={<svgAssets.EditButton />}
+              label="Edit"
+            />
+            <TableActionButton
+              onClickAction={onDeleteCurrency}
+              icon={<svgAssets.DeleteButton />}
+              label="Edit"
+            />
+          </HStack>
         );
       }
     }
@@ -133,9 +146,7 @@ const Currency = () => {
               />
             </HStack>
             <Button
-              marginRight="auto"
-              marginLeft={"auto"}
-              width={{ sm: "50%", md: "80%", lg: "20%" }}
+              minW={"max-content"}
               leftIcon={<svgAssets.AddButton />}
               onClick={onOpen}
             >
@@ -151,15 +162,13 @@ const Currency = () => {
           />
         </CardBody>
       </Card>
-      <Modal
+
+      <AddCurrency
         isOpen={isOpen}
-        onClose={onClose}
-        submitButtonText="Add"
-        cancelButtonText="Cancel"
-        title="Add Currency"
-      >
-        <AddCurrency />
-      </Modal>
+        onClose={() => {
+          onClose();
+        }}
+      />
     </Flex>
   );
 };

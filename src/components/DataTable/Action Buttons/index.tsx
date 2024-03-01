@@ -1,37 +1,29 @@
-import { HStack, IconButton, Tooltip } from "@chakra-ui/react";
-import { svgAssets } from "../../../assets/images/svgs/index";
+import { IconButton, Tooltip } from "@chakra-ui/react";
+import { ReactElement } from "react";
 
-interface ActionButtonsProps {
-  onClickEdit: () => void;
-  onClickDelete: () => void;
+interface TableActionButtonProps {
+  onClickAction: () => void;
+  icon: ReactElement;
+  label: string;
 }
-const ActionButtons = ({ onClickEdit, onClickDelete }: ActionButtonsProps) => {
+const TableActionButton = ({
+  onClickAction,
+  icon,
+  label
+}: TableActionButtonProps) => {
   return (
-    <HStack>
-      <Tooltip label="Edit" placement={"top"}>
-        <IconButton
-          variant={"search"}
-          aria-label="Edit"
-          icon={<svgAssets.EditButton />}
-          width={"24px"}
-          height={"24px"}
-          cursor={"pointer"}
-          onClick={onClickEdit}
-        ></IconButton>
-      </Tooltip>
-      <Tooltip label="Delete" placement={"top"}>
-        <IconButton
-          variant={"search"}
-          aria-label="Delete"
-          icon={<svgAssets.DeleteButton />}
-          width={"24px"}
-          height={"24px"}
-          cursor={"pointer"}
-          onClick={onClickDelete}
-        ></IconButton>
-      </Tooltip>
-    </HStack>
+    <Tooltip label={label} placement={"top"}>
+      <IconButton
+        variant={"search"}
+        aria-label={label}
+        icon={icon}
+        width={"24px"}
+        height={"24px"}
+        cursor={"pointer"}
+        onClick={onClickAction}
+      ></IconButton>
+    </Tooltip>
   );
 };
 
-export default ActionButtons;
+export default TableActionButton;

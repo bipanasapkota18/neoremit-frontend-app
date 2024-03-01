@@ -43,7 +43,6 @@ const Modal = ({
     <ChakraModal size={size} isOpen={isOpen} onClose={handleClose} {...rest}>
       <ModalOverlay />
       <ModalContent
-        mt={[0, 118]}
         display={"flex"}
         justifyContent={"center"}
         gap={"32px"}
@@ -98,6 +97,7 @@ const Modal = ({
             fontWeight={600}
             isLoading={isSubmitting}
             onClick={isSubmitting ? undefined : onSubmit}
+            type="submit"
           >
             {submitButtonText}
           </Button>

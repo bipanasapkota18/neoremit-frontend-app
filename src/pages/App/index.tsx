@@ -7,6 +7,7 @@ import {
 import { useFetchInitData } from "@neo/services/service-init";
 import { Suspense, lazy, useEffect } from "react";
 import { Outlet, Route, Routes } from "react-router-dom";
+import ForgotPassword from "../NoAuth/ForgotPassword";
 import { appRoutes } from "./appRoutes";
 import { NAVIGATION_ROUTES } from "./navigationRoutes";
 const Login = lazy(() => import("@neo/pages/NoAuth/Login"));
@@ -105,6 +106,10 @@ export default function App() {
                 ))}
               </>
               <Route index element={<Login />} />
+              <Route
+                path={NAVIGATION_ROUTES.FORGOT_PASSWORD}
+                element={<ForgotPassword />}
+              />
               <Route path={NAVIGATION_ROUTES.LOGIN} element={<Login />} />
             </Route>
           )}

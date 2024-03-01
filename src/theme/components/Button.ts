@@ -41,13 +41,16 @@ export const ButtonConfig: ComponentStyleConfig = {
       lineHeight: "17.57px"
     }),
     filter: () => ({
+      height: "56px",
       background: colorScheme.primary_50,
       borderRadius: "30px",
       padding: "14px 32px",
       color: colorScheme.primary_400,
       fontSize: "17px",
       display: "flex",
-      gap: "8px",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "136px",
       fontWeight: 600,
       lineHeight: "normal"
     }),

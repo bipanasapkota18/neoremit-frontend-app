@@ -10,7 +10,8 @@ const Form = {
       container: {
         _focusWithin: {
           label: {
-            ...activeLabelStyles
+            ...activeLabelStyles,
+            my: 2
           }
         },
         "input:not(:placeholder-shown) + label, input:-webkit-autofill ~ label, .chakra-select__wrapper + label, textarea:not(:placeholder-shown) ~ label":
@@ -28,8 +29,8 @@ const Form = {
           fontWeight: 400,
           lineHeight: "normal",
           pointerEvents: "none",
-          mx: 3,
-          px: "6px",
+          mx: 1,
+          padding: "0px 8px 0px 16px",
           my: 2,
           transformOrigin: "left top"
         }

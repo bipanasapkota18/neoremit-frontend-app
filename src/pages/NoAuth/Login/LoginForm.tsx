@@ -61,17 +61,16 @@ const LoginForm = () => {
           startIcon={<svgAssets.EmailIcon />}
           type="text"
           name="email"
-          label={"Email"}
+          placeholder="Email"
           control={control}
-          isRequired
+          // isRequired
         />
         <TextInput
           startIcon={<svgAssets.PasswordIcon />}
           type={flag ? "text" : "password"}
           name="password"
-          label={"Password"}
+          placeholder="Password"
           control={control}
-          isRequired
           endIcons={
             <IconButton
               tabIndex={-1}
@@ -106,20 +105,6 @@ const LoginForm = () => {
       <Button type="submit" size="lg">
         Login
       </Button>
-      {/* <Text as="div" textAlign="center" pt={0.5} fontWeight="500">
-        Don't have an account ?
-        <ChakraLink
-          as={Link}
-          to={ROUTES.AUTH.REGISTER}
-          ml={2}
-          lineHeight={2}
-          color={"primary.400"}
-          textDecoration="underline"
-          textUnderlineOffset={6}
-        >
-         Register
-        </ChakraLink>
-      </Text> */}
     </VStack>
   );
 };
