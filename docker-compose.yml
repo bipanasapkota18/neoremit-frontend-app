@@ -8,3 +8,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - 3000:80
+    networks:
+      - neoremit
+
+networks:
+  neoremit:
+    external: true
+
