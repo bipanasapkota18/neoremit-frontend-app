@@ -14,7 +14,6 @@ import FilterButton from "@neo/components/Button/FilterButton";
 import { DataTable } from "@neo/components/DataTable";
 import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
-import Modal from "@neo/components/Modal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import { useLocation } from "react-router-dom";
 import AddPurpose from "./AddPurpose";
@@ -136,10 +135,7 @@ const PurposeOfPayment = () => {
               />
             </HStack>
             <Button
-              marginRight="auto"
-              marginLeft={"auto"}
-              overflow={"hidden"}
-              width={{ sm: "100%", md: "100%", lg: "90%" }}
+              minW={"max-content"}
               leftIcon={<svgAssets.AddButton />}
               onClick={onOpen}
             >
@@ -155,15 +151,13 @@ const PurposeOfPayment = () => {
           />
         </CardBody>
       </Card>
-      <Modal
+
+      <AddPurpose
         isOpen={isOpen}
-        onClose={onClose}
-        submitButtonText="Add"
-        cancelButtonText="Cancel"
-        title="Add Purpose of Payment"
-      >
-        <AddPurpose />
-      </Modal>
+        onClose={() => {
+          onClose();
+        }}
+      />
     </Flex>
   );
 };
