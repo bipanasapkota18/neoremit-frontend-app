@@ -27,24 +27,28 @@ export const useCustomStyles = (error?: any) => {
     ) => ({
       ...provided,
       pointerEvents: "auto",
-      //flex: 1,
+      flex: 1,
       width: isSingleTimeDropdown ? "60px" : "100%",
-      backgroundColor: "#F7FAFC",
-      borderColor: hideContainerBorder ? "white" : `${colorScheme.gray_200}`,
-      height: "100%"
+      borderColor: hideContainerBorder ? "white" : `${colorScheme.gray_200}`
     }),
     input: (provided, { selectProps: { size } }) => ({
       ...provided,
       color: "inherit",
       lineHeight: "inherit",
       fontSize: fontSizes[size ?? "sm"],
-      height: "37px"
+      height: "49px"
     }),
     menu: (provided, { selectProps: { isSingleTimeDropdown } }) => ({
       ...provided,
+      display: "flex",
+      flexDirection: "column",
+      padding: "12px",
+      gap: "8px",
+      position: "absolute",
+      right: 0,
       boxShadow: `0 0 0 1px ${colorScheme.gray_200}, 0 1px 1px ${colorScheme.gray_200}`,
-      width: isSingleTimeDropdown ? "80px" : "100%",
-      borderRadius: "6px",
+      width: isSingleTimeDropdown ? "80px" : "327px",
+      borderRadius: "12px",
       zIndex: 10
     }),
     option: (provided, { selectProps: { size } }) => ({
@@ -78,12 +82,12 @@ export const useCustomStyles = (error?: any) => {
           backgroundColor: "gray.100"
         }
       },
-      borderRadius: hasInputAddon ? "0px 6px 6px 0px" : "6px",
+      borderRadius: hasInputAddon ? "0px 6px 6px 0px" : "16px",
       flex: 1,
       boxShadow: isFocused
         ? error
           ? "none"
-          : `0 0 0 1px ${colorScheme.purple_600}`
+          : `0 0 0 1px ${colorScheme.primary_400}`
         : "none"
     }),
     dropdownIndicator: (provided, { selectProps: { hideDropdownArrow } }) => {
@@ -129,7 +133,7 @@ export const useCustomStyles = (error?: any) => {
       padding: "0px 4px",
       position: "absolute",
       zIndex: 2,
-      top: "10px",
+      top: "17px",
       transition: "all 0.2s",
       borderRadius: 5,
       ...(state.isFocused || state.hasValue || state.selectProps.inputValue
@@ -137,7 +141,7 @@ export const useCustomStyles = (error?: any) => {
             background: "white",
             whiteSpace: "nowrap",
             transform: "translateX(-5%)",
-            top: "-18px"
+            top: "-1px"
           }
         : {})
     }),
@@ -175,9 +179,9 @@ export const useCustomStyles = (error?: any) => {
     }),
     indicatorsContainer: provided => ({
       ...provided,
-      color: colorScheme.gray_200,
+      color: colorScheme.gray_100,
       "&:hover": {
-        color: colorScheme.gray_200
+        color: colorScheme.gray_100
       }
     }),
     loadingMessage: (provided, { selectProps: { size } }) => {

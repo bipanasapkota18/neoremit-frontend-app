@@ -112,7 +112,7 @@ const Currency = () => {
             <TableActionButton
               onClickAction={onDeleteCurrency}
               icon={<svgAssets.DeleteButton />}
-              label="Edit"
+              label="Delete"
             />
           </HStack>
         );

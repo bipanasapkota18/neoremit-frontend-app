@@ -4,7 +4,7 @@ export const colorScheme = {
   scrollBar_100: "#111111",
   white: "#FFFFFF",
   sideBar_text: "#4A5568",
-  button_color: "#EDF2F7",
+
   chakraScheme: "blue",
   // gray_100: "#f2f2f2",
   //primary
