@@ -76,9 +76,24 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
               id={name}
               maxW={"350px !important"}
             >
-              <InputGroup h={"46px"}>
+              <InputGroup h={"56px"}>
+                <InputLeftElement color="#FFFFFF">
+                  <IconButton
+                    type="submit"
+                    size="md"
+                    variant={"search"}
+                    aria-label={label ?? "label"}
+                    disabled={extraProps.isDisabled}
+                    icon={
+                      isLoading ? (
+                        <Spinner color="red" pos="absolute" size="md" />
+                      ) : (
+                        <SearchIcon width={18} height={18} />
+                      )
+                    }
+                  />
+                </InputLeftElement>
                 <Input
-                  ml={0.5}
                   h={"98%"}
                   placeholder={label}
                   onChange={e => {
@@ -94,25 +109,6 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
                   disabled={disabled}
                   {...extraProps}
                 />
-
-                <InputLeftElement color="#FFFFFF" mr={2}>
-                  <IconButton
-                    type="submit"
-                    top="6%"
-                    size="md"
-                    h={"85%"}
-                    variant={"search"}
-                    aria-label="customerCode"
-                    disabled={extraProps.isDisabled}
-                    icon={
-                      isLoading ? (
-                        <Spinner color="red" pos="absolute" size="md" />
-                      ) : (
-                        <SearchIcon width={18} height={18} />
-                      )
-                    }
-                  />
-                </InputLeftElement>
               </InputGroup>
               <FormErrorMessage>{error ? error?.message : ""}</FormErrorMessage>
               {helperText ? <FormHelperText>{helperText}</FormHelperText> : ""}
@@ -126,9 +122,9 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
       variant="floating"
       isRequired={!!isRequired}
       id={name}
-      maxW={"350px !important"}
+      maxW={"800px !important"}
     >
-      <InputGroup gap={"8px"} maxW={"350px"} h={"46px"}>
+      <InputGroup gap={"8px"} maxW={"800px"} h={"46px"}>
         <Input
           ml={0.5}
           pl={12}
@@ -149,7 +145,7 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
           {...extraProps}
         />
 
-        <InputLeftElement padding=" 0px 8px 0px 24px" color="#FFFFFF" mr={2}>
+        <InputLeftElement padding=" 9px 8px 0px 26px" color="#FFFFFF" mr={2}>
           <IconButton
             type="submit"
             variant={"search"}

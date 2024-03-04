@@ -11,8 +11,10 @@ import { ReactComponent as ImagePlaceHolderDropzone } from "@neo/assets/images/s
 import { ReactComponent as Line } from "@neo/assets/images/svgs/line.svg";
 import { ReactComponent as LoginBanner } from "@neo/assets/images/svgs/loginBanner.svg";
 import { ReactComponent as Logout } from "@neo/assets/images/svgs/logout.svg";
+import { ReactComponent as NotificationIcon } from "@neo/assets/images/svgs/notification-bing.svg";
 import { ReactComponent as OTPBanner } from "@neo/assets/images/svgs/otp_banner.svg";
 import { ReactComponent as PasswordIcon } from "@neo/assets/images/svgs/password.svg";
+import { ReactComponent as SelectDropdown } from "@neo/assets/images/svgs/select-arrow.svg";
 import { ReactComponent as SetPasswordBanner } from "@neo/assets/images/svgs/set_pass_banner.svg";
 import { ReactComponent as DeleteButton } from "@neo/assets/images/svgs/trash.svg";
 export const svgAssets = {
@@ -32,5 +34,7 @@ export const svgAssets = {
   DeleteButton,
   EmailIcon,
   EyeIcon,
-  EyeSlashIcon
+  EyeSlashIcon,
+  SelectDropdown,
+  NotificationIcon
 };

@@ -1,8 +1,9 @@
-import { HStack, Stack } from "@chakra-ui/react";
+import { HStack } from "@chakra-ui/react";
 
 import * as React from "react";
 
 import { colorScheme } from "@neo/theme/colorScheme";
+import SearchInput from "../Form/SearchInput";
 import { LeftHeader } from "./Header.Left";
 import { RightHeader } from "./Header.Right";
 
@@ -27,15 +28,18 @@ const Header = ({ handleDrawerToggle, width, isDrawerOpen }: HeaderProps) => {
     setMobileMoreAnchorEl(null);
   };
   return (
-    <HStack bg={colorScheme.white} pr={14} py={3} ml={isDrawerOpen ? 0 : 1.25}>
+    <HStack
+      bg={colorScheme.white}
+      gap={8}
+      pr={14}
+      py={3}
+      ml={isDrawerOpen ? 0 : 1.25}
+      alignItems={"center"}
+    >
       <LeftHeader handleDrawerToggle={handleDrawerToggle} width={width} />
-      <Stack
-        direction={"row"}
-        sx={{ flexGrow: 1 }}
-        px={3}
-        justifyContent="flex-end"
-        alignItems="center"
-      ></Stack>
+      <HStack marginLeft={"auto"}>
+        <SearchInput type="text" name="search" label="Search" width={"700px"} />
+      </HStack>
       <RightHeader
         mobileMoreAnchorEl={mobileMoreAnchorEl}
         isMobileMenuOpen={isMobileMenuOpen}

@@ -9,17 +9,18 @@ import {
   useMediaQuery
 } from "@chakra-ui/react";
 import { colorScheme } from "@neo/theme/colorScheme";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { sidebarAssets } from "../../assets/images/svgs/Sidebar/index";
 import GoBack from "../Button/GoBack";
 
 const BreadCrumb = ({ options, currentPage }: BreadCrumbProps) => {
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
+  const navigate = useNavigate();
 
   return (
     <Flex justifyContent="space-between" alignItems={"center"}>
       <HStack>
-        <GoBack isIcon onClick={() => console.log("first")} />
+        <GoBack isIcon onClick={() => navigate(-1)} />
         <Text
           fontSize={isDesktop ? "24px" : "20px"}
           fontStyle="normal"

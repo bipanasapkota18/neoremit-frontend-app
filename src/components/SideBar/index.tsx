@@ -112,6 +112,7 @@ export default function Sidebar({
         />
         <VStack
           w="100%"
+          py={4}
           css={{
             scrollbarGutter: "stable",
             overflowY: "auto",
@@ -149,11 +150,12 @@ export default function Sidebar({
             );
           })}
           <Button
+            width={"240px"}
             as={NavLink}
             to={NAVIGATION_ROUTES.LOGIN}
             onClick={handleLogout}
-            background={colorScheme.white}
-            _hover={{ background: colorScheme.danger_100 }}
+            background={colorScheme.logout_button}
+            _hover={{ background: colorScheme.logout_button }}
             borderRadius={0}
             size={"lg"}
           >
