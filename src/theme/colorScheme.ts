@@ -128,5 +128,8 @@ export const colorScheme = {
   admin_background: "#FAFBFC",
   search_icon: "#718096",
   //Text INput border
-  input_border: "#E2E8F0"
+  input_border: "#E2E8F0",
+
+  //logout button
+  logout_button: "#FFF5F5"
 };

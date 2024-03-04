@@ -5,7 +5,8 @@ import {
   Flex,
   HStack,
   Switch,
-  useDisclosure
+  useDisclosure,
+  useMediaQuery
 } from "@chakra-ui/react";
 import BreadCrumb from "@neo/components/BreadCrumb";
 import FilterButton from "@neo/components/Button/FilterButton";
@@ -20,6 +21,8 @@ import AddRelationship from "./AddRelationship";
 const Relationship = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { pathname } = useLocation();
+  const [isDesktop] = useMediaQuery("(min-width: 1000px)");
+
   const onEditRelationship = () => {
     //
   };
@@ -123,7 +126,8 @@ const Relationship = () => {
     },
     {
       header: "Relationship Name",
-      accessorKey: "name"
+      accessorKey: "name",
+      size: 100
     },
 
     {
@@ -171,16 +175,24 @@ const Relationship = () => {
         boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"
       >
         <CardBody>
-          <HStack>
+          <HStack justifyContent={"space-between"}>
             <HStack
               display="flex"
               padding="24px 20px"
-              width={"100%"}
               alignItems="center"
               gap="16px"
               alignSelf="stretch"
             >
-              <SearchInput label="Search" name="search" type="text" />
+              {isDesktop ? (
+                <SearchInput
+                  width={"450px"}
+                  label="Search"
+                  name="search"
+                  type="text"
+                />
+              ) : (
+                ""
+              )}
               <FilterButton
                 onClick={() => {
                   //

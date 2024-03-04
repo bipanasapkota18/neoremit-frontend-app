@@ -1,7 +1,6 @@
 import { sidebarAssets } from "@neo/assets/images/svgs/Sidebar";
 import { NAVIGATION_ROUTES } from "@neo/pages/App/navigationRoutes";
 import { ComponentProps } from "react";
-import { FaIcons } from "react-icons/fa";
 import NavItem from "./NavItem";
 
 export const navLinks = [
@@ -11,24 +10,24 @@ export const navLinks = [
     label: "Dashboard"
   },
 
-  {
-    icon: sidebarAssets.ProfileCircle,
-    // href: NAVIGATION_ROUTES.COLLAPSE,
-    label: "User Management",
-    isNotLink: true,
-    childNav: [
-      {
-        icon: sidebarAssets.Ellipse,
-        href: NAVIGATION_ROUTES.USER_MANAGEMENT.ROLES,
-        label: "Roles"
-      },
-      {
-        icon: sidebarAssets.Ellipse,
-        href: NAVIGATION_ROUTES.USER_MANAGEMENT.USER,
-        label: "User"
-      }
-    ]
-  },
+  // {
+  //   icon: sidebarAssets.ProfileCircle,
+  //   // href: NAVIGATION_ROUTES.COLLAPSE,
+  //   label: "User Management",
+  //   isNotLink: true,
+  //   childNav: [
+  //     {
+  //       icon: sidebarAssets.Ellipse,
+  //       href: NAVIGATION_ROUTES.USER_MANAGEMENT.ROLES,
+  //       label: "Roles"
+  //     },
+  //     {
+  //       icon: sidebarAssets.Ellipse,
+  //       href: NAVIGATION_ROUTES.USER_MANAGEMENT.USER,
+  //       label: "User"
+  //     }
+  //   ]
+  // },
   {
     icon: sidebarAssets.MasterData,
     // href: NAVIGATION_ROUTES.COLLAPSE,
@@ -64,18 +63,23 @@ export const navLinks = [
         icon: sidebarAssets.Ellipse,
         href: NAVIGATION_ROUTES.MASTER_DATA.PAYOUT_PARTNER,
         label: "Payout Partner"
+      },
+      {
+        icon: sidebarAssets.Ellipse,
+        href: NAVIGATION_ROUTES.MASTER_DATA.PAYOUT_METHOD,
+        label: "Payout Method"
       }
     ]
-  },
-  {
-    icon: sidebarAssets.Partners,
-    href: NAVIGATION_ROUTES.PARTNERS,
-    label: "Partners"
-  },
-
-  {
-    icon: FaIcons,
-    href: NAVIGATION_ROUTES.EXAMPLE,
-    label: "Example"
   }
+  // {
+  //   icon: sidebarAssets.Partners,
+  //   href: NAVIGATION_ROUTES.PARTNERS,
+  //   label: "Partners"
+  // },
+
+  // {
+  //   icon: FaIcons,
+  //   href: NAVIGATION_ROUTES.EXAMPLE,
+  //   label: "Example"
+  // }
 ] as ComponentProps<typeof NavItem>[];

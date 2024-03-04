@@ -5,7 +5,7 @@ import {
   Flex,
   HStack,
   Switch,
-  useDisclosure,
+  useBoolean,
   useMediaQuery
 } from "@chakra-ui/react";
 import { svgAssets } from "@neo/assets/images/svgs";
@@ -16,17 +16,17 @@ import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import { useLocation } from "react-router-dom";
-import AddPayoutPartner from "./AddPayoutPartner";
+import AddPayoutMethod from "./AddPayoutMethod";
 
-const PayoutPartner = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+const PayoutMethod = () => {
+  const [flag, setFlag] = useBoolean();
   const { pathname } = useLocation();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
 
-  const onEditPayoutPartner = () => {
+  const onEditPayoutMethod = () => {
     //
   };
-  const onDeletePayoutPartner = () => {
+  const onDeletePayoutMethod = () => {
     //
   };
   const tableData = [
@@ -72,7 +72,7 @@ const PayoutPartner = () => {
       accessorKey: "sn"
     },
     {
-      header: "Partner Name",
+      header: "Method Name",
       accessorKey: "name",
       size: 40
     },
@@ -89,6 +89,7 @@ const PayoutPartner = () => {
     {
       header: "Status",
       accessorKey: "status",
+      size: 20,
       cell: (data: any) => {
         return (
           <Switch
@@ -105,12 +106,12 @@ const PayoutPartner = () => {
         return (
           <HStack>
             <TableActionButton
-              onClickAction={onEditPayoutPartner}
+              onClickAction={onEditPayoutMethod}
               icon={<svgAssets.EditButton />}
               label="Edit"
             />
             <TableActionButton
-              onClickAction={onDeletePayoutPartner}
+              onClickAction={onDeletePayoutMethod}
               icon={<svgAssets.DeleteButton />}
               label="Delete"
             />
@@ -123,63 +124,66 @@ const PayoutPartner = () => {
 
   return (
     <Flex direction={"column"} gap={"16px"}>
-      <BreadCrumb currentPage="Payout Partner" options={activePath} />
+      <BreadCrumb currentPage="Payout Method" options={activePath} />
       <Card
         borderRadius={"16px"}
         boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"
       >
         <CardBody>
-          <HStack justifyContent={"space-between"}>
-            <HStack
-              display="flex"
-              padding="24px 20px"
-              alignItems="center"
-              gap="16px"
-              alignSelf="stretch"
-            >
-              {isDesktop ? (
-                <SearchInput
-                  width={"450px"}
-                  label="Search"
-                  name="search"
-                  type="text"
-                />
-              ) : (
-                ""
-              )}
+          {flag ? (
+            <AddPayoutMethod
+              onClose={() => {
+                setFlag.off();
+              }}
+            />
+          ) : (
+            <>
+              <HStack justifyContent={"space-between"}>
+                <HStack
+                  display="flex"
+                  padding="24px 20px"
+                  alignItems="center"
+                  gap="16px"
+                  alignSelf="stretch"
+                >
+                  {isDesktop ? (
+                    <SearchInput
+                      width={"450px"}
+                      label="Search"
+                      name="search"
+                      type="text"
+                    />
+                  ) : (
+                    ""
+                  )}
 
-              <FilterButton
-                onClick={() => {
-                  //
+                  <FilterButton
+                    onClick={() => {
+                      //
+                    }}
+                  />
+                </HStack>
+                <Button
+                  minW={"max-content"}
+                  leftIcon={<svgAssets.AddButton />}
+                  onClick={setFlag.on}
+                >
+                  Add Payout Of Method
+                </Button>
+              </HStack>
+              <DataTable
+                pagination={{
+                  manual: false
                 }}
-              />
-            </HStack>
-            <Button
-              minW={"max-content"}
-              leftIcon={<svgAssets.AddButton />}
-              onClick={onOpen}
-            >
-              Add Payout Of Partner
-            </Button>
-          </HStack>
-          <DataTable
-            pagination={{
-              manual: false
-            }}
-            data={tableData}
-            columns={columns}
-          />
+                data={tableData}
+                columns={columns}
+              />{" "}
+            </>
+          )}
         </CardBody>
       </Card>
-
-      <AddPayoutPartner
-        isOpen={isOpen}
-        onClose={() => {
-          onClose();
-        }}
-      />
     </Flex>
   );
 };
 
-export default PayoutPartner;
+export default PayoutMethod;

@@ -6,7 +6,8 @@ import {
   HStack,
   Switch,
   Text,
-  useDisclosure
+  useDisclosure,
+  useMediaQuery
 } from "@chakra-ui/react";
 import { svgAssets } from "@neo/assets/images/svgs";
 import BreadCrumb from "@neo/components/BreadCrumb";
@@ -20,6 +21,8 @@ import AddCurrency from "./AddCurrency";
 
 const Currency = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isDesktop] = useMediaQuery("(min-width: 1000px)");
+
   const { pathname } = useLocation();
   const onEditCurrency = () => {
     //
@@ -72,15 +75,17 @@ const Currency = () => {
     {
       header: "Name",
       accessorKey: "name",
-      size: 90
+      size: 50
     },
     {
       header: "Currency Short Name",
-      accessorKey: "code"
+      accessorKey: "code",
+      size: 20
     },
     {
       header: "Currency Symbol",
       accessorKey: "symbol",
+      size: 20,
       cell: (data: any) => {
         return <Text fontWeight={800}>{data?.row?.original?.symbol}</Text>;
       }
@@ -88,7 +93,7 @@ const Currency = () => {
     {
       header: "Status",
       accessorKey: "status",
-      size: 80,
+      size: 50,
       cell: (data: any) => {
         return (
           <Switch
@@ -101,6 +106,7 @@ const Currency = () => {
     {
       header: "Action",
       accessorKey: "action",
+
       cell: () => {
         return (
           <HStack>
@@ -129,16 +135,24 @@ const Currency = () => {
         boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"
       >
         <CardBody>
-          <HStack>
+          <HStack justifyContent={"space-between"}>
             <HStack
               display="flex"
               padding="24px 20px"
-              width={"100%"}
               alignItems="center"
               gap="16px"
               alignSelf="stretch"
             >
-              <SearchInput label="Search" name="search" type="text" />
+              {isDesktop ? (
+                <SearchInput
+                  width={"450px"}
+                  label="Search"
+                  name="search"
+                  type="text"
+                />
+              ) : (
+                ""
+              )}
               <FilterButton
                 onClick={() => {
                   //

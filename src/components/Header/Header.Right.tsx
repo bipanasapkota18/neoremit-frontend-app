@@ -9,6 +9,7 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
+  Select,
   Stack,
   Text
 } from "@chakra-ui/react";
@@ -16,8 +17,7 @@ import { colorScheme } from "@neo/theme/colorScheme";
 import { FC, useRef } from "react";
 
 import { BsCheck2Circle, BsChevronDown } from "react-icons/bs";
-import { GoBell } from "react-icons/go";
-import SearchInput from "../Form/SearchInput";
+import { svgAssets } from "../../assets/images/svgs/index";
 import { HeaderAnchor } from "./Header";
 
 interface IRightHeader {
@@ -26,13 +26,38 @@ interface IRightHeader {
   mobileMenuId: string;
   handleMobileMenuClose: () => void;
 }
-
+const languageOptions = [
+  { value: "en", label: "English", icon: <svgAssets.SelectDropdown /> },
+  { value: "np", label: "Nepali", icon: <svgAssets.SelectDropdown /> }
+];
 export const RightHeader: FC<IRightHeader> = () => {
   const initialFocusRef = useRef();
 
   return (
     <HStack gap={8}>
-      <SearchInput type="text" name="search" label="Search" width={"100%"} />
+      <HStack>
+        <Select
+          bgColor={colorScheme.gray_50}
+          borderRadius={"30px"}
+          icon={<svgAssets.SelectDropdown />}
+          size={"lg"}
+        >
+          {languageOptions.map(option => (
+            <option
+              style={{
+                borderRadius: "30px",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px"
+              }}
+              key={option.value}
+              value={option.value}
+            >
+              {option.label}
+            </option>
+          ))}
+        </Select>
+      </HStack>
       <Popover initialFocusRef={initialFocusRef.current} placement="bottom">
         <PopoverTrigger>
           <IconButton
@@ -40,12 +65,15 @@ export const RightHeader: FC<IRightHeader> = () => {
             borderRadius={"full"}
             bg={"white"}
             _hover={{
-              boxShadow: `0 0 6px 1px ${colorScheme.gray_400}`
+              boxShadow: `0 0 6px 1px ${colorScheme.white}`
+            }}
+            _focus={{
+              boxShadow: `0 0 6px 1px ${colorScheme.white}`
             }}
             _expanded={{
-              boxShadow: `0 0 6px 1px ${colorScheme.gray_400}`
+              boxShadow: `0 0 6px 1px ${colorScheme.white}`
             }}
-            icon={<GoBell color={colorScheme.blue_700} size={24} />}
+            icon={<svgAssets.NotificationIcon color={colorScheme.blue_700} />}
           ></IconButton>
         </PopoverTrigger>
         <PopoverContent

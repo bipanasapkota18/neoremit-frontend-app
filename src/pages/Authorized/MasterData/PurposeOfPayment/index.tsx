@@ -68,7 +68,8 @@ const PurposeOfPayment = () => {
     },
     {
       header: "Purpose Name",
-      accessorKey: "name"
+      accessorKey: "name",
+      size: 100
     },
     {
       header: "Status",
@@ -113,17 +114,21 @@ const PurposeOfPayment = () => {
         boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"
       >
         <CardBody>
-          <HStack>
+          <HStack justifyContent={"space-between"}>
             <HStack
               display="flex"
               padding="24px 20px"
-              width={"100%"}
               alignItems="center"
               gap="16px"
               alignSelf="stretch"
             >
               {isDesktop ? (
-                <SearchInput label="Search" name="search" type="text" />
+                <SearchInput
+                  width={"450px"}
+                  label="Search"
+                  name="search"
+                  type="text"
+                />
               ) : (
                 ""
               )}
