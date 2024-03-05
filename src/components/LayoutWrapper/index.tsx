@@ -68,7 +68,7 @@ const LayoutWrapper: React.FC = () => {
           zIndex={0}
           overflowX="hidden"
         >
-          <AppBar flex={1} position="sticky" mb={0}>
+          <AppBar zIndex={1} flex={1} position="sticky" mb={0}>
             <Header
               width={open ? largeSidebarWidth : sidebarWidth}
               handleDrawerToggle={handleDrawerToggle}
