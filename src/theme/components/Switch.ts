@@ -20,6 +20,7 @@ const baseStyle = definePartsStyle({
   },
   thumb: {
     borderRadius: "24px",
+    marginLeft: "2.5px",
     height: "19px",
     width: "20px"
   }

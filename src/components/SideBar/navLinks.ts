@@ -73,6 +73,11 @@ export const navLinks = [
         icon: sidebarAssets.Ellipse,
         href: NAVIGATION_ROUTES.MASTER_DATA.PAYOUT_METHOD,
         label: "Payout Method"
+      },
+      {
+        icon: sidebarAssets.Ellipse,
+        href: NAVIGATION_ROUTES.MASTER_DATA.FEES_AND_CHARGES,
+        label: "Fees and Charges"
       }
     ]
   }
