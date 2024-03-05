@@ -45,28 +45,6 @@ export const RightHeader: FC<IRightHeader> = () => {
   return (
     <HStack gap={8}>
       <HStack>
-        {/* <Select
-          nonControlled
-          options={languageOptions}
-          defaultValue={languageOptions[0]}
-          name="language"
-          placeholder=""
-          sx={{
-            borderRadius: "30px"
-          }}
-          formatOptionLabel={({ label, icon }) => (
-            <HStack
-              display="flex"
-              padding="9px 0px"
-              alignItems="center"
-              alignSelf="stretch"
-              borderRadius={"8px"}
-            >
-              {icon}
-              <Text>{label}</Text>
-            </HStack>
-          )}
-        /> */}
         <ReactSelect
           isSearchable={false}
           defaultValue={languageOptions[0]}
