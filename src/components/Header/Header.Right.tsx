@@ -9,7 +9,6 @@ import {
   PopoverContent,
   PopoverHeader,
   PopoverTrigger,
-  Select,
   Stack,
   Text
 } from "@chakra-ui/react";
@@ -17,6 +16,7 @@ import { colorScheme } from "@neo/theme/colorScheme";
 import { FC, useRef } from "react";
 
 import { BsCheck2Circle, BsChevronDown } from "react-icons/bs";
+import ReactSelect from "react-select";
 import { svgAssets } from "../../assets/images/svgs/index";
 import { HeaderAnchor } from "./Header";
 
@@ -27,8 +27,17 @@ interface IRightHeader {
   handleMobileMenuClose: () => void;
 }
 const languageOptions = [
-  { value: "en", label: "English", icon: <svgAssets.SelectDropdown /> },
-  { value: "np", label: "Nepali", icon: <svgAssets.SelectDropdown /> }
+  {
+    value: "en",
+    label: "English",
+    icon: <svgAssets.EnglishFlag />
+  },
+  {
+    value: "de",
+    label: "German",
+    icon: <svgAssets.GermanFlag />
+  },
+  { value: "fr", label: "France", icon: <svgAssets.FranceFlag /> }
 ];
 export const RightHeader: FC<IRightHeader> = () => {
   const initialFocusRef = useRef();
@@ -36,27 +45,56 @@ export const RightHeader: FC<IRightHeader> = () => {
   return (
     <HStack gap={8}>
       <HStack>
-        <Select
-          bgColor={colorScheme.gray_50}
-          borderRadius={"30px"}
-          icon={<svgAssets.SelectDropdown />}
-          size={"lg"}
-        >
-          {languageOptions.map(option => (
-            <option
-              style={{
-                borderRadius: "30px",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px"
-              }}
-              key={option.value}
-              value={option.value}
+        <ReactSelect
+          isSearchable={false}
+          defaultValue={languageOptions[0]}
+          options={languageOptions}
+          components={{
+            IndicatorSeparator: () => null,
+            DropdownIndicator: () => <svgAssets.SelectDropdown />
+          }}
+          styles={{
+            control: styles => ({
+              ...styles,
+              width: "170px",
+              height: "56px",
+              padding: "8px 12px",
+              backgroundColor: colorScheme.gray_50,
+              borderRadius: "30px",
+              border: "none"
+            }),
+            menu: styles => ({
+              ...styles,
+              borderRadius: "12px"
+            }),
+            option: () => ({
+              display: "flex",
+              flexDirection: "column",
+              gap: "4px",
+              backgroundColor: colorScheme.white,
+              color: colorScheme.gray_800,
+              cursor: "pointer"
+            })
+          }}
+          formatOptionLabel={({ label, icon }) => (
+            <HStack
+              p={2}
+              _hover={{ backgroundColor: colorScheme.gray_50 }}
+              _active={{ backgroundColor: colorScheme.gray_50 }}
             >
-              {option.label}
-            </option>
-          ))}
-        </Select>
+              {icon}
+              <Text
+                color={colorScheme.gray_700}
+                fontSize="14px"
+                fontStyle="normal"
+                fontWeight={500}
+              >
+                {" "}
+                {label}
+              </Text>
+            </HStack>
+          )}
+        />
       </HStack>
       <Popover initialFocusRef={initialFocusRef.current} placement="bottom">
         <PopoverTrigger>
