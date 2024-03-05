@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Button,
   Flex,
   HStack,
@@ -110,6 +111,30 @@ export default function Sidebar({
           cursor={"pointer"}
           onClick={() => navigate("/")}
         />
+        <HStack
+          padding="16px 20px"
+          borderRadius={"16px"}
+          width={"260px"}
+          gap={"16px"}
+          bgColor={"#F5F7FA"}
+        >
+          <HStack>
+            <Avatar
+              borderRadius={"36px"}
+              width={"40px"}
+              height={"40px"}
+              icon={<svgAssets.LoginBanner />}
+            />
+          </HStack>
+          <HStack flexDir={"column"} gap={"2px"} alignItems={"flex-start"}>
+            <Text fontWeight={700} color={colorScheme.sideBar_text}>
+              Name
+            </Text>
+            <Text fontWeight={400} color={colorScheme.search_icon}>
+              Role
+            </Text>
+          </HStack>
+        </HStack>
         <VStack
           w="100%"
           py={4}

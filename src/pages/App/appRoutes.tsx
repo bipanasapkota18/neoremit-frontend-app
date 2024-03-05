@@ -1,6 +1,8 @@
 import LayoutWrapper from "@neo/components/LayoutWrapper";
 import { lazy } from "react";
 
+import Country from "../Authorized/MasterData/Country";
+import State from "../Authorized/MasterData/Country/State";
 import PayoutPartner from "../Authorized/MasterData/Payout Partner";
 import PayoutMethod from "../Authorized/MasterData/PayoutMethod";
 import { NAVIGATION_ROUTES } from "./navigationRoutes";
@@ -60,6 +62,14 @@ export const appRoutes = [
       {
         path: NAVIGATION_ROUTES.MASTER_DATA.PAYOUT_METHOD,
         element: <PayoutMethod />
+      },
+      {
+        path: NAVIGATION_ROUTES.MASTER_DATA.COUNTRY_SETUP,
+        element: <Country />
+      },
+      {
+        path: NAVIGATION_ROUTES.MASTER_DATA.STATE_SETUP,
+        element: <State />
       }
     ]
   }
