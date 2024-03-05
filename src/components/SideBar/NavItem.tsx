@@ -135,7 +135,8 @@ export default function NavItem({
               }
             : {
                 "&:hover": {
-                  background: colorScheme.primary_400,
+                  background:
+                    "linear-gradient(85deg, #5A2F8D 31.95%, rgba(175, 155, 199, 0.82) 118.69%)",
                   color: colorScheme.white,
                   "& p": {
                     color: colorScheme.white
@@ -151,8 +152,8 @@ export default function NavItem({
             ? notActiveLink
             : {
                 background: isChild
-                  ? colorScheme.primary_400
-                  : colorScheme.primary_400,
+                  ? "linear-gradient(85deg, #5A2F8D 31.95%, rgba(175, 155, 199, 0.82) 118.69%)"
+                  : "linear-gradient(85deg, #5A2F8D 31.95%, rgba(175, 155, 199, 0.82) 118.69%)",
 
                 "& p": {
                   color: colorScheme.white

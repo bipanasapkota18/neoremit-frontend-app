@@ -36,6 +36,11 @@ export const navLinks = [
     childNav: [
       {
         icon: sidebarAssets.Ellipse,
+        href: NAVIGATION_ROUTES.MASTER_DATA.COUNTRY_SETUP,
+        label: "Country Setup"
+      },
+      {
+        icon: sidebarAssets.Ellipse,
         href: NAVIGATION_ROUTES.MASTER_DATA.CURRENCY_SETUP,
         label: "Currency"
       },

@@ -17,7 +17,9 @@ export const NAVIGATION_ROUTES = {
     DOCUMENT_SETUP: "/document-setup",
     SOURCE_OF_FUND: "/source-of-fund",
     PAYOUT_PARTNER: "/payout-partner",
-    PAYOUT_METHOD: "/payout-method"
+    PAYOUT_METHOD: "/payout-method",
+    COUNTRY_SETUP: "/country-setup",
+    STATE_SETUP: "/state-setup"
   },
   PARTNERS: "/partners"
 };
