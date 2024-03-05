@@ -1,10 +1,6 @@
 import LayoutWrapper from "@neo/components/LayoutWrapper";
 import { lazy } from "react";
 
-import Country from "../Authorized/MasterData/Country";
-import State from "../Authorized/MasterData/Country/State";
-import PayoutPartner from "../Authorized/MasterData/Payout Partner";
-import PayoutMethod from "../Authorized/MasterData/PayoutMethod";
 import { NAVIGATION_ROUTES } from "./navigationRoutes";
 
 const Document = lazy(
@@ -14,7 +10,10 @@ const Dashboard = lazy(() => import("@neo/pages/Authorized/Dashboard"));
 const Currency = lazy(
   () => import("@neo/pages/Authorized/MasterData/Currency")
 );
-
+const Country = lazy(() => import("@neo/pages/Authorized/MasterData/Country"));
+const State = lazy(
+  () => import("@neo/pages/Authorized/MasterData/Country/State")
+);
 const Relationship = lazy(
   () => import("@neo/pages/Authorized/MasterData/Relationship")
 );
@@ -23,6 +22,15 @@ const PurposeOfPayment = lazy(
 );
 const SourceOfFund = lazy(
   () => import("@neo/pages/Authorized/MasterData/SourceOfFund/index")
+);
+const PayoutMethod = lazy(
+  () => import("@neo/pages/Authorized/MasterData/PayoutMethod")
+);
+const PayoutPartner = lazy(
+  () => import("@neo/pages/Authorized/MasterData/Payout Partner")
+);
+const FeeAndCharges = lazy(
+  () => import("@neo/pages/Authorized/MasterData/FeesAndCharges")
 );
 
 export const appRoutes = [
@@ -70,6 +78,10 @@ export const appRoutes = [
       {
         path: NAVIGATION_ROUTES.MASTER_DATA.STATE_SETUP,
         element: <State />
+      },
+      {
+        path: NAVIGATION_ROUTES.MASTER_DATA.FEES_AND_CHARGES,
+        element: <FeeAndCharges />
       }
     ]
   }
