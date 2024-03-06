@@ -122,7 +122,7 @@ export default function NavItem({
             ? {
                 background: colorScheme.primary_300,
                 "& p": {
-                  color: colorScheme.white
+                  color: colorScheme.search_icon
                 },
                 "svg > *": {
                   filter: "brightness(10)"
@@ -135,14 +135,13 @@ export default function NavItem({
               }
             : {
                 "&:hover": {
-                  background:
-                    "linear-gradient(85deg, #5A2F8D 31.95%, rgba(175, 155, 199, 0.82) 118.69%)",
-                  color: colorScheme.white,
+                  background: colorScheme.sidebar_hover,
+                  color: colorScheme.search_icon,
                   "& p": {
-                    color: colorScheme.white
+                    color: colorScheme.search_icon
                   },
                   "svg > *": {
-                    filter: "brightness(10)"
+                    filter: "brightness(1.5)"
                   }
                 }
               }
@@ -151,9 +150,7 @@ export default function NavItem({
           isLinkActive
             ? notActiveLink
             : {
-                background: isChild
-                  ? "linear-gradient(85deg, #5A2F8D 31.95%, rgba(175, 155, 199, 0.82) 118.69%)"
-                  : "linear-gradient(85deg, #5A2F8D 31.95%, rgba(175, 155, 199, 0.82) 118.69%)",
+                background: colorScheme.sidebar_selected,
 
                 "& p": {
                   color: colorScheme.white
