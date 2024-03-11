@@ -127,6 +127,9 @@ export const colorScheme = {
   gray_700: "#2D3748",
   admin_background: "#FAFBFC",
   search_icon: "#718096",
+  sidebar_hover: "#F5F7FA",
+  sidebar_selected:
+    "linear-gradient(85deg, #5A2F8D 31.95%, rgba(175, 155, 199, 0.82) 118.69%)",
   //Text INput border
   input_border: "#E2E8F0",
 
