@@ -29,7 +29,7 @@ const defaultValues = {
 };
 
 const LoginForm = () => {
-  const { mutateAsync: login } = useLoginMutation();
+  const { mutateAsync: login, isLoading: isLoginLoading } = useLoginMutation();
 
   const [flag, setFlag] = useBoolean();
   const { control, handleSubmit } = useForm({
@@ -57,38 +57,42 @@ const LoginForm = () => {
       onSubmit={handleSubmit(handleLogin)}
     >
       <Stack gap={"16px"} width={"100%"}>
-        <TextInput
-          startIcon={<svgAssets.EmailIcon />}
-          type="text"
-          name="email"
-          placeholder="Email"
-          control={control}
-          // isRequired
-        />
-        <TextInput
-          startIcon={<svgAssets.PasswordIcon />}
-          type={flag ? "text" : "password"}
-          name="password"
-          placeholder="Password"
-          control={control}
-          endIcons={
-            <IconButton
-              tabIndex={-1}
-              colorScheme={"black"}
-              size="xs"
-              variant="link"
-              aria-label="password-control"
-              onClick={setFlag.toggle}
-              icon={
-                flag ? (
-                  <svgAssets.EyeIcon height={"20px"} width={"20px"} />
-                ) : (
-                  <svgAssets.EyeSlashIcon height={"20px"} width={"20px"} />
-                )
-              }
-            />
-          }
-        />
+        <HStack>
+          <TextInput
+            startIcon={<svgAssets.EmailIcon />}
+            type="text"
+            name="email"
+            placeholder="Email"
+            control={control}
+            // isRequired
+          />
+        </HStack>
+        <HStack mt={2}>
+          <TextInput
+            startIcon={<svgAssets.PasswordIcon />}
+            type={flag ? "text" : "password"}
+            name="password"
+            placeholder="Password"
+            control={control}
+            endIcons={
+              <IconButton
+                tabIndex={-1}
+                colorScheme={"black"}
+                size="xs"
+                variant="link"
+                aria-label="password-control"
+                onClick={setFlag.toggle}
+                icon={
+                  flag ? (
+                    <svgAssets.EyeIcon height={"20px"} width={"20px"} />
+                  ) : (
+                    <svgAssets.EyeSlashIcon height={"20px"} width={"20px"} />
+                  )
+                }
+              />
+            }
+          />
+        </HStack>
         <HStack justifyContent={"space-between"}>
           <CheckBox name="remember" label="Remember me" control={control} />
           <ChakraLink
@@ -102,7 +106,7 @@ const LoginForm = () => {
           </ChakraLink>
         </HStack>
       </Stack>
-      <Button type="submit" size="lg">
+      <Button isDisabled={isLoginLoading} type="submit" size="lg">
         Login
       </Button>
     </VStack>

@@ -4,12 +4,8 @@ export interface TokenDetails {
 }
 
 export interface NeoTokenDetails {
-  access_token: string;
   refresh_token: string;
-  scope: string;
-  id_token: string;
-  token_type: string;
-  expires_in: string;
+  exp: number;
 }
 
 function setToken(token: TokenDetails) {
@@ -35,6 +31,7 @@ function getToken() {
 function getTokenDetails(): NeoTokenDetails | null {
   try {
     const token = getToken();
+
     return token
       ? (JSON.parse(
           window.atob(token.access_token.split(".")[1])
@@ -48,7 +45,7 @@ function getTokenDetails(): NeoTokenDetails | null {
 function isAuthenticated() {
   const tokenDetails = getTokenDetails();
   if (tokenDetails) {
-    return +tokenDetails.expires_in * 1000 > Date.now();
+    return tokenDetails.exp * 1000 > Date.now();
   } else {
     return false;
   }

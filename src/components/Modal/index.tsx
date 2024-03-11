@@ -34,13 +34,13 @@ const Modal = ({
   cancelButtonText,
   ...rest
 }: ModalProps) => {
-  const handleClose = () => {
-    if (isSubmitting) return;
-    onClose();
-  };
+  // const handleClose = () => {
+  //   if (isSubmitting) return;
+  //   onClose();
+  // };
 
   return (
-    <ChakraModal size={size} isOpen={isOpen} onClose={handleClose} {...rest}>
+    <ChakraModal size={size} isOpen={isOpen} onClose={onClose} {...rest}>
       <ModalOverlay />
       <ModalContent
         display={"flex"}
@@ -87,7 +87,7 @@ const Modal = ({
             bg={"#FFF5F5"}
             _active={{ bg: "#FFF5F5" }}
             fontSize={"17px"}
-            onClick={handleClose}
+            onClick={onClose}
           >
             {cancelButtonText}
           </Button>

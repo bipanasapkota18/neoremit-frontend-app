@@ -41,7 +41,7 @@ const queryClient = new QueryClient({
       const err = error as AxiosError;
       if (
         (err.request?.status === 401 || err.request?.status === 500) &&
-        err.config?.url?.includes(api.refreshToken)
+        err.config?.url?.includes(api.auth.refreshToken)
       ) {
         queryClient.setQueryData(authTokenKey, () => false);
         setTimeout(() => {

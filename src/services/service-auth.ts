@@ -1,9 +1,9 @@
-import { toastFail, toastSuccess } from "@neo/utility/Toast";
+import { toastFail } from "@neo/utility/Toast";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 
-import { api } from "./service-api";
+import { NeoResponse, api } from "./service-api";
 import { NeoHttpClient } from "./service-axios";
 import TokenService, { NeoTokenDetails, TokenDetails } from "./service-token";
 
@@ -23,45 +23,41 @@ export const authTokenKey = "authToken";
 const authTokenDetails = "authTokenDetails";
 
 const initLogout = () => {
-  try {
-    TokenService.clearToken();
-    return Promise.resolve(true);
-  } catch (error) {
-    return Promise.resolve(false);
-  }
+  return NeoHttpClient.get(api.auth.logout);
 };
 
-const useLogoutMutation = (noToast?: boolean) => {
+const useLogoutMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(initLogout, {
     onSuccess: () => {
+      TokenService.clearToken();
       logoutChannel.postMessage("Logout");
       queryClient.clear();
       queryClient.setQueryData(authTokenKey, () => false);
-      !noToast && toastSuccess("Logged out Successfully");
+      window.location.reload();
     }
   });
 };
 
 const initLogin = (loginData: LoginDetails) => {
-  return NeoHttpClient.post<TokenDetails>(api.login, loginData);
+  return NeoHttpClient.post<NeoResponse<TokenDetails>>(
+    api.auth.login,
+    loginData
+  );
 };
 
 const useLoginMutation = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-
   return useMutation(initLogin, {
     onSuccess: response => {
       loginChannel.postMessage("Login");
-
       const tokens = {
-        access_token: response.data.access_token,
-        refresh_token: response.data.refresh_token
+        access_token: response?.data?.data?.access_token,
+        refresh_token: response?.data?.data?.refresh_token
       };
       TokenService.setToken(tokens);
       queryClient.setQueryData(authTokenKey, () => true);
-
       navigate("/", { replace: true });
     },
     onError: error => {
@@ -77,14 +73,17 @@ const useLoginMutation = () => {
 
 const initRefreshToken = async () => {
   try {
-    const response = await NeoHttpClient.get<TokenDetails>(api.refreshToken, {
-      params: {
-        refreshToken: TokenService.getToken()?.refresh_token
-      },
-      headers: {
-        Authorization: ""
+    const response = await NeoHttpClient.get<TokenDetails>(
+      api.auth.refreshToken,
+      {
+        params: {
+          refreshToken: TokenService.getToken()?.refresh_token
+        },
+        headers: {
+          Authorization: ""
+        }
       }
-    });
+    );
     const tokens = {
       access_token: response.data.access_token,
       refresh_token: response.data.refresh_token
@@ -99,10 +98,7 @@ const initRefreshToken = async () => {
 const checkAuthentication = async () => {
   if (TokenService.isAuthenticated()) {
     const tokenInfo = TokenService.getTokenDetails();
-    if (
-      tokenInfo &&
-      +tokenInfo.expires_in * 1000 < Date.now() + 5 * 60 * 1000
-    ) {
+    if (!tokenInfo) {
       return initRefreshToken();
     }
     return Promise.resolve(true);
@@ -135,18 +131,8 @@ const useLoginTokenDetailQuery = () => {
   return useQuery<unknown, unknown, NeoUserTokenDetails>(authTokenDetails);
 };
 
-export const logoutAllTabs = () => {
-  logoutChannel.onmessage = () => {
-    window.location.href = "/";
-    logoutChannel.close();
-  };
-  loginChannel.onmessage = () => {
-    window.location.href = "/";
-    loginChannel.close();
-  };
-};
-
 export {
+  initLogout,
   useAuthentication,
   useLoginMutation,
   useLoginTokenDetailQuery,

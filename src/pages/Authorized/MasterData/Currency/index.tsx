@@ -15,62 +15,78 @@ import FilterButton from "@neo/components/Button/FilterButton";
 import { DataTable } from "@neo/components/DataTable";
 import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
+import ConfirmationModal from "@neo/components/Modal/DeleteModal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
+import {
+  CurrenciesList,
+  useDeleteCurrency,
+  useGetAllCurrency,
+  useGetCurrencyById,
+  useUpdateCurrency
+} from "@neo/services/MasterData/service-currency";
+import { CellContext, PaginationState } from "@tanstack/react-table";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import AddCurrency from "./AddCurrency";
 
 const Currency = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenCurrencyAddModal,
+    onOpen: onOpenCurrencyAddModal,
+    onClose: onCloseCurrencyAddModal
+  } = useDisclosure();
+  const {
+    isOpen: isOpenCurrencyDeleteModal,
+    onOpen: onOpenCurrencyDeleteModal,
+    onClose: onCloseCurrencyDeleteModal
+  } = useDisclosure();
+  const {
+    isOpen: isOpenCurrencyStatusUpdateModal,
+    onOpen: onOpenCurrencyStatusUpdateModal,
+    onClose: onCloseCurrencyStatusUpdateModal
+  } = useDisclosure();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
+  const [filterCount, setFilterCount] = useState(0);
+  const [tableData, setTableData] = useState<CurrenciesList[] | undefined>();
+  const [searchText, setSearchText] = useState<string>("" as string);
+  const [editId, setEditId] = useState(null as number | null);
+  const [active, setActive] = useState(false);
+  const [pageParams, setPageParams] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10
+  });
+  const { data: editData, isFetching: isGetCurrencyDataLoading } =
+    useGetCurrencyById(editId);
+  const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
+    useDeleteCurrency();
+  const { data: currencyData, mutateAsync, isLoading } = useGetAllCurrency();
+  const {
+    mutateAsync: mutateUpdateCurrency,
+    isLoading: isStatusUPdateLoading
+  } = useUpdateCurrency();
 
   const { pathname } = useLocation();
-  const onEditCurrency = () => {
-    //
-  };
-  const onDeleteCurrency = () => {
-    //
-  };
-  const tableData = [
-    {
-      sn: 1,
-      name: "Nepali Rupee",
-      code: "NPR",
-      symbol: "Rs",
-      status: "Active"
-    },
-    {
-      sn: 2,
-      name: "US Dollar",
-      code: "USD",
-      symbol: "$",
-      status: "Active"
-    },
-    {
-      sn: 3,
-      name: "Euro",
-      code: "EUR",
-      symbol: "€",
-      status: "Active"
-    },
-    {
-      sn: 4,
-      name: "British Pound",
-      code: "GBP",
-      symbol: "£",
-      status: "Active"
-    },
-    {
-      sn: 5,
-      name: "Australian Dollar",
-      code: "AUD",
-      symbol: "A$",
-      status: "InActive"
-    }
-  ];
+  useEffect(() => {
+    setTableData(currencyData?.data?.data?.currenciesList ?? []);
+    setFilterCount(currencyData?.data?.data?.totalItems ?? 0);
+  }, [currencyData]);
+  useEffect(() => {
+    mutateAsync({
+      pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
+      filterParams: {}
+    });
+  }, [pageParams.pageIndex, pageParams.pageSize]);
   const columns = [
     {
       header: "S.N",
-      accessorKey: "sn"
+      accessorKey: "sn",
+      cell: (data: any) => {
+        return (
+          <Text>
+            {pageParams.pageIndex * pageParams.pageSize + data.row.index + 1}
+          </Text>
+        );
+      }
     },
     {
       header: "Name",
@@ -92,13 +108,18 @@ const Currency = () => {
     },
     {
       header: "Status",
-      accessorKey: "status",
+      accessorKey: "isActive",
       size: 50,
       cell: (data: any) => {
         return (
           <Switch
             size="lg"
-            isChecked={data?.row?.original?.status === "Active"}
+            isChecked={data?.row?.original?.isActive}
+            onChange={() => {
+              setEditId(data?.row?.original?.id);
+              setActive(data?.row?.original?.isActive);
+              onOpenCurrencyStatusUpdateModal();
+            }}
           />
         );
       }
@@ -107,16 +128,22 @@ const Currency = () => {
       header: "Action",
       accessorKey: "action",
 
-      cell: () => {
+      cell: (cell: CellContext<CurrenciesList, any>) => {
         return (
           <HStack>
             <TableActionButton
-              onClickAction={onEditCurrency}
+              onClickAction={() => {
+                setEditId(cell?.row?.original?.id);
+                onOpenCurrencyAddModal();
+              }}
               icon={<svgAssets.EditButton />}
               label="Edit"
             />
             <TableActionButton
-              onClickAction={onDeleteCurrency}
+              onClickAction={() => {
+                setEditId(cell?.row?.original?.id);
+                onOpenCurrencyDeleteModal();
+              }}
               icon={<svgAssets.DeleteButton />}
               label="Delete"
             />
@@ -127,6 +154,27 @@ const Currency = () => {
   ];
   const activePath = breadcrumbTitle(pathname);
 
+  const handleDelete = () => {
+    mutateDelete(editId);
+    setEditId(null);
+    onCloseCurrencyDeleteModal();
+  };
+  const handleStatusChange = () => {
+    if (editId !== null) {
+      mutateUpdateCurrency({
+        id: editId,
+        data: {
+          code: editData?.data?.data?.code ?? "",
+          name: editData?.data?.data?.name ?? "",
+          shortName: editData?.data?.data?.shortName ?? "",
+          Symbol: editData?.data?.data?.symbol ?? "",
+          isActive: !active
+        }
+      });
+    }
+    setEditId(null);
+    onCloseCurrencyStatusUpdateModal();
+  };
   return (
     <Flex direction={"column"} gap={"16px"}>
       <BreadCrumb currentPage="Currency" options={activePath} />
@@ -148,6 +196,7 @@ const Currency = () => {
                   width={"450px"}
                   label="Search"
                   name="search"
+                  onSearch={setSearchText}
                   type="text"
                 />
               ) : (
@@ -162,26 +211,50 @@ const Currency = () => {
             <Button
               minW={"max-content"}
               leftIcon={<svgAssets.AddButton />}
-              onClick={onOpen}
+              onClick={onOpenCurrencyAddModal}
             >
               Add Currency
             </Button>
           </HStack>
           <DataTable
-            pagination={{
-              manual: false
+            data={tableData ?? []}
+            filter={{
+              globalFilter: searchText,
+              setGlobalFilter: setSearchText
             }}
-            data={tableData}
+            isLoading={isLoading}
+            pagination={{
+              manual: true,
+              pageCount: filterCount,
+              pageParams: pageParams,
+              onChangePagination: setPageParams
+            }}
             columns={columns}
           />
         </CardBody>
       </Card>
 
       <AddCurrency
-        isOpen={isOpen}
-        onClose={() => {
-          onClose();
-        }}
+        isLoading={isGetCurrencyDataLoading}
+        editData={editData?.data?.data}
+        editId={editId}
+        setEditId={setEditId}
+        isOpen={isOpenCurrencyAddModal}
+        onClose={onCloseCurrencyAddModal}
+      />
+      <ConfirmationModal
+        isDeleting={isDeleteLoading}
+        onDelete={handleDelete}
+        confirmationText="Are you sure you want to delete this currency?"
+        isOpen={isOpenCurrencyDeleteModal}
+        onClose={onCloseCurrencyDeleteModal}
+      />
+      <ConfirmationModal
+        isDeleting={isStatusUPdateLoading}
+        onDelete={handleStatusChange}
+        confirmationText={`Are you sure you want to ${active ? "Disable" : "Enable"} this currency?`}
+        isOpen={isOpenCurrencyStatusUpdateModal}
+        onClose={onCloseCurrencyStatusUpdateModal}
       />
     </Flex>
   );

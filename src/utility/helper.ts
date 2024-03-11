@@ -53,3 +53,25 @@ export const useDebouncedFunction = ({
 
   return { returnString, isDebouncing, handleChange };
 };
+export function trimObjectValues(
+  obj: Record<string, any>
+): Record<string, any> {
+  const result: Record<string, any> = {};
+
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      const value = obj[key];
+      if (Array.isArray(value)) {
+        result[key] = value; // No trimming for arrays, keep them as they are
+      } else if (typeof value === "string") {
+        result[key] = value.trim();
+      } else if (typeof value === "object" && value !== null) {
+        result[key] = trimObjectValues(value);
+      } else {
+        result[key] = value;
+      }
+    }
+  }
+
+  return result;
+}
