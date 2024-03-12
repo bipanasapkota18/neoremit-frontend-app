@@ -106,6 +106,7 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                 ) : (
                   <Input
                     paddingLeft={startIcon ? 9 : ""}
+                    paddingBottom={startIcon ? "" : 0}
                     placeholder={""}
                     type={type}
                     height={"inherit"}

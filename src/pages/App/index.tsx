@@ -1,6 +1,8 @@
 import { Flex, Spinner } from "@chakra-ui/react";
-import { initLogout, useAuthentication } from "@neo/services/service-auth";
-import TokenService from "@neo/services/service-token";
+import {
+  useAuthentication,
+  useLogoutMutation
+} from "@neo/services/service-auth";
 import { Suspense, lazy, useEffect } from "react";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import ForgotPassword from "../NoAuth/ForgotPassword";
@@ -10,33 +12,44 @@ const Login = lazy(() => import("@neo/pages/NoAuth/Login"));
 
 export default function App() {
   // Check if app is authenticated
-  const { data: isAuthenticated } = useAuthentication();
-
-  // const { mutateAsync: logoutUser } = useLogoutMutation(true);
-
-  //  Fetching Initial data in app
-  // const { isLoading: isInitDataLoading, isError: isInitDataError } =
-  //   useFetchInitData(!!isAuthenticated);
-
+  const {
+    data: isAuthenticated,
+    isLoading: isAuthLoading,
+    refetch: checkTokenAndRefresh
+  } = useAuthentication();
+  const { mutate: logoutUser } = useLogoutMutation();
   useEffect(() => {
     if (typeof isAuthenticated === "boolean" && !isAuthenticated) {
-      localStorage.getItem("token")
-        ? (initLogout(), TokenService.clearToken())
-        : null;
+      localStorage.getItem("token") ? logoutUser() : null;
     }
   }, [isAuthenticated]);
 
-  // useEffect(() => {
-  //   logoutAllTabs();
-  // }, []);
+  useEffect(() => {
+    let iID = null as null | NodeJS.Timeout;
+    if (isAuthenticated) {
+      iID = setInterval(() => checkTokenAndRefresh(), 30_000);
+    }
 
-  // if ((isInitDataLoading || isAuthLoading) && !isInitDataError) {
-  //   return (
-  //     <Flex justifyContent={"center"} alignItems="center" height={"100vh"}>
-  //       <Spinner />
-  //     </Flex>
-  //   );
-  // }
+    return () => {
+      if (iID) {
+        clearInterval(iID);
+      }
+    };
+  }, [isAuthenticated, checkTokenAndRefresh]);
+
+  if (isAuthLoading) {
+    return (
+      <Flex justifyContent={"center"} alignItems="center" height={"100vh"}>
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="red.500"
+          size="xl"
+        />
+      </Flex>
+    );
+  }
 
   return (
     <Suspense

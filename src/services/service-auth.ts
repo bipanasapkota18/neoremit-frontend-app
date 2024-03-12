@@ -28,13 +28,15 @@ const initLogout = () => {
 
 const useLogoutMutation = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
   return useMutation(initLogout, {
     onSuccess: () => {
       TokenService.clearToken();
       logoutChannel.postMessage("Logout");
       queryClient.clear();
       queryClient.setQueryData(authTokenKey, () => false);
-      window.location.reload();
+      navigate("/login", { replace: true });
     }
   });
 };
@@ -98,7 +100,8 @@ const initRefreshToken = async () => {
 const checkAuthentication = async () => {
   if (TokenService.isAuthenticated()) {
     const tokenInfo = TokenService.getTokenDetails();
-    if (!tokenInfo) {
+
+    if (tokenInfo && tokenInfo.exp * 1000 < Date.now() + 5 * 60 * 1000) {
       return initRefreshToken();
     }
     return Promise.resolve(true);
@@ -118,6 +121,7 @@ const useAuthentication = () => {
   return useQuery(authTokenKey, checkAuthentication, {
     onSuccess: () => {
       const tokenDetails = TokenService.getTokenDetails();
+
       if (tokenDetails) {
         queryClient.setQueryData<NeoUserTokenDetails>(authTokenDetails, {
           ...tokenDetails

@@ -13,10 +13,10 @@ import { useForm } from "react-hook-form";
 interface AddCurrencyProps {
   editId: number | null;
   setEditId: Dispatch<SetStateAction<number | null>>;
+  data: CurrenciesList[] | undefined;
   isOpen: boolean;
   onClose: () => void;
-  editData: CurrenciesList | undefined;
-  isLoading: boolean;
+  refetchData: () => void;
 }
 const defaultValues = {
   code: "",
@@ -31,8 +31,8 @@ const AddCurrency = ({
   onClose,
   editId,
   setEditId,
-  editData,
-  isLoading
+  data: editData,
+  refetchData
 }: AddCurrencyProps) => {
   const { mutateAsync: mutateCurrency } = useAddCurrency();
   const { mutateAsync: mutateUpdateCurrency } = useUpdateCurrency();
@@ -41,31 +41,36 @@ const AddCurrency = ({
   });
   useEffect(() => {
     if (editId) {
-      isLoading
-        ? reset({
-            code: "Loading...",
-            name: "Loading...",
-            shortName: "Loading...",
-            Symbol: "Loading..."
-          })
-        : reset({
-            code: editData?.code,
-            name: editData?.name,
-            shortName: editData?.shortName,
-            Symbol: editData?.symbol
-          });
+      const selectedCurrency = editData?.find(
+        currency => currency.id === editId
+      );
+      reset({
+        name: selectedCurrency?.name,
+        code: selectedCurrency?.code,
+        shortName: selectedCurrency?.shortName,
+        Symbol: selectedCurrency?.symbol
+      });
     }
   }, [editId, editData]);
-  const onAddCurrency = (data: typeof defaultValues) => {
+  const onAddCurrency = async (data: typeof defaultValues) => {
     if (editId) {
-      mutateUpdateCurrency({
+      const selectedCurrency = editData?.find(
+        currency => currency.id === editId
+      );
+
+      await mutateUpdateCurrency({
         id: editId,
-        data: { ...data, id: editId, isActive: editData?.isActive ?? true }
+        data: {
+          ...data,
+          id: editId,
+          isActive: selectedCurrency?.isActive ?? true
+        }
       });
     } else {
-      mutateCurrency(data);
+      await mutateCurrency(data);
     }
     handleCloseModal();
+    refetchData();
   };
   const handleCloseModal = () => {
     setEditId(null);

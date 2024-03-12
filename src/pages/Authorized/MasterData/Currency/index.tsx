@@ -50,13 +50,13 @@ const Currency = () => {
   const [tableData, setTableData] = useState<CurrenciesList[] | undefined>();
   const [searchText, setSearchText] = useState<string>("" as string);
   const [editId, setEditId] = useState(null as number | null);
+  const [changeId, setChangeId] = useState(null as number | null);
   const [active, setActive] = useState(false);
   const [pageParams, setPageParams] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10
   });
-  const { data: editData, isFetching: isGetCurrencyDataLoading } =
-    useGetCurrencyById(editId);
+  const { data: editData } = useGetCurrencyById(changeId);
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
     useDeleteCurrency();
   const { data: currencyData, mutateAsync, isLoading } = useGetAllCurrency();
@@ -76,6 +76,13 @@ const Currency = () => {
       filterParams: {}
     });
   }, [pageParams.pageIndex, pageParams.pageSize]);
+
+  const refetchData = () => {
+    mutateAsync({
+      pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
+      filterParams: {}
+    });
+  };
   const columns = [
     {
       header: "S.N",
@@ -95,7 +102,7 @@ const Currency = () => {
     },
     {
       header: "Currency Short Name",
-      accessorKey: "code",
+      accessorKey: "shortName",
       size: 20
     },
     {
@@ -116,7 +123,7 @@ const Currency = () => {
             size="lg"
             isChecked={data?.row?.original?.isActive}
             onChange={() => {
-              setEditId(data?.row?.original?.id);
+              setChangeId(data?.row?.original?.id);
               setActive(data?.row?.original?.isActive);
               onOpenCurrencyStatusUpdateModal();
             }}
@@ -141,7 +148,7 @@ const Currency = () => {
             />
             <TableActionButton
               onClickAction={() => {
-                setEditId(cell?.row?.original?.id);
+                setChangeId(cell?.row?.original?.id);
                 onOpenCurrencyDeleteModal();
               }}
               icon={<svgAssets.DeleteButton />}
@@ -154,15 +161,16 @@ const Currency = () => {
   ];
   const activePath = breadcrumbTitle(pathname);
 
-  const handleDelete = () => {
-    mutateDelete(editId);
-    setEditId(null);
+  const handleDelete = async () => {
+    await mutateDelete(changeId);
+    setChangeId(null);
     onCloseCurrencyDeleteModal();
+    refetchData();
   };
-  const handleStatusChange = () => {
-    if (editId !== null) {
-      mutateUpdateCurrency({
-        id: editId,
+  const handleStatusChange = async () => {
+    if (changeId !== null) {
+      await mutateUpdateCurrency({
+        id: changeId,
         data: {
           code: editData?.data?.data?.code ?? "",
           name: editData?.data?.data?.name ?? "",
@@ -172,8 +180,9 @@ const Currency = () => {
         }
       });
     }
-    setEditId(null);
+    setChangeId(null);
     onCloseCurrencyStatusUpdateModal();
+    refetchData();
   };
   return (
     <Flex direction={"column"} gap={"16px"}>
@@ -235,8 +244,8 @@ const Currency = () => {
       </Card>
 
       <AddCurrency
-        isLoading={isGetCurrencyDataLoading}
-        editData={editData?.data?.data}
+        refetchData={refetchData}
+        data={currencyData?.data?.data?.currenciesList}
         editId={editId}
         setEditId={setEditId}
         isOpen={isOpenCurrencyAddModal}

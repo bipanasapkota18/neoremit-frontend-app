@@ -106,7 +106,7 @@ const useUpdateCurrency = () => {
   const queryClient = useQueryClient();
   return useMutation(updateCurrency, {
     onSuccess: success => {
-      queryClient.invalidateQueries(api.masterData.currency.getAll);
+      queryClient.invalidateQueries([api.masterData.currency.getAll]);
       toastSuccess(success?.data?.message);
     },
     onError: (error: AxiosError) => {

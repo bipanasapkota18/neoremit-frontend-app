@@ -18,7 +18,7 @@ const Form = {
             ...activeLabelStyles
           },
         label: {
-          top: 1.5,
+          top: "28%",
           left: 0,
           position: "absolute",
           pointerEvents: "none",

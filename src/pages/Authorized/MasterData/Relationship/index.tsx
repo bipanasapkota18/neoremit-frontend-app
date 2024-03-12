@@ -126,14 +126,14 @@ const Relationship = () => {
     }
   ];
   const activePath = breadcrumbTitle(pathname);
-  const handleDelete = () => {
-    mutateDelete(changeId);
+  const handleDelete = async () => {
+    await mutateDelete(changeId);
     setChangeId(null);
     onCloseRelationshipDeleteModal();
   };
-  const handleStatusChange = () => {
+  const handleStatusChange = async () => {
     if (changeId !== null) {
-      mutateUpdateRelationship({
+      await mutateUpdateRelationship({
         id: changeId,
         data: {
           code: editData?.data?.data?.code ?? "",
@@ -207,6 +207,7 @@ const Relationship = () => {
         </CardBody>
       </Card>
       <AddRelationship
+        data={tableData}
         editId={editId ?? null}
         setEditId={setEditId}
         isOpen={isOpenAddRelationshipModal}
