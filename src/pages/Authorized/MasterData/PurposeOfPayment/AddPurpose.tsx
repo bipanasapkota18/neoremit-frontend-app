@@ -43,8 +43,8 @@ const AddPurpose = ({
     if (editId) {
       const selectedPurpose = editData?.find(purpose => purpose.id === editId);
       reset({
-        name: selectedPurpose?.name
-        // code: selectedPurpose?.code
+        name: selectedPurpose?.name,
+        code: selectedPurpose?.code
       });
     }
   }, [editData, editId]);
