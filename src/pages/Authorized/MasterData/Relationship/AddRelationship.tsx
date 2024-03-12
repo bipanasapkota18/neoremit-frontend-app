@@ -6,8 +6,7 @@ import {
   useAddRelationship,
   useUpdateRelationship
 } from "@neo/services/MasterData/service-relationship";
-import { SetStateAction } from "jotai";
-import { Dispatch, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 interface AddRelationshipProps {
@@ -77,7 +76,7 @@ const AddRelationship = ({
         onClose={handleCloseModal}
         submitButtonText="Save"
         cancelButtonText="Cancel"
-        title="Add Relationship"
+        title={editId ? "Edit Relationship" : "Add Relationship"}
         onSubmit={handleSubmit(onAddRelationship)}
       >
         <SimpleGrid columns={2} gap={"30px"}>

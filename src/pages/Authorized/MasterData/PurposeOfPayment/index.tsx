@@ -5,6 +5,7 @@ import {
   Flex,
   HStack,
   Switch,
+  Text,
   useDisclosure,
   useMediaQuery
 } from "@chakra-ui/react";
@@ -14,57 +15,79 @@ import FilterButton from "@neo/components/Button/FilterButton";
 import { DataTable } from "@neo/components/DataTable";
 import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
+import ConfirmationModal from "@neo/components/Modal/DeleteModal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
+import {
+  IPurposeResponse,
+  useDeletePurpose,
+  useGetAllPurpose,
+  useUpdatePurpose
+} from "@neo/services/MasterData/service-purposeofpayment";
+import { CellContext, PaginationState } from "@tanstack/react-table";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import AddPurpose from "./AddPurpose";
 
 const PurposeOfPayment = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenPurposeAddModal,
+    onOpen: onOpenPurposeAddModal,
+    onClose: onClosePurposeAddModal
+  } = useDisclosure();
+  const {
+    isOpen: isOpenPurposeDeleteModal,
+    onOpen: onOpenPurposeDeleteModal,
+    onClose: onClosePurposeDeleteModal
+  } = useDisclosure();
+  const {
+    isOpen: isOpenPurposeStatusUpdateModal,
+    onOpen: onOpenPurposeStatusUpdateModal,
+    onClose: onClosePurposeStatusUpdateModal
+  } = useDisclosure();
   const { pathname } = useLocation();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
+  const [editId, setEditId] = useState(null as number | null);
+  const [changeId, setChangeId] = useState(null as number | null);
+  const [active, setActive] = useState(false);
 
-  const onEditPurposeOfPayment = () => {
-    //
-  };
-  const onDeletePurposeOfPayment = () => {
-    //
-  };
-  const tableData = [
-    {
-      sn: 1,
-      name: "Nepali Rupee",
-
-      status: "Active"
-    },
-    {
-      sn: 2,
-      name: "US Dollar",
-
-      status: "Active"
-    },
-    {
-      sn: 3,
-      name: "Euro",
-
-      status: "Active"
-    },
-    {
-      sn: 4,
-      name: "British Pound",
-
-      status: "Active"
-    },
-    {
-      sn: 5,
-      name: "Australian Dollar",
-
-      status: "InActive"
+  const [tableData, setTableData] = useState<IPurposeResponse[] | undefined>();
+  const [pageParams, setPageParams] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10
+  });
+  const { data: purposeData, mutateAsync, isLoading } = useGetAllPurpose();
+  const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
+    useDeletePurpose();
+  const { mutateAsync: mutateStatusUpdate, isLoading: isStatusUPdateLoading } =
+    useUpdatePurpose();
+  useEffect(() => {
+    if (Array.isArray(purposeData?.data?.data)) {
+      setTableData(purposeData?.data?.data);
     }
-  ];
+  }, [purposeData]);
+  useEffect(() => {
+    mutateAsync({
+      pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
+      filterParams: {}
+    });
+  }, [pageParams.pageIndex, pageParams.pageSize]);
+  const refetchData = () => {
+    mutateAsync({
+      pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
+      filterParams: {}
+    });
+  };
   const columns = [
     {
       header: "S.N",
-      accessorKey: "sn"
+      accessorKey: "sn",
+      cell: (data: any) => {
+        return (
+          <Text>
+            {pageParams.pageIndex * pageParams.pageSize + data.row.index + 1}
+          </Text>
+        );
+      }
     },
     {
       header: "Purpose Name",
@@ -74,11 +97,16 @@ const PurposeOfPayment = () => {
     {
       header: "Status",
       accessorKey: "status",
-      cell: (data: any) => {
+      cell: (cell: CellContext<IPurposeResponse, any>) => {
         return (
           <Switch
             size="lg"
-            isChecked={data?.row?.original?.status === "Active"}
+            isChecked={cell?.row?.original?.isActive}
+            onChange={() => {
+              setChangeId(cell?.row?.original?.id);
+              setActive(cell?.row?.original?.isActive);
+              onOpenPurposeStatusUpdateModal();
+            }}
           />
         );
       }
@@ -86,16 +114,22 @@ const PurposeOfPayment = () => {
     {
       header: "Action",
       accessorKey: "action",
-      cell: () => {
+      cell: (cell: CellContext<IPurposeResponse, any>) => {
         return (
           <HStack>
             <TableActionButton
-              onClickAction={onEditPurposeOfPayment}
+              onClickAction={() => {
+                setEditId(cell?.row?.original?.id);
+                onOpenPurposeAddModal();
+              }}
               icon={<svgAssets.EditButton />}
               label="Edit"
             />
             <TableActionButton
-              onClickAction={onDeletePurposeOfPayment}
+              onClickAction={() => {
+                setChangeId(cell?.row?.original?.id);
+                onOpenPurposeDeleteModal();
+              }}
               icon={<svgAssets.DeleteButton />}
               label="Delete"
             />
@@ -105,7 +139,30 @@ const PurposeOfPayment = () => {
     }
   ];
   const activePath = breadcrumbTitle(pathname);
-
+  const handleDelete = async () => {
+    await mutateDelete(changeId);
+    setChangeId(null);
+    onClosePurposeDeleteModal();
+    refetchData();
+  };
+  const handleStatusChange = async () => {
+    if (changeId !== null) {
+      const selectedPurpose = tableData?.find(
+        purpose => purpose.id === changeId
+      );
+      await mutateStatusUpdate({
+        id: changeId,
+        data: {
+          code: selectedPurpose?.code ?? "",
+          name: selectedPurpose?.name ?? "",
+          isActive: !active
+        }
+      });
+    }
+    setChangeId(null);
+    onClosePurposeStatusUpdateModal();
+    refetchData();
+  };
   return (
     <Flex direction={"column"} gap={"16px"}>
       <BreadCrumb currentPage="Purpose Of Payment" options={activePath} />
@@ -142,26 +199,48 @@ const PurposeOfPayment = () => {
             <Button
               minW={"max-content"}
               leftIcon={<svgAssets.AddButton />}
-              onClick={onOpen}
+              onClick={onOpenPurposeAddModal}
             >
               Add Purpose Of Payment
             </Button>
           </HStack>
           <DataTable
+            isLoading={isLoading}
             pagination={{
-              manual: false
+              manual: true,
+              pageCount: tableData?.length ?? 0,
+              pageParams: pageParams,
+              onChangePagination: setPageParams
             }}
-            data={tableData}
+            data={tableData ?? []}
             columns={columns}
           />
         </CardBody>
       </Card>
 
       <AddPurpose
-        isOpen={isOpen}
+        refetchData={refetchData}
+        editId={editId}
+        setEditId={setEditId}
+        data={tableData ?? []}
+        isOpen={isOpenPurposeAddModal}
         onClose={() => {
-          onClose();
+          onClosePurposeAddModal();
         }}
+      />
+      <ConfirmationModal
+        isDeleting={isDeleteLoading}
+        onDelete={handleDelete}
+        confirmationText="Are you sure you want to delete this purpose?"
+        isOpen={isOpenPurposeDeleteModal}
+        onClose={onClosePurposeDeleteModal}
+      />
+      <ConfirmationModal
+        isDeleting={isStatusUPdateLoading}
+        onDelete={handleStatusChange}
+        confirmationText={`Are you sure you want to ${active ? "Disable" : "Enable"} this purpose?`}
+        isOpen={isOpenPurposeStatusUpdateModal}
+        onClose={onClosePurposeStatusUpdateModal}
       />
     </Flex>
   );
