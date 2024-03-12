@@ -39,7 +39,6 @@ const AddRelationship = ({
       const selectedRelationship = editData?.find(relation => {
         return relation.id === editId;
       });
-      console.log(selectedRelationship);
       reset({
         name: selectedRelationship?.name,
         code: selectedRelationship?.code
