@@ -1,38 +1,40 @@
 import { Text } from "@chakra-ui/react";
 import Modal from ".";
 
-interface IDeleteModalProps {
+interface IConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onDelete: () => void;
   isDeleting: boolean;
   confirmationText: string;
+  isStatusUpdate?: boolean;
 }
 
-const DeleteModal = ({
+const ConfirmationModal = ({
   confirmationText,
   isOpen,
   onClose,
   onDelete,
-  isDeleting
-}: IDeleteModalProps) => {
+  isDeleting,
+  isStatusUpdate
+}: IConfirmationModalProps) => {
   return (
     <Modal
       size={{
         sm: "md"
       }}
-      title="fields.delete_title"
+      title={isStatusUpdate ? "Update Status" : "Delete Confirmation"}
       isOpen={isOpen}
-      submitButtonText="fields.delete"
+      submitButtonText="Submit"
       onClose={onClose}
       onSubmit={onDelete}
       isSubmitting={isDeleting}
+      cancelButtonText="Cancel"
+      box-shadow="2px 2px 31px 0px rgba(0, 0, 0, 0.08)"
     >
-      <Text color={"text.300"} textAlign={"center"}>
-        {confirmationText}
-      </Text>
+      <Text textAlign={"center"}>{confirmationText}</Text>
     </Modal>
   );
 };
 
-export default DeleteModal;
+export default ConfirmationModal;

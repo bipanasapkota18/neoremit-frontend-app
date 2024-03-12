@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Box,
   Button,
   Flex,
   HStack,
@@ -10,10 +11,11 @@ import {
 } from "@chakra-ui/react";
 import { imageAssets } from "@neo/assets/images";
 import { svgAssets } from "@neo/assets/images/svgs";
-import { NAVIGATION_ROUTES } from "@neo/pages/App/navigationRoutes";
+
+import { useLogoutMutation } from "@neo/services/service-auth";
 import { colorScheme } from "@neo/theme/colorScheme";
 import { useEffect, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import NavItem from "./NavItem";
 import { navLinks } from "./navLinks";
 
@@ -42,6 +44,7 @@ export default function Sidebar({
   const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState("");
   const [activeCollapse, setActiveCollapse] = useState("");
+  const { mutateAsync: logout } = useLogoutMutation();
 
   // const { initData } = useStoreInitData();
 
@@ -78,13 +81,14 @@ export default function Sidebar({
     }
   };
   const handleLogout = () => {
-    //
+    logout();
   };
   return (
     <Flex
       pos="fixed"
       top={0}
       h="100%"
+      direction={"column"}
       w={width + "px"}
       maxW={width + "px"}
       bg="white"
@@ -93,6 +97,8 @@ export default function Sidebar({
     >
       <VStack
         w="100%"
+        height={"full"}
+        flex={1}
         as="nav"
         gap={3}
         transition="all 0.25s ease-in-out"
@@ -114,7 +120,7 @@ export default function Sidebar({
         <HStack
           padding="16px 20px"
           borderRadius={"16px"}
-          width={"260px"}
+          width={isCollapsed ? "auto" : "260px"}
           gap={"16px"}
           bgColor={"#F5F7FA"}
         >
@@ -126,17 +132,24 @@ export default function Sidebar({
               icon={<svgAssets.LoginBanner />}
             />
           </HStack>
-          <HStack flexDir={"column"} gap={"2px"} alignItems={"flex-start"}>
-            <Text fontWeight={700} color={colorScheme.sideBar_text}>
-              Name
-            </Text>
-            <Text fontWeight={400} color={colorScheme.search_icon}>
-              Role
-            </Text>
-          </HStack>
+          {isCollapsed ? (
+            ""
+          ) : (
+            <HStack flexDir={"column"} gap={"2px"} alignItems={"flex-start"}>
+              <Text fontWeight={700} color={colorScheme.sideBar_text}>
+                Name
+              </Text>
+              <Text fontWeight={400} color={colorScheme.search_icon}>
+                Role
+              </Text>
+            </HStack>
+          )}
         </HStack>
+
         <VStack
           w="100%"
+          height={"full"}
+          flex={1}
           py={4}
           css={{
             scrollbarGutter: "stable",
@@ -174,10 +187,12 @@ export default function Sidebar({
               />
             );
           })}
+        </VStack>
+        <Box>
           <Button
             width={"240px"}
-            as={NavLink}
-            to={NAVIGATION_ROUTES.LOGIN}
+            // as={NavLink}
+            // to={NAVIGATION_ROUTES.LOGIN}
             onClick={handleLogout}
             background={colorScheme.logout_button}
             _hover={{ background: colorScheme.logout_button }}
@@ -206,7 +221,7 @@ export default function Sidebar({
               </HStack>
             </HStack>
           </Button>
-        </VStack>
+        </Box>
       </VStack>
     </Flex>
   );

@@ -1,6 +1,9 @@
 export const NAVIGATION_ROUTES = {
-  LOGIN: "/login",
+  ALL: "*",
+
   DASHBOARD: "/",
+  LOGIN: "/",
+  LOGIN2: "/login",
   COLLAPSE: "/collapse",
   EXAMPLE: "/example",
   FORGOT_PASSWORD: "/forgot-password",

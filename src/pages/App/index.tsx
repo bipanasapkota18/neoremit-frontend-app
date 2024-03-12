@@ -1,12 +1,10 @@
 import { Flex, Spinner } from "@chakra-ui/react";
 import {
-  logoutAllTabs,
   useAuthentication,
   useLogoutMutation
 } from "@neo/services/service-auth";
-import { useFetchInitData } from "@neo/services/service-init";
 import { Suspense, lazy, useEffect } from "react";
-import { Outlet, Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import ForgotPassword from "../NoAuth/ForgotPassword";
 import { appRoutes } from "./appRoutes";
 import { NAVIGATION_ROUTES } from "./navigationRoutes";
@@ -19,13 +17,7 @@ export default function App() {
     isLoading: isAuthLoading,
     refetch: checkTokenAndRefresh
   } = useAuthentication();
-
-  const { mutateAsync: logoutUser } = useLogoutMutation(true);
-
-  //  Fetching Initial data in app
-  const { isLoading: isInitDataLoading, isError: isInitDataError } =
-    useFetchInitData(!!isAuthenticated);
-
+  const { mutate: logoutUser } = useLogoutMutation();
   useEffect(() => {
     if (typeof isAuthenticated === "boolean" && !isAuthenticated) {
       localStorage.getItem("token") ? logoutUser() : null;
@@ -44,14 +36,17 @@ export default function App() {
       }
     };
   }, [isAuthenticated, checkTokenAndRefresh]);
-  useEffect(() => {
-    logoutAllTabs();
-  }, []);
 
-  if ((isInitDataLoading || isAuthLoading) && !isInitDataError) {
+  if (isAuthLoading) {
     return (
       <Flex justifyContent={"center"} alignItems="center" height={"100vh"}>
-        <Spinner />
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="red.500"
+          size="xl"
+        />
       </Flex>
     );
   }
@@ -89,29 +84,21 @@ export default function App() {
               ))}
             </>
           ) : (
-            <Route path="/" element={<Outlet />}>
-              <>
-                {appRoutes.map((route, index) => (
-                  <Route key={index} path={route.path} element={route.element}>
-                    {route.children &&
-                      route.children.map((childRoute, childIndex) => (
-                        <Route
-                          key={childIndex}
-                          path={childRoute.path}
-                          element={childRoute.element}
-                          {...(childRoute.index && { index: childRoute.index })}
-                        />
-                      ))}
-                  </Route>
-                ))}
-              </>
-              <Route index element={<Login />} />
+            <>
+              <Route path="/" element={<Outlet />}>
+                <Route index element={<Login />} />
+                <Route path={NAVIGATION_ROUTES.LOGIN2} element={<Login />} />
+
+                <Route
+                  path={NAVIGATION_ROUTES.FORGOT_PASSWORD}
+                  element={<ForgotPassword />}
+                />
+              </Route>
               <Route
-                path={NAVIGATION_ROUTES.FORGOT_PASSWORD}
-                element={<ForgotPassword />}
+                path="*"
+                element={<Navigate to={NAVIGATION_ROUTES.LOGIN} replace />}
               />
-              <Route path={NAVIGATION_ROUTES.LOGIN} element={<Login />} />
-            </Route>
+            </>
           )}
         </Routes>
       </>
