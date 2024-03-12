@@ -6,8 +6,7 @@ import {
   useAddCurrency,
   useUpdateCurrency
 } from "@neo/services/MasterData/service-currency";
-import { SetStateAction } from "jotai";
-import { Dispatch, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 interface AddCurrencyProps {
@@ -84,7 +83,7 @@ const AddCurrency = ({
         onClose={handleCloseModal}
         submitButtonText="Save"
         cancelButtonText="Cancel"
-        title="Add Currency"
+        title={editId ? "Edit Currency" : "Add Currency"}
         onSubmit={handleSubmit(onAddCurrency)}
       >
         <SimpleGrid columns={2} gap={"30px"}>
