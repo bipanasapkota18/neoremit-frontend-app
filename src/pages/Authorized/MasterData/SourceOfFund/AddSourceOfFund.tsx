@@ -1,22 +1,79 @@
 import { GridItem, SimpleGrid } from "@chakra-ui/react";
-import { DropzoneComponentControlled } from "@neo/components/Form/DropzoneComponent";
 import TextInput from "@neo/components/Form/TextInput";
 import Modal from "@neo/components/Modal";
+import {
+  ISourceOfFundResponse,
+  useAddSourceOfFund,
+  useUpdateSourceOfFund
+} from "@neo/services/MasterData/service-source-of-fund";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
 interface AddSourceProps {
   isOpen: boolean;
   onClose: () => void;
+  editId: number | null;
+  setEditId: Dispatch<SetStateAction<number | null>>;
+  data: ISourceOfFundResponse[] | undefined;
+  refetchData: () => void;
 }
 const defaultValues = {
-  relationName: "",
-  sourceOfFundImage: ""
+  name: "",
+  code: "",
+  isActive: true
 };
-const AddSourceOfFund = ({ isOpen, onClose }: AddSourceProps) => {
-  const { control, handleSubmit } = useForm({
+const AddSourceOfFund = ({
+  isOpen,
+  onClose,
+  editId,
+  setEditId,
+  data: editData,
+  refetchData
+}: AddSourceProps) => {
+  const {
+    mutateAsync: mutateAddSourceOfFund,
+    isLoading: isAddSourceOfFundLoading
+  } = useAddSourceOfFund();
+  const {
+    mutateAsync: mutateUpdateSourceOfFund,
+    isLoading: isStatusUpdateLoading
+  } = useUpdateSourceOfFund();
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues
   });
-  const onAddSourceOfFund = () => {
-    //
+  useEffect(() => {
+    if (editId) {
+      const selectedSourceOfFund = editData?.find(
+        sourceOfFund => sourceOfFund.id === editId
+      );
+      reset({
+        name: selectedSourceOfFund?.name,
+        code: selectedSourceOfFund?.code
+      });
+    }
+  }, [editId, editData]);
+  const onAddSourceOfFund = async (data: typeof defaultValues) => {
+    if (editId) {
+      const selectedSourceOfFund = editData?.find(
+        sourceOfFund => sourceOfFund.id === editId
+      );
+      await mutateUpdateSourceOfFund({
+        id: editId,
+        data: {
+          ...data,
+          id: editId,
+          isActive: selectedSourceOfFund?.isActive ?? true
+        }
+      });
+    } else {
+      await mutateAddSourceOfFund(data);
+    }
+    handleCloseModal();
+    refetchData();
+  };
+  const handleCloseModal = () => {
+    setEditId(null);
+    reset(defaultValues);
+    onClose();
   };
   return (
     <>
@@ -25,24 +82,26 @@ const AddSourceOfFund = ({ isOpen, onClose }: AddSourceProps) => {
         onClose={onClose}
         submitButtonText="Save"
         cancelButtonText="Cancel"
-        title="Add SourceOfFund"
+        title={editId ? "Edit Source Of Fund" : "Add Source Of Fund"}
         onSubmit={handleSubmit(onAddSourceOfFund)}
+        isSubmitting={isAddSourceOfFundLoading || isStatusUpdateLoading}
       >
-        <SimpleGrid columns={2} spacing={"16px"}>
+        <SimpleGrid columns={2} spacing={"30px"}>
           <GridItem colSpan={2}>
-            <DropzoneComponentControlled
-              name="sourceOfFundImage"
+            <TextInput
+              size={"lg"}
+              name="name"
+              label="Source Of Fund "
               control={control}
-              options={{
-                maxSize: 2
-              }}
+              type="text"
+              isRequired
             />
           </GridItem>
           <GridItem colSpan={2}>
             <TextInput
               size={"lg"}
-              name="relationName"
-              label="Source Of Fund "
+              name="code"
+              label="Enter Code"
               control={control}
               type="text"
               isRequired
