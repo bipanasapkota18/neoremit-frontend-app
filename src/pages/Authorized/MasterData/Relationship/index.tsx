@@ -138,7 +138,6 @@ const Relationship = () => {
         data: {
           code: editData?.data?.data?.code ?? "",
           name: editData?.data?.data?.name ?? "",
-
           isActive: !active
         }
       });
@@ -217,9 +216,12 @@ const Relationship = () => {
         }}
       />
       <ConfirmationModal
-        isDeleting={isDeleteLoading}
-        onDelete={handleDelete}
-        confirmationText="Are you sure you want to delete this Relationship?"
+        variant={"edit"}
+        buttonText={"Delete"}
+        title={"Are You Sure?"}
+        isLoading={isDeleteLoading}
+        onApprove={handleDelete}
+        message="Deleting will permanently remove this file from the system. This cannot be Undone."
         isOpen={isOpenRelationshipDeleteModal}
         onClose={() => {
           setChangeId(null);
@@ -227,9 +229,12 @@ const Relationship = () => {
         }}
       />
       <ConfirmationModal
-        isDeleting={isStatusUPdateLoading}
-        onDelete={handleStatusChange}
-        confirmationText={`Are you sure you want to ${active ? "Disable" : "Enable"} this relationship?`}
+        variant={"edit"}
+        buttonText={`${active ? "Disable" : "Enable"}`}
+        title={"Are You Sure?"}
+        isLoading={isStatusUPdateLoading}
+        onApprove={handleStatusChange}
+        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this currency?`}
         isOpen={isOpenRelationshipStatusUpdateModal}
         onClose={() => {
           setChangeId(null);

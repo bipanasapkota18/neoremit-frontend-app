@@ -22,7 +22,7 @@ export const api = {
       update: "internal-service/currency-master/{id}"
     },
     document: {
-      getAll: "internal-service/doc/list",
+      getAll: "internal-service/doc",
       create: "internal-service/doc",
       update: "internal-service/doc/{id}",
       extension: "internal-service/doc/extension"

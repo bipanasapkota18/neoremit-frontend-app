@@ -229,16 +229,22 @@ const PurposeOfPayment = () => {
         }}
       />
       <ConfirmationModal
-        isDeleting={isDeleteLoading}
-        onDelete={handleDelete}
-        confirmationText="Are you sure you want to delete this purpose?"
+        variant={"delete"}
+        buttonText={"Delete"}
+        title={"Are You Sure?"}
+        isLoading={isDeleteLoading}
+        onApprove={handleDelete}
+        message="Deleting will permanently remove this file from the system. This cannot be Undone."
         isOpen={isOpenPurposeDeleteModal}
         onClose={onClosePurposeDeleteModal}
       />
       <ConfirmationModal
-        isDeleting={isStatusUPdateLoading}
-        onDelete={handleStatusChange}
-        confirmationText={`Are you sure you want to ${active ? "Disable" : "Enable"} this purpose?`}
+        variant={"edit"}
+        buttonText={`${active ? "Disable" : "Enable"}`}
+        title={"Are You Sure?"}
+        isLoading={isStatusUPdateLoading}
+        onApprove={handleStatusChange}
+        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this currency?`}
         isOpen={isOpenPurposeStatusUpdateModal}
         onClose={onClosePurposeStatusUpdateModal}
       />

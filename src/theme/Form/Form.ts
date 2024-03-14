@@ -10,7 +10,8 @@ const Form = {
       container: {
         _focusWithin: {
           label: {
-            ...activeLabelStyles
+            ...activeLabelStyles,
+            color: `${colorScheme.gray_700}`
           }
         },
         "input:not(:placeholder-shown) + label, input:-webkit-autofill ~ label, .chakra-select__wrapper + label, textarea:not(:placeholder-shown) ~ label":
@@ -25,7 +26,7 @@ const Form = {
           mx: 4,
           my: 2,
           transformOrigin: "left top",
-          color: `${colorScheme.gray_700}`,
+          color: `${colorScheme.sideBar_text}`,
           backgroundColor: "white",
           fontSize: "14px",
           fontWeight: 400,
