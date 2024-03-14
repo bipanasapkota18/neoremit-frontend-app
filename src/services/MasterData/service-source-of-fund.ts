@@ -1,5 +1,4 @@
-import { toastFail } from "@neo/components/Toast";
-import { toastSuccess } from "@neo/utility/Toast";
+import { toastFail, toastSuccess } from "@neo/utility/Toast";
 import { trimObjectValues } from "@neo/utility/helper";
 import { AxiosError } from "axios";
 import { useMutation } from "react-query";
