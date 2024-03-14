@@ -33,8 +33,10 @@ const AddCurrency = ({
   data: editData,
   refetchData
 }: AddCurrencyProps) => {
-  const { mutateAsync: mutateCurrency } = useAddCurrency();
-  const { mutateAsync: mutateUpdateCurrency } = useUpdateCurrency();
+  const { mutateAsync: mutateCurrency, isLoading: isAddLoading } =
+    useAddCurrency();
+  const { mutateAsync: mutateUpdateCurrency, isLoading: isUpdateLoading } =
+    useUpdateCurrency();
   const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues
   });
@@ -85,6 +87,7 @@ const AddCurrency = ({
         cancelButtonText="Cancel"
         title={editId ? "Edit Currency" : "Add Currency"}
         onSubmit={handleSubmit(onAddCurrency)}
+        isSubmitting={isAddLoading || isUpdateLoading}
       >
         <SimpleGrid columns={2} gap={"30px"}>
           <GridItem colSpan={2}>

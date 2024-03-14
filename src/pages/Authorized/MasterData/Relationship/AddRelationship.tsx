@@ -27,8 +27,10 @@ const AddRelationship = ({
   editId,
   data: editData
 }: AddRelationshipProps) => {
-  const { mutateAsync: mutateRelationship } = useAddRelationship();
-  const { mutateAsync: mutateUpdateRelationship } = useUpdateRelationship();
+  const { mutateAsync: mutateRelationship, isLoading: isAddLoading } =
+    useAddRelationship();
+  const { mutateAsync: mutateUpdateRelationship, isLoading: isUpdateLoading } =
+    useUpdateRelationship();
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues
@@ -78,6 +80,7 @@ const AddRelationship = ({
         cancelButtonText="Cancel"
         title={editId ? "Edit Relationship" : "Add Relationship"}
         onSubmit={handleSubmit(onAddRelationship)}
+        isSubmitting={isAddLoading || isUpdateLoading}
       >
         <SimpleGrid columns={2} gap={"30px"}>
           <GridItem colSpan={2}>

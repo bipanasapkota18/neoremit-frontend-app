@@ -33,7 +33,7 @@ export const api = {
       update: "internal-service/payment-purpose/{id}"
     },
     payout_method: {
-      getAll: "internal-service/payout-method/list",
+      getAll: "internal-service/payout-method",
       create: "internal-service/payout-method",
       update: "internal-service/payout-method/{id}"
     },

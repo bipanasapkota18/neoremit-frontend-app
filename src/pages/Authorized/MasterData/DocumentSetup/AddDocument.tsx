@@ -33,8 +33,10 @@ const AddDocument = ({
   data: editData,
   setEditId
 }: AddDocumentProps) => {
-  const { mutateAsync: mutateAddDocument } = useAddDocument();
-  const { mutateAsync: mutateUpdateDocument } = useUpdateDocument();
+  const { mutateAsync: mutateAddDocument, isLoading: isAddLoading } =
+    useAddDocument();
+  const { mutateAsync: mutateUpdateDocument, isLoading: isUpdateLoading } =
+    useUpdateDocument();
   const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues
   });
@@ -101,6 +103,7 @@ const AddDocument = ({
         cancelButtonText="Cancel"
         title={editId ? "Update Document" : "Add Document"}
         onSubmit={handleSubmit(onAddDocument)}
+        isSubmitting={isAddLoading || isUpdateLoading}
       >
         <SimpleGrid columns={2} spacing={"30px"}>
           <GridItem colSpan={2}>

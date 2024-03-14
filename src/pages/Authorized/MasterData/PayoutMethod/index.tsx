@@ -6,6 +6,7 @@ import {
   HStack,
   Switch,
   useBoolean,
+  useDisclosure,
   useMediaQuery
 } from "@chakra-ui/react";
 import { svgAssets } from "@neo/assets/images/svgs";
@@ -14,77 +15,65 @@ import FilterButton from "@neo/components/Button/FilterButton";
 import { DataTable } from "@neo/components/DataTable";
 import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
+import ConfirmationModal from "@neo/components/Modal/DeleteModal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
+import {
+  IPayoutMethodResponse,
+  useDeletePayoutMethod,
+  useGetAllPayoutMethod,
+  useGetPayOutMethodById,
+  useUpdatePayoutMethod
+} from "@neo/services/MasterData/service-payout-method";
+import { CellContext, PaginationState } from "@tanstack/react-table";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import AddPayoutMethod from "./AddPayoutMethod";
 
 const PayoutMethod = () => {
   const [flag, setFlag] = useBoolean();
   const { pathname } = useLocation();
+  const {
+    isOpen: isOpenPayoutMethodDeleteModal,
+    onOpen: onOpenPayoutMethodDeleteModal,
+    onClose: onClosePayoutMethodDeleteModal
+  } = useDisclosure();
+  const {
+    isOpen: isOpenPayoutMethodStatusUpdateModal,
+    onOpen: onOpenPayoutMethodStatusUpdateModal,
+    onClose: onClosePayoutMethodStatusUpdateModal
+  } = useDisclosure();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
+  const [editId, setEditId] = useState(null as number | null);
+  const [changeId, setChangeId] = useState(null as number | null);
+  const [active, setActive] = useState(false);
+  const [searchText, setSearchText] = useState<string>("" as string);
+  const [pageParams, setPageParams] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10
+  });
+  const { data: payoutMethodData, isLoading: isPayoutMethodLoading } =
+    useGetAllPayoutMethod();
+  const { data: editData } = useGetPayOutMethodById(changeId);
+  const {
+    mutateAsync: mutateUpdatePayoutMethod,
+    isLoading: isStatusUPdateLoading
+  } = useUpdatePayoutMethod();
+  const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
+    useDeletePayoutMethod();
 
-  const onEditPayoutMethod = () => {
-    //
-  };
-  const onDeletePayoutMethod = () => {
-    //
-  };
-  const tableData = [
-    {
-      sn: 1,
-      name: "Nepali Rupee",
-      country: "Nepal",
-      payoutMethod: "Bank",
-      status: "Active"
-    },
-    {
-      sn: 2,
-      name: "US Dollar",
-      country: "Nepal",
-      payoutMethod: "Bank",
-      status: "Active"
-    },
-    {
-      sn: 3,
-      name: "Euro",
-      country: "Nepal",
-      payoutMethod: "Bank",
-      status: "Active"
-    },
-    {
-      sn: 4,
-      name: "British Pound",
-      country: "Nepal",
-      payoutMethod: "Bank",
-      status: "Active"
-    },
-    {
-      sn: 5,
-      name: "Australian Dollar",
-      country: "Nepal",
-      payoutMethod: "Bank",
-      status: "InActive"
-    }
-  ];
   const columns = [
     {
       header: "S.N",
-      accessorKey: "sn"
+      accessorKey: "sn",
+      cell: (data: any) => {
+        return data.row.index + 1;
+      }
     },
-    {
-      header: "Method Name",
-      accessorKey: "name",
-      size: 40
-    },
-    {
-      header: "Country",
-      accessorKey: "country",
-      size: 30
-    },
+
     {
       header: "Payout Method",
-      accessorKey: "payoutMethod",
-      size: 20
+      accessorKey: "name",
+      size: 100
     },
     {
       header: "Status",
@@ -93,8 +82,15 @@ const PayoutMethod = () => {
       cell: (data: any) => {
         return (
           <Switch
+            name="status"
             size="lg"
-            isChecked={data?.row?.original?.status === "Active"}
+            colorScheme="facebook"
+            isChecked={data?.row?.original?.isActive}
+            onChange={() => {
+              setActive(data?.row?.original?.isActive);
+              setChangeId(data?.row?.original?.id);
+              onOpenPayoutMethodStatusUpdateModal();
+            }}
           />
         );
       }
@@ -102,16 +98,22 @@ const PayoutMethod = () => {
     {
       header: "Action",
       accessorKey: "action",
-      cell: () => {
+      cell: (cell: CellContext<IPayoutMethodResponse, any>) => {
         return (
           <HStack>
             <TableActionButton
-              onClickAction={onEditPayoutMethod}
+              onClickAction={() => {
+                setEditId(cell?.row?.original?.id || null);
+                setFlag.on();
+              }}
               icon={<svgAssets.EditButton />}
               label="Edit"
             />
             <TableActionButton
-              onClickAction={onDeletePayoutMethod}
+              onClickAction={() => {
+                setChangeId(cell?.row?.original?.id || null);
+                onOpenPayoutMethodDeleteModal();
+              }}
               icon={<svgAssets.DeleteButton />}
               label="Delete"
             />
@@ -121,6 +123,26 @@ const PayoutMethod = () => {
     }
   ];
   const activePath = breadcrumbTitle(pathname);
+  const handleDelete = async () => {
+    await mutateDelete(changeId);
+    setChangeId(null);
+    onClosePayoutMethodDeleteModal();
+  };
+  const handleStatusChange = async () => {
+    if (changeId !== null) {
+      await mutateUpdatePayoutMethod({
+        id: changeId,
+        data: {
+          code: editData?.data?.data?.code ?? "",
+          name: editData?.data?.data?.name ?? "",
+          description: editData?.data?.data?.description ?? "",
+          isActive: !active
+        }
+      });
+    }
+    setChangeId(null);
+    onClosePayoutMethodStatusUpdateModal();
+  };
 
   return (
     <Flex direction={"column"} gap={"16px"}>
@@ -132,6 +154,9 @@ const PayoutMethod = () => {
         <CardBody>
           {flag ? (
             <AddPayoutMethod
+              data={payoutMethodData}
+              editId={editId ?? null}
+              setEditId={setEditId}
               onClose={() => {
                 setFlag.off();
               }}
@@ -173,15 +198,48 @@ const PayoutMethod = () => {
               </HStack>
               <DataTable
                 pagination={{
-                  manual: false
+                  manual: false,
+                  pageParams: pageParams,
+                  onChangePagination: setPageParams
                 }}
-                data={tableData}
+                data={Array.isArray(payoutMethodData) ? payoutMethodData : []}
                 columns={columns}
+                filter={{
+                  globalFilter: searchText,
+                  setGlobalFilter: setSearchText
+                }}
+                isLoading={isPayoutMethodLoading}
               />{" "}
             </>
           )}
         </CardBody>
       </Card>
+      <ConfirmationModal
+        variant={"delete"}
+        buttonText={"Delete"}
+        title={"Are You Sure?"}
+        isLoading={isDeleteLoading}
+        onApprove={handleDelete}
+        message="Deleting will permanently remove this file from the system. This cannot be Undone."
+        isOpen={isOpenPayoutMethodDeleteModal}
+        onClose={() => {
+          setChangeId(null);
+          onClosePayoutMethodDeleteModal();
+        }}
+      />
+      <ConfirmationModal
+        variant={"edit"}
+        buttonText={`${active ? "Disable" : "Enable"}`}
+        title={"Are You Sure?"}
+        isLoading={isStatusUPdateLoading}
+        onApprove={handleStatusChange}
+        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this payout method?`}
+        isOpen={isOpenPayoutMethodStatusUpdateModal}
+        onClose={() => {
+          setChangeId(null);
+          onClosePayoutMethodStatusUpdateModal();
+        }}
+      />
     </Flex>
   );
 };
