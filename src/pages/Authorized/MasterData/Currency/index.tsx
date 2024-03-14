@@ -252,16 +252,22 @@ const Currency = () => {
         onClose={onCloseCurrencyAddModal}
       />
       <ConfirmationModal
-        isDeleting={isDeleteLoading}
-        onDelete={handleDelete}
-        confirmationText="Are you sure you want to delete this currency?"
+        variant={"delete"}
+        buttonText={"Delete"}
+        title={"Are You Sure?"}
+        isLoading={isDeleteLoading}
+        onApprove={handleDelete}
+        message="Deleting will permanently remove this file from the system. This cannot be Undone."
         isOpen={isOpenCurrencyDeleteModal}
         onClose={onCloseCurrencyDeleteModal}
       />
       <ConfirmationModal
-        isDeleting={isStatusUPdateLoading}
-        onDelete={handleStatusChange}
-        confirmationText={`Are you sure you want to ${active ? "Disable" : "Enable"} this currency?`}
+        variant={"edit"}
+        buttonText={`${active ? "Disable" : "Enable"}`}
+        title={"Are You Sure?"}
+        isLoading={isStatusUPdateLoading}
+        onApprove={handleStatusChange}
+        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this currency?`}
         isOpen={isOpenCurrencyStatusUpdateModal}
         onClose={onCloseCurrencyStatusUpdateModal}
       />

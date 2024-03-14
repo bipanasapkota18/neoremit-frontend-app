@@ -234,17 +234,24 @@ const SourceOfFund = () => {
         isOpen={isOpenAddSourceModal}
         onClose={() => onCloseAddSourceModal()}
       />
+
       <ConfirmationModal
-        isDeleting={isDeleteLoading}
-        onDelete={handleDelete}
-        confirmationText="Are you sure you want to delete this source?"
+        variant={"delete"}
+        buttonText={"Delete"}
+        title={"Are You Sure?"}
+        isLoading={isDeleteLoading}
+        onApprove={handleDelete}
+        message="Deleting will permanently remove this file from the system. This cannot be Undone."
         isOpen={isOpenSourceDeleteModal}
         onClose={onCloseSourceDeleteModal}
       />
       <ConfirmationModal
-        isDeleting={isStatusUPdateLoading}
-        onDelete={handleStatusChange}
-        confirmationText={`Are you sure you want to ${active ? "Disable" : "Enable"} this source?`}
+        variant={"edit"}
+        buttonText={`${active ? "Disable" : "Enable"}`}
+        title={"Are You Sure?"}
+        isLoading={isStatusUPdateLoading}
+        onApprove={handleStatusChange}
+        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this currency?`}
         isOpen={isOpenSourceStatusUpdateModal}
         onClose={onCloseSourceStatusUpdateModal}
       />

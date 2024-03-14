@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   Card,
   CardBody,
@@ -13,91 +14,87 @@ import FilterButton from "@neo/components/Button/FilterButton";
 import { DataTable } from "@neo/components/DataTable";
 import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
+import ConfirmationModal from "@neo/components/Modal/DeleteModal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
+import {
+  IDocumentResponse,
+  useDeleteDocument,
+  useGetAllDocument,
+  useGetDocumentById,
+  useUpdateDocument
+} from "@neo/services/MasterData/service-document-setup";
+import { CellContext, PaginationState } from "@tanstack/react-table";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { svgAssets } from "../../../../assets/images/svgs/index";
 import AddDocument from "./AddDocument";
 
 const Document = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenDocumentAddModal,
+    onOpen: onOpenDocumentAddModal,
+    onClose: onCloseDocumentAddModal
+  } = useDisclosure();
+
+  const {
+    isOpen: isOpenDocumentDeleteModal,
+    onOpen: onOpenDocumentDeleteModal,
+    onClose: onCloseDocumentDeleteModal
+  } = useDisclosure();
+  const {
+    isOpen: isOpenDocumentStatusUpdateModal,
+    onOpen: onOpenDocumentStatusUpdateModal,
+    onClose: onCloseDocumentStatusUpdateModal
+  } = useDisclosure();
   const { pathname } = useLocation();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
-
-  const onEditDocument = () => {
-    //
-  };
-  const onDeleteDocument = () => {
-    //
-  };
-  const tableData = [
-    {
-      sn: 1,
-      name: "Brother",
-      extension: ["pdf", "docx"],
-      size: "2MB",
-      status: "Active"
-    },
-    {
-      sn: 2,
-      name: "Sister",
-      extension: "pdf",
-      size: "2MB",
-      status: "Active"
-    },
-    {
-      sn: 3,
-      name: "Father",
-      extension: ["pdf", "docx"],
-      size: "2MB",
-      status: "Active"
-    },
-    {
-      sn: 4,
-      name: "Mother",
-      extension: "pdf",
-      size: "2MB",
-      status: "Active"
-    },
-    {
-      sn: 5,
-      name: "Cousin",
-      extension: "pdf",
-      size: "2MB",
-      status: "InActive"
-    },
-    {
-      sn: 6,
-      name: "Brother",
-      extension: "pdf",
-      size: "2MB",
-      status: "Active"
-    },
-    {
-      sn: 7,
-      name: "Sister",
-      extension: ["pdf", "docx"],
-      size: "2MB",
-      status: "Active"
-    }
-  ];
+  const [searchText, setSearchText] = useState<string>("" as string);
+  const [editId, setEditId] = useState(null as number | null);
+  const [changeId, setChangeId] = useState(null as number | null);
+  const [active, setActive] = useState(false);
+  const [pageParams, setPageParams] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10
+  });
+  const {
+    mutateAsync: mutateUpdateDocument,
+    isLoading: isStatusUPdateLoading
+  } = useUpdateDocument();
+  const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
+    useDeleteDocument();
+  const { data: documentData } = useGetAllDocument();
+  const { data: editData } = useGetDocumentById(changeId);
   const columns = [
     {
       header: "S.N",
-      accessorKey: "sn"
+      accessorKey: "sn",
+      cell: (data: any) => {
+        return data.row.index + 1;
+      }
     },
     {
       header: "Document Name",
-      accessorKey: "name",
+      accessorKey: "documentName",
       size: 50
     },
 
     {
       header: "Allow Extension",
-      accessorKey: "extension"
+      accessorKey: "allowedExtensions",
+      size: 100,
+      cell: (cell: CellContext<IDocumentResponse, any>) => {
+        return cell.row.original.allowedExtensions.map((item, index) => {
+          return (
+            <Badge key={index} padding="8px 24px" mx={2} borderRadius={"16px"}>
+              {item}
+            </Badge>
+          );
+        });
+      }
     },
     {
       header: "Document Size( in MB)",
-      accessorKey: "size"
+      accessorKey: "documentSize"
     },
     {
       header: "Status",
@@ -107,8 +104,12 @@ const Document = () => {
           <Switch
             name="status"
             size="lg"
-            isChecked={data?.row?.original?.status === "Active"}
-            // disabled
+            isChecked={data?.row?.original?.isActive}
+            onChange={() => {
+              setActive(data?.row?.original?.isActive);
+              setChangeId(data?.row?.original?.id);
+              onOpenDocumentStatusUpdateModal();
+            }}
           />
         );
       }
@@ -116,16 +117,22 @@ const Document = () => {
     {
       header: "Action",
       accessorKey: "action",
-      cell: () => {
+      cell: (cell: CellContext<IDocumentResponse, any>) => {
         return (
           <HStack>
             <TableActionButton
-              onClickAction={onEditDocument}
+              onClickAction={() => {
+                setEditId(cell?.row?.original?.id || null);
+                onOpenDocumentAddModal();
+              }}
               icon={<svgAssets.EditButton />}
               label="Edit"
             />
             <TableActionButton
-              onClickAction={onDeleteDocument}
+              onClickAction={() => {
+                setChangeId(cell?.row?.original?.id || null);
+                onOpenDocumentDeleteModal();
+              }}
               icon={<svgAssets.DeleteButton />}
               label="Delete"
             />
@@ -136,6 +143,29 @@ const Document = () => {
   ];
 
   const activePath = breadcrumbTitle(pathname);
+  const handleDelete = async () => {
+    await mutateDelete(changeId);
+    setChangeId(null);
+    onCloseDocumentDeleteModal();
+  };
+  const handleStatusChange = async () => {
+    if (changeId !== null) {
+      await mutateUpdateDocument({
+        id: changeId,
+        data: {
+          documentName: editData?.data?.data?.documentName ?? "",
+          allowedExtensions: editData?.data?.data?.allowedExtensions ?? [],
+          documentCode: editData?.data?.data?.documentCode ?? "",
+          documentSize:
+            editData?.data?.data?.documentSize ?? ("" as unknown as number),
+
+          isActive: !active
+        }
+      });
+    }
+    setChangeId(null);
+    onCloseDocumentStatusUpdateModal();
+  };
   return (
     <Flex direction={"column"} gap={"16px"}>
       <BreadCrumb currentPage="Document Setup" options={activePath} />
@@ -171,22 +201,63 @@ const Document = () => {
             <Button
               minW={"max-content"}
               leftIcon={<svgAssets.AddButton />}
-              onClick={onOpen}
+              onClick={onOpenDocumentAddModal}
             >
               Add Document
             </Button>
           </HStack>
           <DataTable
             pagination={{
-              manual: false
+              manual: false,
+              pageParams: pageParams,
+              onChangePagination: setPageParams
             }}
-            data={tableData}
+            data={Array.isArray(documentData) ? documentData : []}
             columns={columns}
+            filter={{
+              globalFilter: searchText,
+              setGlobalFilter: setSearchText
+            }}
           />
         </CardBody>
       </Card>
 
-      <AddDocument isOpen={isOpen} onClose={() => onClose()} />
+      <AddDocument
+        data={documentData}
+        editId={editId ?? null}
+        setEditId={setEditId}
+        isOpen={isOpenDocumentAddModal}
+        onClose={() => {
+          setEditId(null);
+          onCloseDocumentAddModal();
+        }}
+      />
+      <ConfirmationModal
+        variant={"delete"}
+        buttonText={"Delete"}
+        title={"Are You Sure?"}
+        isLoading={isDeleteLoading}
+        onApprove={handleDelete}
+        message="Deleting will permanently remove this file from the system. This cannot be Undone."
+        isOpen={isOpenDocumentDeleteModal}
+        onClose={() => {
+          setChangeId(null);
+          onCloseDocumentDeleteModal();
+        }}
+      />
+      <ConfirmationModal
+        variant={"edit"}
+        buttonText={`${active ? "Disable" : "Enable"}`}
+        title={"Are You Sure?"}
+        isLoading={isStatusUPdateLoading}
+        onApprove={handleStatusChange}
+        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this currency?`}
+        isOpen={isOpenDocumentStatusUpdateModal}
+        onClose={() => {
+          setChangeId(null);
+          onCloseDocumentStatusUpdateModal();
+        }}
+      />
     </Flex>
   );
 };

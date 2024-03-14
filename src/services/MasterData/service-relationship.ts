@@ -53,7 +53,6 @@ const useGetRelationshipById = (id: number | null) => {
       onError: (error: AxiosError) => {
         toastFail(error?.message);
       }
-      // staleTime: 0
     }
   );
 };
