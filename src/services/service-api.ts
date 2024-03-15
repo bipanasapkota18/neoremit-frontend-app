@@ -7,6 +7,7 @@ export const api = {
 
   masterData: {
     country: {
+      getList: "internal-service/country/list/app",
       getAll: "internal-service/country/list",
       create: "internal-service/country",
       update: "internal-service/country/{id}"
@@ -36,6 +37,11 @@ export const api = {
       getAll: "internal-service/payout-method",
       create: "internal-service/payout-method",
       update: "internal-service/payout-method/{id}"
+    },
+    payout_partner: {
+      getAll: "internal-service/payout-partner/list",
+      create: "internal-service/payout-partner",
+      update: "internal-service/payout-partner/{id}"
     },
     relationship: {
       getAll: "internal-service/relationship",
