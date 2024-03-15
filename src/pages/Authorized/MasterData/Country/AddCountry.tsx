@@ -6,7 +6,8 @@ import TextInput from "@neo/components/Form/TextInput";
 import Modal from "@neo/components/Modal";
 import {
   CountriesList,
-  useAddCountry
+  useAddCountry,
+  useUpdateCountry
 } from "@neo/services/MasterData/service-country";
 import { useGetAllCurrency } from "@neo/services/MasterData/service-currency";
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
@@ -18,6 +19,7 @@ const defaultValues = {
   shortName: "",
   phoneCode: "",
   isoNumber: "",
+  code: "",
   currencyId: null as ISelectOptions<number> | null,
   hasState: true,
   flagIcon: "",
@@ -42,12 +44,12 @@ const AddCountrySetup = ({
   data: editData
 }: AddCountrySetupProps) => {
   const { mutateAsync: mutateAddCountry } = useAddCountry();
+  const { mutateAsync: mutateUpdate } = useUpdateCountry();
   const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues
   });
   const { mutateAsync: mutateCurrency, data: currencyData } =
     useGetAllCurrency();
-  console.log(currencyData);
   useEffect(() => {
     mutateCurrency({
       pageParams: { page: 0, size: 20 },
@@ -68,7 +70,7 @@ const AddCountrySetup = ({
       reset({
         name: selectedCountry?.name,
         shortName: selectedCountry?.shortName,
-        // code: selectedCountry?.code,
+        code: selectedCountry?.code,
         phoneCode: selectedCountry?.phoneCode,
         isoNumber: selectedCountry?.isoNumber,
         hasState: selectedCountry?.hasState,
@@ -80,12 +82,25 @@ const AddCountrySetup = ({
       });
     }
   }, [editData, editId]);
-  const onAddCountrySetup = (data: typeof defaultValues) => {
-    mutateAddCountry({
-      ...data,
-      flagIcon: data.flagIcon[0],
-      currencyId: data?.currencyId?.value ?? null
-    });
+  const onAddCountrySetup = async (data: typeof defaultValues) => {
+    if (editId) {
+      const selectedCountry = editData?.find(country => country.id === editId);
+      await mutateUpdate({
+        id: editId,
+        data: {
+          ...data,
+          flagIcon: data.flagIcon[0] ?? "",
+          currencyId: data?.currencyId?.value ?? null,
+          isActive: selectedCountry?.isActive ?? true
+        }
+      });
+    } else {
+      await mutateAddCountry({
+        ...data,
+        flagIcon: data.flagIcon[0],
+        currencyId: data?.currencyId?.value ?? null
+      });
+    }
     refetchData();
     handleCloseModal();
   };
@@ -153,7 +168,7 @@ const AddCountrySetup = ({
           <GridItem colSpan={1}>
             <TextInput
               size={"lg"}
-              name="countryCode"
+              name="code"
               label="Enter Country Code"
               control={control}
               type="text"

@@ -1,6 +1,6 @@
 import { toastFail, toastSuccess } from "@neo/utility/Toast";
 import { AxiosError } from "axios";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "../service-api";
 import { NeoHttpClient, toFormData } from "../service-axios";
 import { IPageParams } from "./master-data-common-interface";
@@ -13,6 +13,7 @@ export interface ICountryResponse {
 export interface CountriesList {
   id: number;
   name: string;
+  code: string;
   shortName: string;
   phoneCode: string;
   isoNumber: string;
@@ -36,6 +37,7 @@ export interface ICountryRequest {
   id?: number | null;
   name: string;
   shortName: string;
+  code: string;
   phoneCode: string;
   isoNumber: string;
   currencyId: number | null;
@@ -69,8 +71,8 @@ const getAllCountries = ({ pageParams, filterParams }: IFilterParams) => {
 };
 const useGetAllCountries = () => {
   return useMutation(getAllCountries, {
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };
@@ -97,8 +99,8 @@ const useAddCountry = () => {
     onSuccess: success => {
       toastSuccess(success?.data?.message);
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };
@@ -116,7 +118,6 @@ const useGetCountryById = (id: number | null) => {
   });
 };
 const updateCountry = ({ id, data }: { id: number; data: ICountryRequest }) => {
-  console.log(data);
   return NeoHttpClient.post<NeoResponse<ICountryRequest>>(
     api.masterData.country.update.replace("{id}", id + ""),
     toFormData(data)
@@ -147,11 +148,30 @@ const useDeleteCountry = () => {
     }
   });
 };
+const toggleStatus = (id: number | null) => () => {
+  return NeoHttpClient.get<NeoResponse>(
+    api.masterData.country.statusChange.replace("{id}", id + "")
+  );
+};
+const useToggleStatus = (id: number | null) => {
+  const queryClient = useQueryClient();
+  return useQuery([api.masterData.country.statusChange, id], toggleStatus(id), {
+    enabled: false,
+    onSuccess: success => {
+      queryClient.invalidateQueries(api.masterData.country.getAll);
+      toastSuccess(success?.data?.message);
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? "Error");
+    }
+  });
+};
 export {
   useAddCountry,
   useDeleteCountry,
   useGetAllCountries,
   useGetCountryById,
   useGetCountryList,
+  useToggleStatus,
   useUpdateCountry
 };

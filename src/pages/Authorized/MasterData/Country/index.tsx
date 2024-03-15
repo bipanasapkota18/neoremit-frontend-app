@@ -4,11 +4,13 @@ import {
   CardBody,
   Flex,
   HStack,
+  Image,
   Switch,
   Text,
   useDisclosure,
   useMediaQuery
 } from "@chakra-ui/react";
+import { imageAssets } from "@neo/assets/images";
 import { svgAssets } from "@neo/assets/images/svgs";
 import BreadCrumb from "@neo/components/BreadCrumb";
 import FilterButton from "@neo/components/Button/FilterButton";
@@ -23,10 +25,11 @@ import {
   useDeleteCountry,
   useGetAllCountries,
   useGetCountryById,
-  useUpdateCountry
+  useToggleStatus
 } from "@neo/services/MasterData/service-country";
+import { baseURL } from "@neo/services/service-axios";
 import { CellContext, PaginationState } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddCountrySetup from "./AddCountry";
 
@@ -65,11 +68,15 @@ const Country = () => {
     data: countryData,
     isLoading
   } = useGetAllCountries();
-  const { data: editData } = useGetCountryById(changeId);
+  const { isLoading: isSingleFetching } = useGetCountryById(changeId);
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
     useDeleteCountry();
-  const { mutateAsync: mutateUpdate, isLoading: isUpdateLoading } =
-    useUpdateCountry();
+
+  const {
+    isLoading: isToggling,
+    refetch,
+    isFetching
+  } = useToggleStatus(changeId);
   useEffect(() => {
     addMutateCountry({
       pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
@@ -88,10 +95,6 @@ const Country = () => {
     setFilterCount(countryData?.data?.data?.totalItems ?? 0);
   }, [countryData]);
 
-  const onAddState = () => {
-    navigate(NAVIGATION_ROUTES.MASTER_DATA.STATE_SETUP);
-  };
-
   const columns = [
     {
       header: "S.N",
@@ -106,7 +109,25 @@ const Country = () => {
     },
     {
       header: "Flag",
-      accessorKey: "flagIcon"
+      accessorKey: "flagIcon",
+      size: 20,
+      cell: (cell: any) => {
+        const memoizedImage = useMemo(() => {
+          return (
+            <Image
+              boxSize={"50px"}
+              borderRadius="full"
+              fallbackStrategy={"onError"}
+              src={
+                cell?.row?.original?.flagIcon != null
+                  ? `${baseURL}/document-service/master/flag-icon?fileId=${cell?.row?.original?.flagIcon}`
+                  : imageAssets.noImage
+              }
+            />
+          );
+        }, [cell?.row?.original?.flagIcon]);
+        return memoizedImage;
+      }
     },
     {
       header: "Country Name",
@@ -157,7 +178,14 @@ const Country = () => {
           <HStack>
             <TableActionButton
               isDisabled={!cell?.row?.original?.hasState}
-              onClickAction={onAddState}
+              onClickAction={() => {
+                navigate(NAVIGATION_ROUTES.MASTER_DATA.STATE_SETUP, {
+                  state: {
+                    countryData: countryData?.data?.data?.countriesList,
+                    countryId: cell?.row?.original?.id
+                  }
+                });
+              }}
               icon={<svgAssets.StateAddIcon />}
               label="Add State"
             />
@@ -190,27 +218,14 @@ const Country = () => {
     refetchData();
   };
   const handleStatusChange = async () => {
-    if (changeId !== null) {
-      await mutateUpdate({
-        id: changeId,
-        data: {
-          id: changeId,
-          name: editData?.data?.data?.name ?? "",
-          shortName: editData?.data?.data?.shortName ?? "",
-          phoneCode: editData?.data?.data?.phoneCode ?? "",
-          isoNumber: editData?.data?.data?.isoNumber ?? "",
-          currencyId: editData?.data?.data?.currency?.id ?? null,
-          hasState: editData?.data?.data?.hasState ?? true,
-          flagIcon: editData?.data?.data?.flagIcon ?? "",
-          canReceive: editData?.data?.data?.canReceive ?? true,
-          canSend: editData?.data?.data?.canSend ?? true,
-          isActive: !active
-        }
-      });
+    try {
+      await refetch();
+      setChangeId(null);
+      refetchData();
+      onCloseCountryStatusUpdateModal();
+    } catch (e) {
+      console.error(e);
     }
-    setChangeId(null);
-    onCloseCountryStatusUpdateModal();
-    refetchData();
   };
   return (
     <Flex direction={"column"} gap={"16px"}>
@@ -234,6 +249,7 @@ const Country = () => {
                   label="Search"
                   name="search"
                   type="text"
+                  onSearch={setSearchText}
                 />
               ) : (
                 ""
@@ -282,7 +298,7 @@ const Country = () => {
         variant={"delete"}
         buttonText={"Delete"}
         title={"Are You Sure?"}
-        isLoading={isDeleteLoading}
+        isLoading={isDeleteLoading || isSingleFetching}
         onApprove={handleDelete}
         message="Deleting will permanently remove this file from the system. This cannot be Undone."
         isOpen={isOpenCountryDeleteModal}
@@ -292,7 +308,7 @@ const Country = () => {
         variant={"edit"}
         buttonText={`${active ? "Disable" : "Enable"}`}
         title={"Are You Sure?"}
-        isLoading={isUpdateLoading}
+        isLoading={isToggling || isFetching}
         onApprove={handleStatusChange}
         message={`Are you sure you want to ${active ? "Disable" : "Enable"} this Country?`}
         isOpen={isOpenCountryStatusUpdateModal}
