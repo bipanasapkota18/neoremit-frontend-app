@@ -64,7 +64,7 @@ function buildFormData(
     // file changed
   } else if (parentKey) {
     const value = data instanceof Date ? data.toString() : data;
-    if (!value) return;
+    if (typeof value != "boolean" && !value) return;
     formData.append(parentKey, value);
   }
 }

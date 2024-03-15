@@ -1,9 +1,50 @@
-import { toastFail } from "@neo/utility/Toast";
+import { toastFail, toastSuccess } from "@neo/utility/Toast";
 import { AxiosError } from "axios";
 import { useMutation, useQuery } from "react-query";
 import { NeoResponse, api } from "../service-api";
-import { NeoHttpClient } from "../service-axios";
+import { NeoHttpClient, toFormData } from "../service-axios";
 import { IPageParams } from "./master-data-common-interface";
+
+export interface ICountryResponse {
+  totalItems: number;
+  countriesList: CountriesList[];
+}
+
+export interface CountriesList {
+  id: number;
+  name: string;
+  shortName: string;
+  phoneCode: string;
+  isoNumber: string;
+  currency: Currency;
+  canReceive: boolean;
+  canSend: boolean;
+  isActive: boolean;
+  flagIcon?: any;
+  hasState: boolean;
+}
+
+export interface Currency {
+  id: number;
+  code: string;
+  name: string;
+  shortName: string;
+  symbol: string;
+  isActive: boolean;
+}
+export interface ICountryRequest {
+  id?: number | null;
+  name: string;
+  shortName: string;
+  phoneCode: string;
+  isoNumber: string;
+  currencyId: number | null;
+  hasState: boolean;
+  flagIcon: string;
+  canReceive: boolean;
+  canSend: boolean;
+  isActive: boolean;
+}
 
 // interface IFilterItems {
 // }
@@ -13,7 +54,7 @@ interface IFilterParams {
   //   filterParams: IFilterItems;
 }
 const getAllCountries = ({ pageParams, filterParams }: IFilterParams) => {
-  return NeoHttpClient.post<NeoResponse>(
+  return NeoHttpClient.post<NeoResponse<ICountryResponse>>(
     api.masterData.country.getAll,
     {
       ...filterParams
@@ -45,5 +86,72 @@ const useGetCountryList = () => {
     }
   });
 };
-
-export { useGetAllCountries, useGetCountryList };
+const addCountry = (data: ICountryRequest) => {
+  return NeoHttpClient.post<NeoResponse<ICountryRequest>>(
+    api.masterData.country.create,
+    toFormData(data)
+  );
+};
+const useAddCountry = () => {
+  return useMutation(addCountry, {
+    onSuccess: success => {
+      toastSuccess(success?.data?.message);
+    },
+    onError: (error: AxiosError) => {
+      toastFail(error?.message);
+    }
+  });
+};
+const getCountryById = (id: number | null) => {
+  return NeoHttpClient.get<NeoResponse<CountriesList>>(
+    api.masterData.country.update.replace("{id}", id + "")
+  );
+};
+const useGetCountryById = (id: number | null) => {
+  return useQuery([id], () => getCountryById(id), {
+    enabled: !!id,
+    onError: (error: AxiosError) => {
+      toastFail(error?.message);
+    }
+  });
+};
+const updateCountry = ({ id, data }: { id: number; data: ICountryRequest }) => {
+  console.log(data);
+  return NeoHttpClient.post<NeoResponse<ICountryRequest>>(
+    api.masterData.country.update.replace("{id}", id + ""),
+    toFormData(data)
+  );
+};
+const useUpdateCountry = () => {
+  return useMutation(updateCountry, {
+    onSuccess: success => {
+      toastSuccess(success?.data?.message);
+    },
+    onError: (error: AxiosError) => {
+      toastFail(error?.message);
+    }
+  });
+};
+const deleteCountry = (id: number | null) => {
+  return NeoHttpClient.delete<NeoResponse>(
+    api.masterData.country.update.replace("{id}", id + "")
+  );
+};
+const useDeleteCountry = () => {
+  return useMutation(deleteCountry, {
+    onSuccess: success => {
+      toastSuccess(success?.data?.message);
+    },
+    onError: (error: AxiosError) => {
+      toastFail(error?.message);
+    }
+  });
+};
+export {
+  useAddCountry,
+  useDeleteCountry,
+  useGetAllCountries,
+  useGetCountryById,
+  useGetCountryList,
+  useUpdateCountry
+};
