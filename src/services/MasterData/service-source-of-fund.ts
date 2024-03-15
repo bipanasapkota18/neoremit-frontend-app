@@ -27,7 +27,7 @@ interface IFilterParams {
   //   filterParams: IFilterItems;
 }
 const getAllSourceoffund = ({ pageParams, filterParams }: IFilterParams) => {
-  return NeoHttpClient.post<NeoResponse<ISourceOfFundResponse>>(
+  return NeoHttpClient.post<NeoResponse<ISourceOfFundResponse[]>>(
     api.masterData.source_of_fund.getAll,
     {
       ...filterParams

@@ -29,7 +29,7 @@ export interface IDocumentExtension {
 // }
 
 const getAllDocument = () => {
-  return NeoHttpClient.get<NeoResponse<IDocumentResponse>>(
+  return NeoHttpClient.get<NeoResponse<IDocumentResponse[]>>(
     api.masterData.document.getAll
   );
 };

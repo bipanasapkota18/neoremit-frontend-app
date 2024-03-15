@@ -8,23 +8,77 @@ import {
 } from "@chakra-ui/react";
 import Editor from "@neo/components/Editor";
 import TextInput from "@neo/components/Form/TextInput";
+import {
+  IPayoutMethodResponse,
+  useAddPayoutMethod,
+  useUpdatePayoutMethod
+} from "@neo/services/MasterData/service-payout-method";
 import { colorScheme } from "@neo/theme/colorScheme";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 const defaultValues = {
-  paymentMethod: "",
-  paymentDescription: "",
-  payoutCode: ""
+  name: "",
+  description: "",
+  code: "",
+  isActive: true
 };
 interface AddPayoutMethodProps {
+  editId: number | null;
+  setEditId: Dispatch<SetStateAction<number | null>>;
   onClose: () => void;
+  data: IPayoutMethodResponse[] | undefined;
 }
-const AddPayoutMethod = ({ onClose }: AddPayoutMethodProps) => {
-  const { control, handleSubmit } = useForm({
+const AddPayoutMethod = ({
+  onClose,
+  editId,
+  data: editData,
+  setEditId
+}: AddPayoutMethodProps) => {
+  const { mutateAsync: useMutateAddPayoutMethod, isLoading: isAddLoading } =
+    useAddPayoutMethod();
+  const {
+    mutateAsync: useMutateUpdatePayoutMethod,
+    isLoading: isUpdateLoading
+  } = useUpdatePayoutMethod();
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues
   });
-  const onAddPayoutMethod = () => {
-    //
+  useEffect(() => {
+    if (editId) {
+      const selectedPayoutMethod = editData?.find(payoutMethod => {
+        return payoutMethod.id === editId;
+      });
+      reset({
+        name: selectedPayoutMethod?.name,
+        code: selectedPayoutMethod?.code,
+        description: selectedPayoutMethod?.description
+      });
+    }
+  }, [editData, editId]);
+  const onAddPayoutMethod = async (data: typeof defaultValues) => {
+    if (editId) {
+      const selectedPayoutMethod = editData?.find(payoutMethod => {
+        return payoutMethod.id === editId;
+      });
+      await useMutateUpdatePayoutMethod({
+        id: editId,
+        data: {
+          ...data,
+          id: editId,
+          isActive: selectedPayoutMethod?.isActive ?? true
+        }
+      });
+    } else {
+      await useMutateAddPayoutMethod(data);
+    }
+
+    handleCloseModal();
+  };
+  const handleCloseModal = () => {
+    setEditId(null);
+    reset(defaultValues);
+    onClose();
   };
   return (
     <form onSubmit={handleSubmit(onAddPayoutMethod)}>
@@ -37,11 +91,11 @@ const AddPayoutMethod = ({ onClose }: AddPayoutMethodProps) => {
         >
           Add Payout Method
         </Heading>
-        <SimpleGrid columns={3} spacing={"30px"}>
+        <SimpleGrid columns={2} spacing={"30px"}>
           <GridItem colSpan={1}>
             <TextInput
               size={"lg"}
-              name="paymentMethod"
+              name="name"
               label="Enter Payout Method"
               control={control}
               type="text"
@@ -51,7 +105,7 @@ const AddPayoutMethod = ({ onClose }: AddPayoutMethodProps) => {
           <GridItem colSpan={1}>
             <TextInput
               size={"lg"}
-              name="payoutCode"
+              name="code"
               label="Enter Code"
               control={control}
               type="text"
@@ -60,7 +114,7 @@ const AddPayoutMethod = ({ onClose }: AddPayoutMethodProps) => {
           </GridItem>
         </SimpleGrid>
         <HStack>
-          <Editor control={control} name="paymentDescription" />
+          <Editor control={control} name="description" />
         </HStack>
         <HStack justifyContent={"flex-end"}>
           <Button
@@ -71,11 +125,16 @@ const AddPayoutMethod = ({ onClose }: AddPayoutMethodProps) => {
             bg={"#FFF5F5"}
             _active={{ bg: "#FFF5F5" }}
             fontSize={"17px"}
-            onClick={onClose}
+            onClick={handleCloseModal}
           >
             Cancel
           </Button>
-          <Button padding={"10px 40px"} fontWeight={700} type="submit">
+          <Button
+            isLoading={isUpdateLoading || isAddLoading}
+            padding={"10px 40px"}
+            fontWeight={700}
+            type="submit"
+          >
             Save
           </Button>
         </HStack>

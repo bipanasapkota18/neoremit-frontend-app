@@ -251,7 +251,7 @@ const Document = () => {
         title={"Are You Sure?"}
         isLoading={isStatusUPdateLoading}
         onApprove={handleStatusChange}
-        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this currency?`}
+        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this document?`}
         isOpen={isOpenDocumentStatusUpdateModal}
         onClose={() => {
           setChangeId(null);

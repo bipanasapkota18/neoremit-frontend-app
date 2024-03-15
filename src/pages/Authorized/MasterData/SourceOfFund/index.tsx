@@ -67,9 +67,7 @@ const SourceOfFund = () => {
     isLoading: isStatusUPdateLoading
   } = useUpdateSourceOfFund();
   useEffect(() => {
-    if (Array.isArray(sourceOfFundData?.data?.data)) {
-      setTableData(sourceOfFundData?.data?.data ?? []);
-    }
+    setTableData(sourceOfFundData?.data?.data ?? []);
   }, [sourceOfFundData]);
   useEffect(() => {
     mutateAsync({
@@ -251,7 +249,7 @@ const SourceOfFund = () => {
         title={"Are You Sure?"}
         isLoading={isStatusUPdateLoading}
         onApprove={handleStatusChange}
-        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this currency?`}
+        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this source of fund?`}
         isOpen={isOpenSourceStatusUpdateModal}
         onClose={onCloseSourceStatusUpdateModal}
       />

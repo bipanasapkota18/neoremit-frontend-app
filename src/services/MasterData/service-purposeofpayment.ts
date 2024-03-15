@@ -27,7 +27,7 @@ interface IFilterParams {
   //   filterParams: IFilterItems;
 }
 const getAllPurpose = ({ pageParams, filterParams }: IFilterParams) => {
-  return NeoHttpClient.post<NeoResponse<IPurposeResponse>>(
+  return NeoHttpClient.post<NeoResponse<IPurposeResponse[]>>(
     api.masterData.purpose_of_payment.getAll,
     {
       ...filterParams

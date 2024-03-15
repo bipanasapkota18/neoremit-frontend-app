@@ -44,7 +44,7 @@ export default function Sidebar({
   const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState("");
   const [activeCollapse, setActiveCollapse] = useState("");
-  const { mutateAsync: logout } = useLogoutMutation();
+  const { mutateAsync: logout, isLoading } = useLogoutMutation();
 
   // const { initData } = useStoreInitData();
 
@@ -120,7 +120,7 @@ export default function Sidebar({
         <HStack
           padding="16px 20px"
           borderRadius={"16px"}
-          width={isCollapsed ? "auto" : "260px"}
+          width={isCollapsed && !isHovered ? "auto" : "260px"}
           gap={"16px"}
           bgColor={"#F5F7FA"}
         >
@@ -132,7 +132,7 @@ export default function Sidebar({
               icon={<svgAssets.LoginBanner />}
             />
           </HStack>
-          {isCollapsed ? (
+          {isCollapsed && !isHovered ? (
             ""
           ) : (
             <HStack flexDir={"column"} gap={"2px"} alignItems={"flex-start"}>
@@ -191,13 +191,12 @@ export default function Sidebar({
         <Box>
           <Button
             width={"240px"}
-            // as={NavLink}
-            // to={NAVIGATION_ROUTES.LOGIN}
             onClick={handleLogout}
             background={colorScheme.logout_button}
             _hover={{ background: colorScheme.logout_button }}
             borderRadius={0}
             size={"lg"}
+            isDisabled={isLoading}
           >
             <HStack justifyContent="space-between">
               <HStack alignItems="center" flex={1}>

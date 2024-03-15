@@ -216,7 +216,7 @@ const Relationship = () => {
         }}
       />
       <ConfirmationModal
-        variant={"edit"}
+        variant={"delete"}
         buttonText={"Delete"}
         title={"Are You Sure?"}
         isLoading={isDeleteLoading}
@@ -234,7 +234,7 @@ const Relationship = () => {
         title={"Are You Sure?"}
         isLoading={isStatusUPdateLoading}
         onApprove={handleStatusChange}
-        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this currency?`}
+        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this relationship?`}
         isOpen={isOpenRelationshipStatusUpdateModal}
         onClose={() => {
           setChangeId(null);
