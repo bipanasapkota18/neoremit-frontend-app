@@ -202,7 +202,7 @@ const PayoutMethod = () => {
                   pageParams: pageParams,
                   onChangePagination: setPageParams
                 }}
-                data={Array.isArray(payoutMethodData) ? payoutMethodData : []}
+                data={payoutMethodData ?? []}
                 columns={columns}
                 filter={{
                   globalFilter: searchText,

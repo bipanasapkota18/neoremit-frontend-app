@@ -5,15 +5,18 @@ interface TableActionButtonProps {
   onClickAction: () => void;
   icon: ReactElement;
   label: string;
+  isDisabled?: boolean;
 }
 const TableActionButton = ({
   onClickAction,
   icon,
-  label
+  label,
+  isDisabled
 }: TableActionButtonProps) => {
   return (
     <Tooltip label={label} placement={"top"}>
       <IconButton
+        isDisabled={isDisabled}
         variant={"search"}
         aria-label={label}
         icon={icon}

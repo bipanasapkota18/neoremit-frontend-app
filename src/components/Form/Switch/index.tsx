@@ -1,4 +1,5 @@
 import {
+  Flex,
   FormControl,
   FormErrorMessage,
   FormHelperText,
@@ -40,20 +41,22 @@ const SwitchInput: React.FC<SwitchInputProps & SwitchProps> = ({
             isRequired={!!isRequired}
             isInvalid={!!error}
           >
-            <FormLabel mb={0} ml={2} cursor={"pointer"}>
-              {label}
-            </FormLabel>
-            <Switch
-              id={name}
-              placeholder=" "
-              height={"inherit"}
-              onChange={onChange}
-              isChecked={value}
-              isInvalid={!!error}
-              errorBorderColor={colorScheme.danger_500}
-              disabled={disabled}
-              {...extraProps}
-            />
+            <Flex width={"100%"} justifyContent={"space-between"}>
+              <FormLabel mb={0} ml={2} cursor={"pointer"}>
+                {label}
+              </FormLabel>
+              <Switch
+                id={name}
+                placeholder=" "
+                height={"inherit"}
+                onChange={onChange}
+                isChecked={value}
+                isInvalid={!!error}
+                errorBorderColor={colorScheme.danger_500}
+                disabled={disabled}
+                {...extraProps}
+              />
+            </Flex>
 
             <FormErrorMessage>{error ? error?.message : ""}</FormErrorMessage>
             {helperText ? <FormHelperText>{helperText}</FormHelperText> : ""}

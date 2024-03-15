@@ -18,52 +18,90 @@ import BreadCrumb from "@neo/components/BreadCrumb";
 import { DataTable } from "@neo/components/DataTable";
 import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
+import ConfirmationModal from "@neo/components/Modal/DeleteModal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
+import {
+  StatesList,
+  useDeleteState,
+  useGetAllState
+} from "@neo/services/MasterData/service-state";
 import { colorScheme } from "@neo/theme/colorScheme";
+import { CellContext, PaginationState } from "@tanstack/react-table";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import AddState from "./AddState";
 
 const State = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenAddStateModal,
+    onOpen: onOpenAddStateModal,
+    onClose: onCloseAddStateModal
+  } = useDisclosure();
+  const {
+    isOpen: isOpenStateDeleteModal,
+    onOpen: onOpenStateDeleteModal,
+    onClose: onCloseStateDeleteModal
+  } = useDisclosure();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
+  const [filterCount, setFilterCount] = useState(0);
+  const [tableData, setTableData] = useState<StatesList[] | undefined>();
+  const [searchText, setSearchText] = useState<string>("" as string);
+  const [editId, setEditId] = useState(null as number | null);
+  const [changeId, setChangeId] = useState(null as number | null);
 
-  const { pathname } = useLocation();
-  const onEditState = () => {
-    //
+  const [pageParams, setPageParams] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10
+  });
+  const { pathname, state } = useLocation();
+  const selectedCountry = state?.countryData?.find(
+    (country: any) => country.id === state?.countryId
+  );
+  const {
+    mutateAsync,
+    isLoading: isGetStateLoading,
+    data: stateData
+  } = useGetAllState();
+  useEffect(() => {
+    setTableData(stateData?.data?.data?.statesList ?? []);
+    setFilterCount(stateData?.data?.data?.totalItems ?? 0);
+  }, [stateData]);
+  const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
+    useDeleteState();
+  useEffect(() => {
+    mutateAsync({
+      pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
+      filterParams: { countryId: selectedCountry?.id }
+    });
+  }, [pageParams.pageIndex, pageParams.pageSize, selectedCountry]);
+  const refetchData = () => {
+    mutateAsync({
+      pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
+      filterParams: { countryId: selectedCountry?.id }
+    });
   };
-  const onDeleteState = () => {
-    //
+  const handleDelete = async () => {
+    await mutateDelete(changeId);
+    setChangeId(null);
+    onCloseStateDeleteModal();
+    refetchData();
   };
-  const tableData = [
-    {
-      sn: 1,
-      stateName: "Nepali Rupee"
-    },
-    {
-      sn: 2,
-      stateName: "US Dollar"
-    },
-    {
-      sn: 3,
-      stateName: "Euro"
-    },
-    {
-      sn: 4,
-      stateName: "British Pound"
-    },
-    {
-      sn: 5,
-      stateName: "Australian Dollar"
-    }
-  ];
+
   const columns = [
     {
       header: "S.N",
-      accessorKey: "sn"
+      accessorKey: "sn",
+      cell: (data: any) => {
+        return (
+          <Text>
+            {pageParams.pageIndex * pageParams.pageSize + data.row.index + 1}
+          </Text>
+        );
+      }
     },
     {
       header: "State Name",
-      accessorKey: "stateName",
+      accessorKey: "name",
       size: 100
     },
 
@@ -71,16 +109,22 @@ const State = () => {
       header: "Action",
       accessorKey: "action",
 
-      cell: () => {
+      cell: (cell: CellContext<StatesList, any>) => {
         return (
           <HStack>
             <TableActionButton
-              onClickAction={onEditState}
+              onClickAction={() => {
+                setEditId(cell?.row?.original?.id);
+                onOpenAddStateModal();
+              }}
               icon={<svgAssets.EditButton />}
               label="Edit"
             />
             <TableActionButton
-              onClickAction={onDeleteState}
+              onClickAction={() => {
+                setChangeId(cell?.row?.original?.id);
+                onOpenStateDeleteModal();
+              }}
               icon={<svgAssets.DeleteButton />}
               label="Delete"
             />
@@ -134,7 +178,7 @@ const State = () => {
                       color={colorScheme.gray_700}
                       fontWeight={600}
                     >
-                      Nepal
+                      {selectedCountry?.name}
                     </Text>
                   </HStack>
                 </GridItem>
@@ -157,7 +201,7 @@ const State = () => {
                         color={colorScheme.gray_700}
                         fontWeight={600}
                       >
-                        Nepal
+                        {selectedCountry?.name}
                       </Text>
                     </HStack>
                     <HStack
@@ -177,7 +221,7 @@ const State = () => {
                         color={colorScheme.gray_700}
                         fontWeight={600}
                       >
-                        Nep
+                        {selectedCountry?.shortName}
                       </Text>
                     </HStack>
                   </VStack>
@@ -201,7 +245,7 @@ const State = () => {
                         color={colorScheme.gray_700}
                         fontWeight={600}
                       >
-                        55852
+                        {selectedCountry?.isoNumber}
                       </Text>
                     </HStack>
                     <HStack
@@ -221,7 +265,7 @@ const State = () => {
                         color={colorScheme.gray_700}
                         fontWeight={600}
                       >
-                        +977
+                        {selectedCountry?.code}
                       </Text>
                     </HStack>
                   </VStack>
@@ -245,7 +289,7 @@ const State = () => {
                         color={colorScheme.gray_700}
                         fontWeight={600}
                       >
-                        +977
+                        {selectedCountry?.phoneCode}
                       </Text>
                     </HStack>
                     <HStack
@@ -265,7 +309,7 @@ const State = () => {
                         color={colorScheme.gray_700}
                         fontWeight={600}
                       >
-                        Rs.
+                        {selectedCountry?.currency?.name}
                       </Text>
                     </HStack>
                   </VStack>
@@ -299,6 +343,7 @@ const State = () => {
                       width={"450px"}
                       label="Search"
                       name="search"
+                      onSearch={setSearchText}
                       type="text"
                     />
                   ) : (
@@ -308,7 +353,7 @@ const State = () => {
                 <Button
                   minW={"max-content"}
                   leftIcon={<svgAssets.AddButton />}
-                  onClick={onOpen}
+                  onClick={onOpenAddStateModal}
                 >
                   Add State
                 </Button>
@@ -316,9 +361,17 @@ const State = () => {
 
               <DataTable
                 pagination={{
-                  manual: false
+                  manual: true,
+                  pageCount: filterCount,
+                  pageParams: pageParams,
+                  onChangePagination: setPageParams
                 }}
-                data={tableData}
+                filter={{
+                  globalFilter: searchText,
+                  setGlobalFilter: setSearchText
+                }}
+                isLoading={isGetStateLoading}
+                data={tableData ?? []}
                 columns={columns}
               />
             </CardBody>
@@ -327,10 +380,25 @@ const State = () => {
       </Card>
 
       <AddState
-        isOpen={isOpen}
+        refetchData={refetchData}
+        countryId={selectedCountry?.id ?? null}
+        editId={editId}
+        setEditId={setEditId}
+        data={tableData}
+        isOpen={isOpenAddStateModal}
         onClose={() => {
-          onClose();
+          onCloseAddStateModal();
         }}
+      />
+      <ConfirmationModal
+        variant={"delete"}
+        buttonText={"Delete"}
+        title={"Are You Sure?"}
+        isLoading={isDeleteLoading}
+        onApprove={handleDelete}
+        message="Deleting will permanently remove this file from the system. This cannot be Undone."
+        isOpen={isOpenStateDeleteModal}
+        onClose={onCloseStateDeleteModal}
       />
     </Flex>
   );
