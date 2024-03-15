@@ -14,8 +14,8 @@ const defaultValues = {
   image: "",
   name: "",
   code: "",
-  countryId: null as ISelectOptions<number>[] | null,
-  payoutMethodId: null as ISelectOptions<number>[] | null,
+  countryId: null as ISelectOptions<number> | null,
+  payoutMethodId: null as ISelectOptions<number> | null,
   isActive: true
 };
 interface AddPayoutPartnerProps {
@@ -69,9 +69,9 @@ const AddPayoutPartner = ({
     // console.log(data.image[0]);
     mutateAddPayoutPartner({
       ...data,
-      image: ""
-      // countryId: data?.countryId?.value ?? null,
-      // payoutMethodId: data?.payoutMethodId?.value ?? null
+      image: "",
+      countryId: data?.countryId?.value ?? null,
+      payoutMethodId: data?.payoutMethodId?.value ?? null
     });
     handleCloseModal;
   };
