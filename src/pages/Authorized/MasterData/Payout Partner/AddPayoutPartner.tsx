@@ -6,6 +6,7 @@ import Modal from "@neo/components/Modal";
 import { useGetCountryList } from "@neo/services/MasterData/service-country";
 import { useGetAllPayoutMethod } from "@neo/services/MasterData/service-payout-method";
 import { useAddPayoutPartner } from "@neo/services/MasterData/service-payout-partner";
+import { baseURL } from "@neo/services/service-axios";
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -55,31 +56,40 @@ const AddPayoutPartner = ({
       const selectedPayoutPartner = editData?.find((payoutPartner: any) => {
         return payoutPartner.id === editId;
       });
+      const selectedPayoutMethod = payoutMethodOptions?.find(
+        (payoutMethod: any) => {
+          return payoutMethod.value === selectedPayoutPartner?.payoutMethod?.id;
+        }
+      );
+      const selectedCountry = countryOptions?.find((country: any) => {
+        return country.value === selectedPayoutPartner?.country?.id;
+      });
       reset({
         image: selectedPayoutPartner?.image,
         name: selectedPayoutPartner?.name,
         code: selectedPayoutPartner?.code,
-        countryId: selectedPayoutPartner?.countryId,
-        payoutMethodId: selectedPayoutPartner?.payoutMethodId,
+        countryId: selectedCountry,
+        payoutMethodId: selectedPayoutMethod,
         isActive: selectedPayoutPartner?.isActive
       });
     }
   }, [editId, editData]);
-  const onAddPayoutPartner = (data: typeof defaultValues) => {
-    // console.log(data.image[0]);
-    mutateAddPayoutPartner({
+  const onAddPayoutPartner = async (data: typeof defaultValues) => {
+    await mutateAddPayoutPartner({
       ...data,
-      image: "",
+      image: data.image[0] ?? "",
       countryId: data?.countryId?.value ?? null,
       payoutMethodId: data?.payoutMethodId?.value ?? null
     });
-    handleCloseModal;
+    handleCloseModal();
   };
   const handleCloseModal = () => {
     setEditId(null);
     reset(defaultValues);
     onClose();
   };
+  console.log(editData);
+
   return (
     <>
       <Modal
@@ -96,6 +106,11 @@ const AddPayoutPartner = ({
               name="image"
               control={control}
               options={{ maxSize: 4 }}
+              imagePreview={
+                editId
+                  ? `${baseURL}/document-service/master/payout/partner/image?fileId=${editData?.image}`
+                  : ""
+              }
             />
           </GridItem>
           <GridItem colSpan={2}>

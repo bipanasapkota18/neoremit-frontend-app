@@ -1,38 +1,84 @@
 import { GridItem, SimpleGrid } from "@chakra-ui/react";
 import TextInput from "@neo/components/Form/TextInput";
 import Modal from "@neo/components/Modal";
+import {
+  StatesList,
+  useAddState
+} from "@neo/services/MasterData/service-state";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 const defaultValues = {
-  stateName: ""
+  name: "",
+  code: ""
 };
 interface AddStateProps {
+  editId: number | null;
+  setEditId: Dispatch<SetStateAction<number | null>>;
+  data: StatesList[] | undefined;
   isOpen: boolean;
   onClose: () => void;
+  countryId: number | null;
+  refetchData: () => void;
 }
-const AddState = ({ isOpen, onClose }: AddStateProps) => {
-  const { control, handleSubmit } = useForm({
+const AddState = ({
+  isOpen,
+  onClose,
+  setEditId,
+  editId,
+  data: editData,
+  refetchData,
+  countryId
+}: AddStateProps) => {
+  const { mutateAsync: mutateAddState } = useAddState();
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues
   });
-  const onAddState = () => {
-    //
+  useEffect(() => {
+    if (editId) {
+      const selectedState = editData?.find(item => item.id === editId);
+      reset({
+        name: selectedState?.name,
+        code: selectedState?.code
+      });
+    }
+  }, [editData, editId]);
+  const onAddState = async (data: typeof defaultValues) => {
+    await mutateAddState({ ...data, countryId: countryId });
+    handleCloseModal();
+  };
+  const handleCloseModal = () => {
+    setEditId(null);
+    reset(defaultValues);
+    refetchData();
+    onClose();
   };
   return (
     <>
       <Modal
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleCloseModal}
         submitButtonText="Save"
         cancelButtonText="Cancel"
-        title="Add State"
+        title={editId ? "Edit State" : "Add State"}
         onSubmit={handleSubmit(onAddState)}
       >
-        <SimpleGrid columns={2} spacing={"16px"}>
+        <SimpleGrid columns={2} spacing={"30px"}>
           <GridItem colSpan={2}>
             <TextInput
               size={"lg"}
-              name="stateName"
+              name="name"
               label="Enter State Name"
+              control={control}
+              type="text"
+              isRequired
+            />
+          </GridItem>
+          <GridItem colSpan={2}>
+            <TextInput
+              size={"lg"}
+              name="code"
+              label="Enter Code"
               control={control}
               type="text"
               isRequired

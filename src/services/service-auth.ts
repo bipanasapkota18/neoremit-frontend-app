@@ -42,10 +42,7 @@ const useLogoutMutation = () => {
 };
 
 const initLogin = (loginData: LoginDetails) => {
-  return NeoHttpClient.post<NeoResponse<TokenDetails>>(
-    api.auth.login,
-    loginData
-  );
+  return NeoHttpClient.post<NeoResponse>(api.auth.login, loginData);
 };
 
 const useLoginMutation = () => {
@@ -55,8 +52,8 @@ const useLoginMutation = () => {
     onSuccess: response => {
       loginChannel.postMessage("Login");
       const tokens = {
-        access_token: response?.data?.data?.access_token,
-        refresh_token: response?.data?.data?.refresh_token
+        access_token: response?.data?.data?.accessToken,
+        refresh_token: response?.data?.data?.refreshToken
       };
       TokenService.setToken(tokens);
       queryClient.setQueryData(authTokenKey, () => true);
