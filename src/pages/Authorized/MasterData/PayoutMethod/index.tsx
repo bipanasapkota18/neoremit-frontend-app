@@ -176,6 +176,7 @@ const PayoutMethod = () => {
                       width={"450px"}
                       label="Search"
                       name="search"
+                      onSearch={setSearchText}
                       type="text"
                     />
                   ) : (
