@@ -84,9 +84,9 @@ const useAddPayoutPartner = () => {
   });
 };
 const updatePayoutPartner = (data: any) => {
-  return NeoHttpClient.put<NeoResponse<IPayoutPartnerRequest>>(
+  return NeoHttpClient.post<NeoResponse<IPayoutPartnerRequest>>(
     api.masterData.payout_partner.update.replace("{id}", data.id + ""),
-    data
+    toFormData(data)
   );
 };
 const useUpdatePayoutPartner = () => {

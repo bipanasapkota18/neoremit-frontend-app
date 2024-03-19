@@ -5,7 +5,10 @@ import TextInput from "@neo/components/Form/TextInput";
 import Modal from "@neo/components/Modal";
 import { useGetCountryList } from "@neo/services/MasterData/service-country";
 import { useGetAllPayoutMethod } from "@neo/services/MasterData/service-payout-method";
-import { useAddPayoutPartner } from "@neo/services/MasterData/service-payout-partner";
+import {
+  useAddPayoutPartner,
+  useUpdatePayoutPartner
+} from "@neo/services/MasterData/service-payout-partner";
 import { baseURL } from "@neo/services/service-axios";
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import { Dispatch, SetStateAction, useEffect } from "react";
@@ -34,6 +37,7 @@ const AddPayoutPartner = ({
   data: editData
 }: AddPayoutPartnerProps) => {
   const { mutateAsync: mutateAddPayoutPartner } = useAddPayoutPartner();
+  const { mutateAsync: mutateEditPayoutPartner } = useUpdatePayoutPartner();
   const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues
   });
@@ -75,12 +79,30 @@ const AddPayoutPartner = ({
     }
   }, [editId, editData]);
   const onAddPayoutPartner = async (data: typeof defaultValues) => {
-    await mutateAddPayoutPartner({
-      ...data,
-      image: data.image[0] ?? "",
-      countryId: data?.countryId?.value ?? null,
-      payoutMethodId: data?.payoutMethodId?.value ?? null
-    });
+    if (editId) {
+      const selectedPayoutPartner = editData?.find((payoutPartner: any) => {
+        return payoutPartner.id === editId;
+      });
+      await mutateEditPayoutPartner({
+        id: editId,
+        data: {
+          ...data,
+          id: editId,
+          image: data.image[0] ?? "",
+          countryId: data?.countryId?.value ?? null,
+          payoutMethodId: data?.payoutMethodId?.value ?? null,
+          isActive: selectedPayoutPartner?.isActive ?? true
+        }
+      });
+    } else {
+      await mutateAddPayoutPartner({
+        ...data,
+        image: data.image[0] ?? "",
+        countryId: data?.countryId?.value ?? null,
+        payoutMethodId: data?.payoutMethodId?.value ?? null
+      });
+    }
+
     handleCloseModal();
   };
   const handleCloseModal = () => {
