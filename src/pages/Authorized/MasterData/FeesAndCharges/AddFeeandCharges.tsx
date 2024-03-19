@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Button,
   Card,
@@ -12,83 +13,110 @@ import {
   useMediaQuery
 } from "@chakra-ui/react";
 
+import { svgAssets } from "@neo/assets/images/svgs";
 import { DataTable } from "@neo/components/DataTable";
 import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
-
 import Select from "@neo/components/Form/SelectComponent";
 import TextInput from "@neo/components/Form/TextInput";
+import { useGetCountryList } from "@neo/services/MasterData/service-country";
+import {
+  FeeAndChargesDetail,
+  IFeeAndChargeResponse,
+  useAddFeesAndCharges,
+  useGetFeeAndChargesbyId,
+  useUpdateFeesAndCharges
+} from "@neo/services/service-fees-and-charges";
+import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
+import { CellContext } from "@tanstack/react-table";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { svgAssets } from "../../../../assets/images/svgs/index";
 import AddFeeAndChargesDetails from "./AddFeeAndChargesDetails";
 
 const defaultValues = {
   feeName: "",
-  country: "",
-  currency: ""
+  countryId: null as ISelectOptions<number> | null,
+  currencyId: null as ISelectOptions<number> | null
 };
 interface AddFeeandChargesProps {
   onClose: () => void;
+  editId: number | null;
+  data: IFeeAndChargeResponse[] | undefined;
+  setEditId: Dispatch<SetStateAction<number | null>>;
 }
-const AddFeeandCharges = ({ onClose }: AddFeeandChargesProps) => {
-  const { control, handleSubmit } = useForm({
+const AddFeeandCharges = ({
+  onClose,
+  editId,
+  data: editData,
+  setEditId
+}: AddFeeandChargesProps) => {
+  const { control, handleSubmit, watch, reset } = useForm({
     defaultValues: defaultValues
   });
+  const { mutateAsync: mutateAddFeeandCharges } = useAddFeesAndCharges();
+  const { mutateAsync: mutateUpdateFeeandCharges } = useUpdateFeesAndCharges();
   const { isOpen, onOpen, onClose: onModalClose } = useDisclosure();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
-
+  const { data: countryData } = useGetCountryList();
+  const { data: feeAndChargeDetails, isLoading: isGetFeeAndChargesLoading } =
+    useGetFeeAndChargesbyId(editId);
+  const countryOptions = formatSelectOptions({
+    data: countryData,
+    valueKey: "id",
+    labelKey: "name"
+  });
   const onEditState = () => {
     //
   };
   const onDeleteState = () => {
     //
   };
+  useEffect(() => {
+    if (editId) {
+      const selectedFee = editData?.find(data => data.id === editId);
 
-  const tableData = [
-    {
-      sn: 1,
-      paymentMethod: "Nepali Rupee",
-      fee: "100",
-      type: "Flat"
-    },
-    {
-      sn: 2,
-      paymentMethod: "Nepali Rupee",
-      fee: "100",
-      type: "Flat"
-    },
-    {
-      sn: 3,
-      paymentMethod: "Nepali Rupee",
-      fee: "100",
-      type: "Flat"
-    },
-    {
-      sn: 4,
-      paymentMethod: "Nepali Rupee",
-      fee: "100",
-      type: "Percentage"
-    },
-    {
-      sn: 5,
-      paymentMethod: "Nepali Rupee",
-      fee: "100",
-      type: "Flat"
+      const selectedCountry = countryData?.find((country: any) => {
+        return selectedFee?.country?.name === country?.name;
+      })?.name;
+      reset({
+        feeName: selectedFee?.feeName,
+        countryId: selectedCountry
+      });
     }
-  ];
+  }, [editId, editData, countryData]);
+
   const columns = [
     {
       header: "S.N",
-      accessorKey: "sn"
+      accessorKey: "sn",
+      cell: (cell: CellContext<FeeAndChargesDetail, any>) => {
+        return cell?.row?.index + 1;
+      }
     },
     {
       header: "Payment Method",
       accessorKey: "paymentMethod",
-      size: 100
+      size: 100,
+      cell: (data: CellContext<FeeAndChargesDetail, any>) => {
+        return data?.row?.original?.paymentMethodIds?.map(
+          (item: any, index: number) => {
+            return (
+              <Badge
+                key={index}
+                padding="8px 24px"
+                mx={2}
+                borderRadius={"16px"}
+              >
+                {item?.name}
+              </Badge>
+            );
+          }
+        );
+      }
     },
     {
       header: "Fee and Charge Type",
-      accessorKey: "type"
+      accessorKey: "feeAndChargeType"
     },
     {
       header: "Fee",
@@ -117,8 +145,27 @@ const AddFeeandCharges = ({ onClose }: AddFeeandChargesProps) => {
     }
   ];
 
-  const handleSaveFeeandCharges = () => {
-    //
+  const handleSaveFeeandCharges = async (data: typeof defaultValues) => {
+    if (editId) {
+      const selectedFee = editData?.find(data => data.id === editId);
+      console.log(selectedFee);
+      await mutateUpdateFeeandCharges({
+        ...data,
+        countryId: selectedFee?.country?.id ?? "",
+        currencyId: selectedFee?.currencyDetailResponseDto?.id ?? "",
+        feeAndChargesDetails:
+          feeAndChargeDetails?.data?.data?.feeAndChargesDetails ?? []
+      });
+    } else {
+      await mutateAddFeeandCharges({
+        ...data,
+        countryId: data.countryId?.value ?? "",
+        currencyId: countryData?.find(
+          country => data.countryId?.label === country?.name
+        )?.currency?.id,
+        feeAndChargesDetails: []
+      });
+    }
   };
 
   return (
@@ -144,7 +191,7 @@ const AddFeeandCharges = ({ onClose }: AddFeeandChargesProps) => {
                 Fee Details
               </Heading>
               <Box padding={"24px"} gap={"20px"} width={"100%"}>
-                <SimpleGrid columns={{ sm: 1, md: 3 }} spacing={10}>
+                <SimpleGrid columns={{ sm: 1, md: 1, lg: 3 }} spacing={10}>
                   <GridItem colSpan={1}>
                     <TextInput
                       control={control}
@@ -156,24 +203,29 @@ const AddFeeandCharges = ({ onClose }: AddFeeandChargesProps) => {
                   </GridItem>
                   <GridItem colSpan={1}>
                     <Select
-                      name="country"
+                      name="countryId"
                       placeholder="Country"
                       control={control}
-                      options={[
-                        { value: "Nepal", label: "Nepal" },
-                        { value: "India", label: "India" },
-                        { value: "China", label: "China" }
-                      ]}
+                      options={countryOptions ?? []}
                     />
                   </GridItem>
                   <GridItem colSpan={1}>
                     <TextInput
                       control={control}
-                      name="currency"
+                      name="currencyId"
                       label="Currency"
                       type="text"
                       isRequired
                       isReadOnly
+                      value={
+                        watch("countryId")
+                          ? countryData?.find(country => {
+                              return (
+                                watch("countryId")?.label === country?.name
+                              );
+                            })?.name
+                          : ""
+                      }
                     />
                   </GridItem>
                 </SimpleGrid>
@@ -221,10 +273,13 @@ const AddFeeandCharges = ({ onClose }: AddFeeandChargesProps) => {
                 </HStack>
 
                 <DataTable
+                  isLoading={isGetFeeAndChargesLoading}
                   pagination={{
                     manual: false
                   }}
-                  data={tableData}
+                  data={
+                    feeAndChargeDetails?.data?.data?.feeAndChargesDetails ?? []
+                  }
                   columns={columns}
                 />
               </CardBody>
@@ -260,6 +315,9 @@ const AddFeeandCharges = ({ onClose }: AddFeeandChargesProps) => {
         </Card>
 
         <AddFeeAndChargesDetails
+          editId={editId}
+          setEditId={setEditId}
+          data={editData}
           isOpen={isOpen}
           onClose={() => {
             onModalClose();

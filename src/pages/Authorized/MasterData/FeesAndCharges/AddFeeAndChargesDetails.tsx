@@ -2,28 +2,53 @@ import { GridItem, SimpleGrid } from "@chakra-ui/react";
 import Select from "@neo/components/Form/SelectComponent";
 import TextInput from "@neo/components/Form/TextInput";
 import Modal from "@neo/components/Modal";
+import { useGetAllPayoutMethod } from "@neo/services/MasterData/service-payout-method";
+import { useAddFeeandChargesDetails } from "@neo/services/service-fees-and-charges";
+import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
+import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 
 const defaultValues = {
-  paymentMethod: "",
+  paymentMethodIds: null as ISelectOptions<number>[] | null,
   fromAmount: "",
   toAmount: "",
-  type: "",
+  feeAndChargeType: null as ISelectOptions<number> | null,
   fee: ""
 };
 interface AddFeeAndChargesDetailsProps {
+  editId: number | null;
+  data: any;
+  setEditId: Dispatch<SetStateAction<number | null>>;
   isOpen: boolean;
   onClose: () => void;
 }
 const AddFeeAndChargesDetails = ({
   isOpen,
-  onClose
+  onClose,
+  editId,
+  data: editData,
+  setEditId
 }: AddFeeAndChargesDetailsProps) => {
+  const { mutateAsync: mutateAddFeeandChargeDetail } =
+    useAddFeeandChargesDetails();
   const { control, handleSubmit } = useForm({
     defaultValues: defaultValues
   });
-  const onAddFeeAndChargesDetails = () => {
-    //
+  const { data: payoutMethodData } = useGetAllPayoutMethod();
+  const payOutMethodOptions = formatSelectOptions({
+    data: payoutMethodData,
+    labelKey: "name",
+    valueKey: "id"
+  });
+  const onAddFeeAndChargesDetails = async (data: typeof defaultValues) => {
+    await mutateAddFeeandChargeDetail({
+      feeAndChargeId: editId,
+      data: {
+        ...data,
+        payoutMethodIds: data.paymentMethodIds?.map(item => item.value),
+        feeAndChargeType: data.feeAndChargeType?.value
+      }
+    });
   };
   return (
     <>
@@ -32,20 +57,17 @@ const AddFeeAndChargesDetails = ({
         onClose={onClose}
         submitButtonText="Save"
         cancelButtonText="Cancel"
-        title="Add Fee and Charges Detail"
+        title={editId ? "Edit Fee and Charges" : "Add Fee and Charges"}
         onSubmit={handleSubmit(onAddFeeAndChargesDetails)}
       >
         <SimpleGrid columns={2} spacing={"16px"}>
           <GridItem colSpan={2}>
             <Select
-              name="paymentMethod"
+              isMulti
+              name="paymentMethodIds"
               placeholder="Payment Method"
               control={control}
-              options={[
-                { label: "Cash", value: "cash" },
-                { label: "Wallet", value: "wallet" },
-                { label: "Bank", value: "bank" }
-              ]}
+              options={payOutMethodOptions ?? []}
             />
           </GridItem>
           <GridItem colSpan={1}>
@@ -70,12 +92,12 @@ const AddFeeAndChargesDetails = ({
           </GridItem>
           <GridItem mt={2} colSpan={2}>
             <Select
-              name="type"
+              name="feeAndChargeType"
               placeholder="Type"
               control={control}
               options={[
-                { label: "Percentage", value: "percentage" },
-                { label: "Fixed", value: "fixed" }
+                { label: "Percentage", value: "PERCENTAGE" },
+                { label: "Flat", value: "FLAT" }
               ]}
             />
           </GridItem>

@@ -64,6 +64,19 @@ export const api = {
       update: `${internalService}/source-of-fund/{id}`
     }
   },
+  fee_and_charges: {
+    getAll: `${internalService}/api/feeAndCharges/getAll`,
+    create: `${internalService}/api/feeAndCharges/create`,
+    update: `${internalService}/api/feeAndCharges/update/{id}`,
+    delete: `${internalService}/api/feeAndCharges/delete/{id}`,
+    getSingle: `${internalService}/api/feeAndCharges/getFeeAndCharges/{id}`
+  },
+  fee_and_charges_details: {
+    getAll: `${internalService}/api/feeAndChargesDetails/getAll`,
+    create: `${internalService}/api/feeAndChargesDetails/add/{feeAndChargeId}`,
+    update: `${internalService}/api/feeAndChargesDetails/update/{id}`,
+    delete: `${internalService}/api/feeAndChargesDetails/delete/{id}`
+  },
 
   init: "/init"
 };

@@ -15,6 +15,12 @@ import { DataTable } from "@neo/components/DataTable";
 import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
+import {
+  IFeeAndChargeResponse,
+  useGetAllFeesAndCharges
+} from "@neo/services/service-fees-and-charges";
+import { CellContext } from "@tanstack/react-table";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import AddFeeandCharges from "./AddFeeandCharges";
 
@@ -22,92 +28,64 @@ const FeeAndCharges = () => {
   const [flag, setFlag] = useBoolean();
   const { pathname } = useLocation();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
-
-  const onEditFeeAndCharges = () => {
-    //
-  };
+  const [changeId, setChangeId] = useState(null as number | null);
+  const [active, setActive] = useState(false);
+  const [searchText, setSearchText] = useState<string>("" as string);
+  const [editId, setEditId] = useState(null as number | null);
+  const { data: feeAndChargesData, isLoading: isDataLoading } =
+    useGetAllFeesAndCharges();
   const onDeleteFeeAndCharges = () => {
     //
   };
 
-  const tableData = [
-    {
-      sn: 1,
-      name: "Nepali Rupee",
-      country: "Nepal",
-      payoutMethod: "Bank",
-      status: "Active"
-    },
-    {
-      sn: 2,
-      name: "US Dollar",
-      country: "Nepal",
-      payoutMethod: "Bank",
-      status: "Active"
-    },
-    {
-      sn: 3,
-      name: "Euro",
-      country: "Nepal",
-      payoutMethod: "Bank",
-      status: "Active"
-    },
-    {
-      sn: 4,
-      name: "British Pound",
-      country: "Nepal",
-      payoutMethod: "Bank",
-      status: "Active"
-    },
-    {
-      sn: 5,
-      name: "Australian Dollar",
-      country: "Nepal",
-      payoutMethod: "Bank",
-      status: "InActive"
-    }
-  ];
   const columns = [
     {
       header: "S.N",
-      accessorKey: "sn"
+      accessorKey: "sn",
+      cell: (cell: CellContext<IFeeAndChargeResponse, any>) => {
+        return cell?.row?.index + 1;
+      }
     },
     {
       header: "Fee Name",
-      accessorKey: "name",
+      accessorKey: "feeName",
       size: 40
     },
     {
       header: "Country",
       accessorKey: "country",
-      size: 30
+      size: 30,
+      cell: (data: CellContext<IFeeAndChargeResponse, any>) => {
+        return data.row.original?.country?.name;
+      }
     },
     {
-      header: "Payout Method",
-      accessorKey: "payoutMethod",
-      size: 20
+      header: "Currency",
+      accessorKey: "currency",
+      size: 20,
+      cell: (data: CellContext<IFeeAndChargeResponse, any>) => {
+        return data.row.original?.currencyDetailResponseDto?.name;
+      }
     },
     {
       header: "Status",
       accessorKey: "status",
       size: 20,
       cell: (data: any) => {
-        return (
-          <Switch
-            size="lg"
-            isChecked={data?.row?.original?.status === "Active"}
-          />
-        );
+        return <Switch size="lg" isChecked={data?.row?.original?.isActive} />;
       }
     },
     {
       header: "Action",
       accessorKey: "action",
-      cell: () => {
+      cell: (cell: CellContext<IFeeAndChargeResponse, any>) => {
         return (
           <HStack>
             <TableActionButton
-              onClickAction={onEditFeeAndCharges}
+              onClickAction={() => {
+                setEditId(cell?.row?.original?.id);
+                setFlag.on();
+              }}
               icon={<svgAssets.EditButton />}
               label="Edit"
             />
@@ -136,6 +114,9 @@ const FeeAndCharges = () => {
         <CardBody>
           {flag ? (
             <AddFeeandCharges
+              editId={editId}
+              setEditId={setEditId}
+              data={feeAndChargesData}
               onClose={() => {
                 setFlag.off();
               }}
@@ -155,6 +136,7 @@ const FeeAndCharges = () => {
                       width={"450px"}
                       label="Search"
                       name="search"
+                      onSearch={setSearchText}
                       type="text"
                     />
                   ) : (
@@ -176,16 +158,47 @@ const FeeAndCharges = () => {
                 </Button>
               </HStack>
               <DataTable
+                isLoading={isDataLoading}
                 pagination={{
                   manual: false
                 }}
-                data={tableData}
+                filter={{
+                  globalFilter: searchText,
+                  setGlobalFilter: setSearchText
+                }}
+                data={feeAndChargesData ?? []}
                 columns={columns}
-              />{" "}
+              />
             </>
           )}
         </CardBody>
       </Card>
+      {/* <ConfirmationModal
+        variant={"delete"}
+        buttonText={"Delete"}
+        title={"Are You Sure?"}
+        isLoading={isDeleteLoading}
+        onApprove={handleDelete}
+        message="Deleting will permanently remove this file from the system. This cannot be Undone."
+        isOpen={isOpenPayoutMethodDeleteModal}
+        onClose={() => {
+          setChangeId(null);
+          onClosePayoutMethodDeleteModal();
+        }}
+      />
+      <ConfirmationModal
+        variant={"edit"}
+        buttonText={`${active ? "Disable" : "Enable"}`}
+        title={"Are You Sure?"}
+        isLoading={isStatusUPdateLoading}
+        onApprove={handleStatusChange}
+        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this payout method?`}
+        isOpen={isOpenPayoutMethodStatusUpdateModal}
+        onClose={() => {
+          setChangeId(null);
+          onClosePayoutMethodStatusUpdateModal();
+        }}
+      /> */}
     </Flex>
   );
 };

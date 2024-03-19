@@ -1,6 +1,7 @@
 import LayoutWrapper from "@neo/components/LayoutWrapper";
 import { lazy } from "react";
 
+import FeeAndCharges from "../Authorized/MasterData/FeesAndCharges";
 import { NAVIGATION_ROUTES } from "./navigationRoutes";
 
 const Document = lazy(
@@ -28,9 +29,6 @@ const PayoutMethod = lazy(
 );
 const PayoutPartner = lazy(
   () => import("@neo/pages/Authorized/MasterData/Payout Partner")
-);
-const FeeAndCharges = lazy(
-  () => import("@neo/pages/Authorized/MasterData/FeesAndCharges")
 );
 
 export const appRoutes = [
