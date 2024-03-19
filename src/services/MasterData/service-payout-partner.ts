@@ -1,6 +1,6 @@
 import { toastFail, toastSuccess } from "@neo/utility/Toast";
 import { AxiosError } from "axios";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "../service-api";
 import { NeoHttpClient, toFormData } from "../service-axios";
 
@@ -13,8 +13,31 @@ interface IPayoutPartnerRequest {
   image: string;
   isActive: boolean;
 }
+export interface IPayoutPartnerResponse {
+  id: number;
+  payoutMethod: PayoutMethod;
+  country: Country;
+  name: string;
+  code: string;
+  image: string;
+}
+
+export interface Country {
+  id: number;
+  name: string;
+}
+
+export interface PayoutMethod {
+  id: number;
+  code: string;
+  name: string;
+  description: string;
+  isActive: boolean;
+}
 const getAllPayoutPartners = () => {
-  return NeoHttpClient.get<NeoResponse>(api.masterData.payout_partner.getAll);
+  return NeoHttpClient.get<NeoResponse<IPayoutPartnerResponse[]>>(
+    api.masterData.payout_partner.getAll
+  );
 };
 const useGetAllPayoutPartners = () => {
   return useQuery(api.masterData.payout_partner.getAll, getAllPayoutPartners, {
@@ -25,7 +48,7 @@ const useGetAllPayoutPartners = () => {
   });
 };
 const getPayoutPartnerById = (id: number | null) => {
-  return NeoHttpClient.get<NeoResponse>(
+  return NeoHttpClient.get<NeoResponse<IPayoutPartnerResponse>>(
     api.masterData.payout_partner.update.replace("{id}", id + "")
   );
 };
@@ -49,8 +72,10 @@ const addPayoutPartner = (data: any) => {
   );
 };
 const useAddPayoutPartner = () => {
+  const queryClient = useQueryClient();
   return useMutation(addPayoutPartner, {
     onSuccess: (success: any) => {
+      queryClient.invalidateQueries(api.masterData.payout_partner.getAll);
       toastSuccess(success?.data?.message);
     },
     onError: (error: AxiosError) => {
@@ -59,9 +84,9 @@ const useAddPayoutPartner = () => {
   });
 };
 const updatePayoutPartner = (data: any) => {
-  return NeoHttpClient.put<NeoResponse<IPayoutPartnerRequest>>(
+  return NeoHttpClient.post<NeoResponse<IPayoutPartnerRequest>>(
     api.masterData.payout_partner.update.replace("{id}", data.id + ""),
-    data
+    toFormData(data)
   );
 };
 const useUpdatePayoutPartner = () => {
@@ -80,8 +105,10 @@ const deletePayoutPartner = (id: number | null) => {
   );
 };
 const useDeletePayoutPartner = () => {
+  const queryClient = useQueryClient();
   return useMutation(deletePayoutPartner, {
     onSuccess: (success: any) => {
+      queryClient.invalidateQueries(api.masterData.payout_partner.getAll);
       toastSuccess(success?.data?.message);
     },
     onError: (error: AxiosError) => {
@@ -90,10 +117,33 @@ const useDeletePayoutPartner = () => {
   });
 };
 
+const toggleStatus = (id: number | null) => () => {
+  return NeoHttpClient.get<NeoResponse>(
+    api.masterData.payout_partner.statusChange.replace("{id}", id + "")
+  );
+};
+const useToggleStatus = (id: number | null) => {
+  const queryClient = useQueryClient();
+  return useQuery(
+    [api.masterData.payout_partner.statusChange, id],
+    toggleStatus(id),
+    {
+      enabled: false,
+      onSuccess: success => {
+        queryClient.invalidateQueries(api.masterData.country.getAll);
+        toastSuccess(success?.data?.message);
+      },
+      onError: (error: AxiosError<{ message: string }>) => {
+        toastFail(error?.response?.data?.message ?? "Error");
+      }
+    }
+  );
+};
 export {
   useAddPayoutPartner,
   useDeletePayoutPartner,
   useGetAllPayoutPartners,
   useGetPayoutPartnerById,
+  useToggleStatus,
   useUpdatePayoutPartner
 };

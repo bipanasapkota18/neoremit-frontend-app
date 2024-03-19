@@ -49,6 +49,7 @@ const SourceOfFund = () => {
     ISourceOfFundResponse[] | undefined
   >();
   const [editId, setEditId] = useState(null as number | null);
+  const [searchText, setSearchText] = useState<string>("" as string);
   const [changeId, setChangeId] = useState(null as number | null);
   const [active, setActive] = useState(false);
   const [pageParams, setPageParams] = useState<PaginationState>({
@@ -191,6 +192,7 @@ const SourceOfFund = () => {
                   width={"450px"}
                   label="Search"
                   name="search"
+                  onSearch={setSearchText}
                   type="text"
                 />
               ) : (
@@ -216,6 +218,10 @@ const SourceOfFund = () => {
               pageCount: tableData?.length ?? 0,
               pageParams: pageParams,
               onChangePagination: setPageParams
+            }}
+            filter={{
+              globalFilter: searchText,
+              setGlobalFilter: setSearchText
             }}
             data={tableData ?? []}
             columns={columns}

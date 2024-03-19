@@ -1,67 +1,68 @@
-const internalService = `internal-service`;
+const service = `internal-service`;
 export const api = {
   auth: {
-    login: `${internalService}/api/auth/login`,
-    refreshToken: `${internalService}/api/auth/refreshToken`,
-    logout: `${internalService}/api/auth/logout`
+    login: `${service}/api/auth/login`,
+    refreshToken: `${service}/api/auth/refreshToken`,
+    logout: `${service}/api/auth/logout`
   },
 
   masterData: {
     country: {
-      getList: `${internalService}/country/list/app`,
-      getAll: `${internalService}/country/list`,
-      create: `${internalService}/country`,
-      update: `${internalService}/country/{id}`,
-      statusChange: `${internalService}/country/status/{id}`
+      getList: `${service}/country/list/app`,
+      getAll: `${service}/country/list`,
+      create: `${service}/country`,
+      update: `${service}/country/{id}`,
+      statusChange: `${service}/country/status/{id}`
     },
     state: {
-      getAll: `${internalService}/state/list`,
-      create: `${internalService}/state`,
-      update: `${internalService}/state/{id}`
+      getAll: `${service}/state/list`,
+      create: `${service}/state`,
+      update: `${service}/state/{id}`
     },
     currency: {
-      getAll: `${internalService}/currency-master/list`,
-      create: `${internalService}/currency-master`,
-      update: `${internalService}/currency-master/{id}`
+      getAll: `${service}/currency-master/list`,
+      create: `${service}/currency-master`,
+      update: `${service}/currency-master/{id}`
     },
     document: {
-      getAll: `${internalService}/doc`,
-      create: `${internalService}/doc`,
-      update: `${internalService}/doc/{id}`,
-      extension: `${internalService}/doc/extension`
+      getAll: `${service}/doc`,
+      create: `${service}/doc`,
+      update: `${service}/doc/{id}`,
+      extension: `${service}/doc/extension`
     },
     purpose_of_payment: {
-      getAll: `${internalService}/payment-purpose/list`,
-      create: `${internalService}/payment-purpose`,
-      update: `${internalService}/payment-purpose/{id}`
+      getAll: `${service}/payment-purpose/list`,
+      create: `${service}/payment-purpose`,
+      update: `${service}/payment-purpose/{id}`
     },
     payout_method: {
-      getAll: `${internalService}/payout-method`,
-      create: `${internalService}/payout-method`,
-      update: `${internalService}/payout-method/{id}`
+      getAll: `${service}/payout-method`,
+      create: `${service}/payout-method`,
+      update: `${service}/payout-method/{id}`
     },
     payout_partner: {
-      getAll: `${internalService}/payout-partner/list`,
-      create: `${internalService}/payout-partner`,
-      update: `${internalService}/payout-partner/{id}`
+      getAll: `${service}/payout-partner/list`,
+      create: `${service}/payout-partner`,
+      update: `${service}/payout-partner/{id}`,
+      statusChange: `${service}/country/status/{id}`
     },
     relationship: {
-      getAll: `${internalService}/relationship`,
-      create: `${internalService}/relationship`,
-      update: `${internalService}/relationship/{id}`,
-      getById: `${internalService}/relationship/{id}`
+      getAll: `${service}/relationship`,
+      create: `${service}/relationship`,
+      update: `${service}/relationship/{id}`,
+      getById: `${service}/relationship/{id}`
     },
     role: {
-      getAll: `${internalService}/roles/getAllRoles`,
-      getSingle: `${internalService}/roles/get-role/{id}`,
-      create: `${internalService}/roles/create-role`,
-      update: `${internalService}/roles/update-role/{id}`,
-      delete: `${internalService}/roles/delete-role/{id}`
+      getAll: `${service}/roles/getAllRoles`,
+      getSingle: `${service}/roles/get-role/{id}`,
+      create: `${service}/roles/create-role`,
+      update: `${service}/roles/update-role/{id}`,
+      delete: `${service}/roles/delete-role/{id}`
     },
     source_of_fund: {
-      getAll: `${internalService}/source-of-fund/list`,
-      create: `${internalService}/source-of-fund`,
-      update: `${internalService}/source-of-fund/{id}`
+      getAll: `${service}/source-of-fund/list`,
+      create: `${service}/source-of-fund`,
+      update: `${service}/source-of-fund/{id}`
     }
   },
 

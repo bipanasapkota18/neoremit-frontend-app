@@ -10,6 +10,7 @@ import {
   useUpdateCountry
 } from "@neo/services/MasterData/service-country";
 import { useGetAllCurrency } from "@neo/services/MasterData/service-currency";
+import { baseURL } from "@neo/services/service-axios";
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -74,7 +75,7 @@ const AddCountrySetup = ({
         phoneCode: selectedCountry?.phoneCode,
         isoNumber: selectedCountry?.isoNumber,
         hasState: selectedCountry?.hasState,
-        flagIcon: selectedCountry?.flagIcon,
+        // flagIcon: selectedCountry?.flagIcon,
         canReceive: selectedCountry?.canReceive,
         canSend: selectedCountry?.canSend,
         isActive: selectedCountry?.isActive,
@@ -83,6 +84,7 @@ const AddCountrySetup = ({
     }
   }, [editData, editId]);
   const onAddCountrySetup = async (data: typeof defaultValues) => {
+    console.log(data);
     if (editId) {
       const selectedCountry = editData?.find(country => country.id === editId);
       await mutateUpdate({
@@ -109,6 +111,7 @@ const AddCountrySetup = ({
     reset(defaultValues);
     onClose();
   };
+  console.log(editData?.find(country => country.id === editId)?.flagIcon);
   return (
     <>
       <Modal
@@ -125,6 +128,11 @@ const AddCountrySetup = ({
               name="flagIcon"
               control={control}
               options={{ maxSize: 4 }}
+              imagePreview={
+                editId
+                  ? `${baseURL}/document-service/master/flag-icon?fileId=${editData?.find(country => country.id === editId)?.flagIcon}`
+                  : ""
+              }
             />
           </GridItem>
           <GridItem colSpan={2}>
