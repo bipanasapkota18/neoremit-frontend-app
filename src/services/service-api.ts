@@ -44,7 +44,7 @@ export const api = {
       getAll: `${service}/payout-partner/list`,
       create: `${service}/payout-partner`,
       update: `${service}/payout-partner/{id}`,
-      statusChange: `${service}/country/status/{id}`
+      statusChange: `${service}/payout-partner/status/{id}`
     },
     relationship: {
       getAll: `${service}/relationship`,
