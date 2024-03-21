@@ -94,6 +94,15 @@ export function DropzoneComponentControlled({
   useEffect(() => {
     if ((acceptedFileList?.length ?? 0) < 1 && !imagePreview) clearImages();
   }, [acceptedFileList]);
+  useEffect(() => {
+    if (imagePreview && imagePreview != "") {
+      setPreview([
+        {
+          link: imagePreview ?? ""
+        }
+      ]);
+    }
+  }, [imagePreview]);
 
   //Dropzone container====================================================================
   const renderDropzoneContainer = () => {

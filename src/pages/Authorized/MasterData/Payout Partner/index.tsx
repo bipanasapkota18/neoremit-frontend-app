@@ -4,12 +4,10 @@ import {
   CardBody,
   Flex,
   HStack,
-  Image,
   Switch,
   useDisclosure,
   useMediaQuery
 } from "@chakra-ui/react";
-import { imageAssets } from "@neo/assets/images";
 import { svgAssets } from "@neo/assets/images/svgs";
 import BreadCrumb from "@neo/components/BreadCrumb";
 import FilterButton from "@neo/components/Button/FilterButton";
@@ -25,9 +23,8 @@ import {
   useGetPayoutPartnerById,
   useToggleStatus
 } from "@neo/services/MasterData/service-payout-partner";
-import { baseURL } from "@neo/services/service-axios";
 import { CellContext, PaginationState } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import AddPayoutPartner from "./AddPayoutPartner";
 
@@ -74,27 +71,7 @@ const PayoutPartner = () => {
       cell: (cell: CellContext<IPayoutPartnerResponse, any>) =>
         cell?.row?.index + 1
     },
-    {
-      header: "Image",
-      accessorKey: "image",
-      cell: (cell: any) => {
-        const memoizedImage = useMemo(() => {
-          return (
-            <Image
-              boxSize={"50px"}
-              borderRadius="full"
-              fallbackStrategy={"onError"}
-              src={
-                cell?.row?.original?.flagIcon != null
-                  ? `${baseURL}/document-service/master/payout/partner/image?fileId=${cell?.row?.original?.flagIcon}`
-                  : imageAssets.noImage
-              }
-            />
-          );
-        }, [cell?.row?.original?.flagIcon]);
-        return memoizedImage;
-      }
-    },
+
     {
       header: "Partner Name",
       accessorKey: "name",

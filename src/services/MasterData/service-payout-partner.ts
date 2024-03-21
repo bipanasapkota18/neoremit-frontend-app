@@ -6,8 +6,8 @@ import { NeoHttpClient, toFormData } from "../service-axios";
 
 interface IPayoutPartnerRequest {
   id?: number;
-  payoutMethodId: number;
-  countryId: number;
+  payoutMethodId: number | null;
+  countryId: number | null;
   name: string;
   code: string;
   image: string;
@@ -83,15 +83,17 @@ const useAddPayoutPartner = () => {
     }
   });
 };
-const updatePayoutPartner = (data: any) => {
+const updatePayoutPartner = (data: IPayoutPartnerRequest) => {
   return NeoHttpClient.post<NeoResponse<IPayoutPartnerRequest>>(
     api.masterData.payout_partner.update.replace("{id}", data.id + ""),
     toFormData(data)
   );
 };
 const useUpdatePayoutPartner = () => {
+  const queryClient = useQueryClient();
   return useMutation(updatePayoutPartner, {
     onSuccess: (success: any) => {
+      queryClient.invalidateQueries(api.masterData.payout_partner.getAll);
       toastSuccess(success?.data?.message);
     },
     onError: (error: AxiosError) => {
@@ -130,7 +132,7 @@ const useToggleStatus = (id: number | null) => {
     {
       enabled: false,
       onSuccess: success => {
-        queryClient.invalidateQueries(api.masterData.country.getAll);
+        queryClient.invalidateQueries(api.masterData.payout_partner.getAll);
         toastSuccess(success?.data?.message);
       },
       onError: (error: AxiosError<{ message: string }>) => {
