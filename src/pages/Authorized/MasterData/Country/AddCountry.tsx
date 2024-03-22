@@ -12,7 +12,7 @@ import {
 import { useGetAllCurrency } from "@neo/services/MasterData/service-currency";
 import { baseURL } from "@neo/services/service-axios";
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 
 const defaultValues = {
@@ -62,9 +62,13 @@ const AddCountrySetup = ({
     valueKey: "id",
     labelKey: "name"
   });
+
+  const selectedCountry = useMemo(
+    () => editData?.find(country => country.id === editId),
+    [editId]
+  );
   useEffect(() => {
     if (editId) {
-      const selectedCountry = editData?.find(country => country.id === editId);
       const selectedCurrency = currencyOptions?.find(
         (currency: any) => currency.value === selectedCountry?.currency?.id
       );
@@ -84,9 +88,7 @@ const AddCountrySetup = ({
     }
   }, [editData, editId]);
   const onAddCountrySetup = async (data: typeof defaultValues) => {
-    console.log(data);
     if (editId) {
-      const selectedCountry = editData?.find(country => country.id === editId);
       await mutateUpdate({
         id: editId,
         data: {
@@ -111,7 +113,6 @@ const AddCountrySetup = ({
     reset(defaultValues);
     onClose();
   };
-  console.log(editData?.find(country => country.id === editId)?.flagIcon);
   return (
     <>
       <Modal
@@ -129,8 +130,8 @@ const AddCountrySetup = ({
               control={control}
               options={{ maxSize: 4 }}
               imagePreview={
-                editId
-                  ? `${baseURL}/document-service/master/flag-icon?fileId=${editData?.find(country => country.id === editId)?.flagIcon}`
+                editId && selectedCountry?.flagIcon != null
+                  ? `${baseURL}/document-service/master/flag-icon?fileId=${selectedCountry?.flagIcon}`
                   : ""
               }
             />
