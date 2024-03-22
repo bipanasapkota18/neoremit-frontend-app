@@ -38,7 +38,8 @@ export const api = {
     payout_method: {
       getAll: `${service}/payout-method`,
       create: `${service}/payout-method`,
-      update: `${service}/payout-method/{id}`
+      update: `${service}/payout-method/{id}`,
+      statusChange: `${service}/payout-method/status/{id}`
     },
     payout_partner: {
       getAll: `${service}/payout-partner/list`,
