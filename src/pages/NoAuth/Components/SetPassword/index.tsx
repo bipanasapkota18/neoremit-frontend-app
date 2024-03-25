@@ -8,6 +8,8 @@ import {
 } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import TextInput from "@neo/components/Form/TextInput";
+import { useResetPassword } from "@neo/services/service-forgot-password";
+import { useStore } from "@neo/store/store";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { svgAssets } from "../../../../assets/images/svgs/index";
@@ -17,7 +19,10 @@ const defaultValues = {
   password: "",
   confirm_password: ""
 };
+
 const SetPassword = () => {
+  const { mutateAsync } = useResetPassword();
+  const { email } = useStore();
   const [flag, setFlag] = useBoolean();
   const [confirmFlag, setConfirmFlag] = useBoolean();
   const passwordSchema = yup.object().shape({
@@ -36,8 +41,11 @@ const SetPassword = () => {
       .required("Please enter a password ")
       .oneOf([yup.ref("password")], "Passwords don't match")
   });
-  const handlePasswordChange = () => {
-    //
+  const handlePasswordChange = (data: any) => {
+    mutateAsync({
+      email: email,
+      newPassword: data.password
+    });
   };
   const {
     control,

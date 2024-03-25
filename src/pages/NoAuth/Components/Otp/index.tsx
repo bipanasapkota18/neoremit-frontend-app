@@ -2,6 +2,8 @@ import { Button, Flex, Stack, Text, VStack } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import OTPComponent from "@neo/components/Form/OTP";
 import { useTimer } from "@neo/hooks/useTimer";
+import { useVerifyOTP } from "@neo/services/service-forgot-password";
+import { useStore } from "@neo/store/store";
 import { colorScheme } from "@neo/theme/colorScheme";
 import { Fragment } from "react";
 import { useForm } from "react-hook-form";
@@ -9,12 +11,15 @@ import * as yup from "yup";
 import { AuthPageProps } from "../../ForgotPassword/ForgotPasswordForm";
 
 const defaultValues = {
-  otp_code: ""
+  otpCode: "" as unknown as number
 };
 
 const OTP = ({ setScreen }: AuthPageProps) => {
+  const { email } = useStore();
+  const { mutateAsync: emailVerification, isLoading } = useVerifyOTP();
+  9;
   const schema = yup.object().shape({
-    otp_code: yup.string().required().min(5)
+    otpCode: yup.number().required().min(5)
   });
   const { minutes, formattedSeconds } = useTimer(0.5);
 
@@ -26,8 +31,15 @@ const OTP = ({ setScreen }: AuthPageProps) => {
     defaultValues,
     resolver: yupResolver(schema)
   });
-  const handleOtpValidation = () => {
-    setScreen("passwordForm");
+  const handleOtpValidation = async (data: typeof defaultValues) => {
+    const response = await emailVerification({
+      otpCode: data.otpCode,
+      email: email,
+      otpFor: "FORGOT_PASSWORD" // replace "someValue" with the actual value
+    });
+    if (response.data.responseStatus === "SUCCESS") {
+      setScreen("passwordForm");
+    }
   };
   return (
     <Fragment>
@@ -52,7 +64,7 @@ const OTP = ({ setScreen }: AuthPageProps) => {
             alignItems="center"
             alignSelf="stretch"
           >
-            <OTPComponent control={control} name="otp_code" />
+            <OTPComponent control={control} name="otpCode" />
           </Flex>
           <Flex gap={"24px"} alignItems={"flex-start"} alignSelf={"stretch"}>
             <Text textAlign={"center"} cursor={"pointer"} fontWeight={700}>
@@ -68,7 +80,7 @@ const OTP = ({ setScreen }: AuthPageProps) => {
           type="submit"
           isDisabled={!isValid}
           size="lg"
-          // isLoading={isPending}
+          isLoading={isLoading}
         >
           Proceed
         </Button>
