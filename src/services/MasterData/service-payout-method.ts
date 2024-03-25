@@ -114,11 +114,33 @@ const useDeletePayoutMethod = () => {
     }
   });
 };
-
+const toggleStatus = (id: number | null) => () => {
+  return NeoHttpClient.get<NeoResponse>(
+    api.masterData.payout_method.statusChange.replace("{id}", id + "")
+  );
+};
+const useToggleStatus = (id: number | null) => {
+  const queryClient = useQueryClient();
+  return useQuery(
+    [api.masterData.payout_method.statusChange, id],
+    toggleStatus(id),
+    {
+      enabled: false,
+      onSuccess: success => {
+        queryClient.invalidateQueries(api.masterData.payout_method.getAll);
+        toastSuccess(success?.data?.message);
+      },
+      onError: (error: AxiosError<{ message: string }>) => {
+        toastFail(error?.response?.data?.message ?? "Error");
+      }
+    }
+  );
+};
 export {
   useAddPayoutMethod,
   useDeletePayoutMethod,
   useGetAllPayoutMethod,
   useGetPayOutMethodById,
+  useToggleStatus,
   useUpdatePayoutMethod
 };

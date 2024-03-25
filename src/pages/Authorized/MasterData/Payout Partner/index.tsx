@@ -17,10 +17,11 @@ import SearchInput from "@neo/components/Form/SearchInput";
 import ConfirmationModal from "@neo/components/Modal/DeleteModal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import {
+  IPayoutPartnerResponse,
   useDeletePayoutPartner,
   useGetAllPayoutPartners,
   useGetPayoutPartnerById,
-  useUpdatePayoutPartner
+  useToggleStatus
 } from "@neo/services/MasterData/service-payout-partner";
 import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useState } from "react";
@@ -56,16 +57,21 @@ const PayoutPartner = () => {
   const { data: payoutPartners, isLoading } = useGetAllPayoutPartners();
   const { mutate: mutateDelete, isLoading: isDeleteLoading } =
     useDeletePayoutPartner();
+
+  const { isLoading: isSingleFetching } = useGetPayoutPartnerById(editId);
   const {
-    mutate: mutateUpdatePayoutPartner,
-    isLoading: isStatusUPdateLoading
-  } = useUpdatePayoutPartner();
-  const { data: editData } = useGetPayoutPartnerById(editId);
+    isLoading: isToggling,
+    refetch,
+    isFetching
+  } = useToggleStatus(changeId);
   const columns = [
     {
       header: "S.N",
-      accessorKey: "sn"
+      accessorKey: "sn",
+      cell: (cell: CellContext<IPayoutPartnerResponse, any>) =>
+        cell?.row?.index + 1
     },
+
     {
       header: "Partner Name",
       accessorKey: "name",
@@ -74,12 +80,18 @@ const PayoutPartner = () => {
     {
       header: "Country",
       accessorKey: "country",
-      size: 30
+      size: 30,
+      cell: (data: CellContext<IPayoutPartnerResponse, any>) => {
+        return data?.row?.original?.country?.name;
+      }
     },
     {
       header: "Payout Method",
       accessorKey: "payoutMethod",
-      size: 20
+      size: 20,
+      cell: (data: CellContext<IPayoutPartnerResponse, any>) => {
+        return data?.row?.original?.payoutMethod?.name;
+      }
     },
     {
       header: "Status",
@@ -134,19 +146,13 @@ const PayoutPartner = () => {
     onClosePayoutPartnerDeleteModal();
   };
   const handleStatusChange = async () => {
-    if (changeId !== null) {
-      await mutateUpdatePayoutPartner({
-        id: changeId,
-        data: {
-          code: editData?.data?.data?.code ?? "",
-          name: editData?.data?.data?.name ?? "",
-          description: editData?.data?.data?.description ?? "",
-          isActive: !active
-        }
-      });
+    try {
+      await refetch();
+      setChangeId(null);
+      onClosePayoutPartnerStatusUpdateModal();
+    } catch (e) {
+      console.error(e);
     }
-    setChangeId(null);
-    onClosePayoutPartnerStatusUpdateModal();
   };
 
   return (
@@ -170,6 +176,7 @@ const PayoutPartner = () => {
                   width={"450px"}
                   label="Search"
                   name="search"
+                  onSearch={setSearchText}
                   type="text"
                 />
               ) : (
@@ -220,7 +227,7 @@ const PayoutPartner = () => {
         variant={"delete"}
         buttonText={"Delete"}
         title={"Are You Sure?"}
-        isLoading={isDeleteLoading}
+        isLoading={isDeleteLoading || isSingleFetching}
         onApprove={handleDelete}
         message="Deleting will permanently remove this file from the system. This cannot be Undone."
         isOpen={isOpenPayoutPartnerDeleteModal}
@@ -233,7 +240,7 @@ const PayoutPartner = () => {
         variant={"edit"}
         buttonText={`${active ? "Disable" : "Enable"}`}
         title={"Are You Sure?"}
-        isLoading={isStatusUPdateLoading}
+        isLoading={isToggling || isFetching}
         onApprove={handleStatusChange}
         message={`Are you sure you want to ${active ? "Disable" : "Enable"} this payout partner?`}
         isOpen={isOpenPayoutPartnerStatusUpdateModal}

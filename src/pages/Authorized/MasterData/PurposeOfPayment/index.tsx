@@ -46,6 +46,7 @@ const PurposeOfPayment = () => {
   } = useDisclosure();
   const { pathname } = useLocation();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
+  const [searchText, setSearchText] = useState<string>("" as string);
   const [editId, setEditId] = useState(null as number | null);
   const [changeId, setChangeId] = useState(null as number | null);
   const [active, setActive] = useState(false);
@@ -184,6 +185,7 @@ const PurposeOfPayment = () => {
                   width={"450px"}
                   label="Search"
                   name="search"
+                  onSearch={setSearchText}
                   type="text"
                 />
               ) : (
@@ -206,6 +208,10 @@ const PurposeOfPayment = () => {
           </HStack>
           <DataTable
             isLoading={isLoading}
+            filter={{
+              globalFilter: searchText,
+              setGlobalFilter: setSearchText
+            }}
             pagination={{
               manual: true,
               pageCount: tableData?.length ?? 0,

@@ -22,7 +22,7 @@ import {
   useDeletePayoutMethod,
   useGetAllPayoutMethod,
   useGetPayOutMethodById,
-  useUpdatePayoutMethod
+  useToggleStatus
 } from "@neo/services/MasterData/service-payout-method";
 import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useState } from "react";
@@ -53,14 +53,15 @@ const PayoutMethod = () => {
   });
   const { data: payoutMethodData, isLoading: isPayoutMethodLoading } =
     useGetAllPayoutMethod();
-  const { data: editData } = useGetPayOutMethodById(changeId);
-  const {
-    mutateAsync: mutateUpdatePayoutMethod,
-    isLoading: isStatusUPdateLoading
-  } = useUpdatePayoutMethod();
+  const { isLoading: isSingleFetching } = useGetPayOutMethodById(changeId);
+
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
     useDeletePayoutMethod();
-
+  const {
+    isLoading: isToggling,
+    refetch,
+    isFetching
+  } = useToggleStatus(changeId);
   const columns = [
     {
       header: "S.N",
@@ -129,19 +130,13 @@ const PayoutMethod = () => {
     onClosePayoutMethodDeleteModal();
   };
   const handleStatusChange = async () => {
-    if (changeId !== null) {
-      await mutateUpdatePayoutMethod({
-        id: changeId,
-        data: {
-          code: editData?.data?.data?.code ?? "",
-          name: editData?.data?.data?.name ?? "",
-          description: editData?.data?.data?.description ?? "",
-          isActive: !active
-        }
-      });
+    try {
+      await refetch();
+      setChangeId(null);
+      onClosePayoutMethodStatusUpdateModal();
+    } catch (e) {
+      console.error(e);
     }
-    setChangeId(null);
-    onClosePayoutMethodStatusUpdateModal();
   };
 
   return (
@@ -176,6 +171,7 @@ const PayoutMethod = () => {
                       width={"450px"}
                       label="Search"
                       name="search"
+                      onSearch={setSearchText}
                       type="text"
                     />
                   ) : (
@@ -218,7 +214,7 @@ const PayoutMethod = () => {
         variant={"delete"}
         buttonText={"Delete"}
         title={"Are You Sure?"}
-        isLoading={isDeleteLoading}
+        isLoading={isDeleteLoading || isSingleFetching}
         onApprove={handleDelete}
         message="Deleting will permanently remove this file from the system. This cannot be Undone."
         isOpen={isOpenPayoutMethodDeleteModal}
@@ -231,7 +227,7 @@ const PayoutMethod = () => {
         variant={"edit"}
         buttonText={`${active ? "Disable" : "Enable"}`}
         title={"Are You Sure?"}
-        isLoading={isStatusUPdateLoading}
+        isLoading={isToggling || isFetching}
         onApprove={handleStatusChange}
         message={`Are you sure you want to ${active ? "Disable" : "Enable"} this payout method?`}
         isOpen={isOpenPayoutMethodStatusUpdateModal}

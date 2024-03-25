@@ -10,8 +10,9 @@ import {
   useUpdateCountry
 } from "@neo/services/MasterData/service-country";
 import { useGetAllCurrency } from "@neo/services/MasterData/service-currency";
+import { baseURL } from "@neo/services/service-axios";
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 
 const defaultValues = {
@@ -61,9 +62,13 @@ const AddCountrySetup = ({
     valueKey: "id",
     labelKey: "name"
   });
+
+  const selectedCountry = useMemo(
+    () => editData?.find(country => country.id === editId),
+    [editId]
+  );
   useEffect(() => {
     if (editId) {
-      const selectedCountry = editData?.find(country => country.id === editId);
       const selectedCurrency = currencyOptions?.find(
         (currency: any) => currency.value === selectedCountry?.currency?.id
       );
@@ -74,7 +79,7 @@ const AddCountrySetup = ({
         phoneCode: selectedCountry?.phoneCode,
         isoNumber: selectedCountry?.isoNumber,
         hasState: selectedCountry?.hasState,
-        flagIcon: selectedCountry?.flagIcon,
+        // flagIcon: selectedCountry?.flagIcon,
         canReceive: selectedCountry?.canReceive,
         canSend: selectedCountry?.canSend,
         isActive: selectedCountry?.isActive,
@@ -84,7 +89,6 @@ const AddCountrySetup = ({
   }, [editData, editId]);
   const onAddCountrySetup = async (data: typeof defaultValues) => {
     if (editId) {
-      const selectedCountry = editData?.find(country => country.id === editId);
       await mutateUpdate({
         id: editId,
         data: {
@@ -125,6 +129,11 @@ const AddCountrySetup = ({
               name="flagIcon"
               control={control}
               options={{ maxSize: 4 }}
+              imagePreview={
+                editId && selectedCountry?.flagIcon != null
+                  ? `${baseURL}/document-service/master/flag-icon?fileId=${selectedCountry?.flagIcon}`
+                  : ""
+              }
             />
           </GridItem>
           <GridItem colSpan={2}>

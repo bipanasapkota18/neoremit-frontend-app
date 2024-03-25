@@ -2,7 +2,6 @@ import { toastFail } from "@neo/utility/Toast";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
-
 import { NeoResponse, api } from "./service-api";
 import { NeoHttpClient } from "./service-axios";
 import TokenService, { NeoTokenDetails, TokenDetails } from "./service-token";
@@ -74,14 +73,7 @@ const initRefreshToken = async () => {
   try {
     const response = await NeoHttpClient.post<TokenDetails>(
       api.auth.refreshToken,
-      {
-        params: {
-          refreshToken: TokenService.getToken()?.refresh_token
-        },
-        headers: {
-          Authorization: ""
-        }
-      }
+      TokenService.getToken()?.refresh_token
     );
     const tokens = {
       access_token: response.data.access_token,

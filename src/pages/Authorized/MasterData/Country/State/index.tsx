@@ -163,38 +163,21 @@ const State = () => {
               bgColor={colorScheme.gray_50}
               width={"100%"}
             >
-              <SimpleGrid columns={4} spacing={10}>
-                <GridItem colSpan={1}>
-                  <HStack>
-                    <Text
-                      color={colorScheme.search_icon}
-                      fontSize="14px"
-                      fontWeight={400}
-                    >
-                      Country Name
-                    </Text>
-                    <Text
-                      fontSize="14px"
-                      color={colorScheme.gray_700}
-                      fontWeight={600}
-                    >
-                      {selectedCountry?.name}
-                    </Text>
-                  </HStack>
-                </GridItem>
+              <SimpleGrid columns={{ base: 1, sm: 1, md: 3 }} spacing={10}>
                 <GridItem colSpan={1}>
                   <VStack alignItems={"flex-start"} gap={"24px"}>
-                    <HStack
-                      width={"100%"}
-                      justifyContent={"space-between"}
-                      spacing={20}
-                    >
+                    <HStack width={"100%"} spacing={3}>
                       <Text
                         color={colorScheme.search_icon}
                         fontSize="14px"
                         fontWeight={400}
+                        display={"flex"}
+                        w={"38%"}
                       >
                         Country Name
+                        <Text marginLeft={"auto"} as={"span"}>
+                          :
+                        </Text>
                       </Text>
                       <Text
                         fontSize="14px"
@@ -204,19 +187,21 @@ const State = () => {
                         {selectedCountry?.name}
                       </Text>
                     </HStack>
-                    <HStack
-                      width={"100%"}
-                      justifyContent={"space-between"}
-                      spacing={20}
-                    >
+                    <HStack width={"100%"} spacing={3}>
                       <Text
                         color={colorScheme.search_icon}
                         fontSize="14px"
                         fontWeight={400}
+                        display={"flex"}
+                        w={"38%"}
                       >
                         Country Short Name
+                        <Text marginLeft={"auto"} as={"span"}>
+                          :
+                        </Text>
                       </Text>
                       <Text
+                        marginRight={"auto"}
                         fontSize="14px"
                         color={colorScheme.gray_700}
                         fontWeight={600}
@@ -228,17 +213,18 @@ const State = () => {
                 </GridItem>
                 <GridItem colSpan={1}>
                   <VStack alignItems={"flex-start"} gap={"24px"}>
-                    <HStack
-                      width={"100%"}
-                      justifyContent={"space-between"}
-                      spacing={20}
-                    >
+                    <HStack width={"100%"} spacing={3}>
                       <Text
                         color={colorScheme.search_icon}
                         fontSize="14px"
                         fontWeight={400}
+                        display={"flex"}
+                        w={"38%"}
                       >
                         ISO Number
+                        <Text marginLeft={"auto"} as={"span"}>
+                          :
+                        </Text>
                       </Text>
                       <Text
                         fontSize="14px"
@@ -248,17 +234,18 @@ const State = () => {
                         {selectedCountry?.isoNumber}
                       </Text>
                     </HStack>
-                    <HStack
-                      width={"100%"}
-                      justifyContent={"space-between"}
-                      spacing={20}
-                    >
+                    <HStack width={"100%"} spacing={3}>
                       <Text
                         color={colorScheme.search_icon}
                         fontSize="14px"
                         fontWeight={400}
+                        display={"flex"}
+                        w={"38%"}
                       >
                         Country Code
+                        <Text marginLeft={"auto"} as={"span"}>
+                          :
+                        </Text>
                       </Text>
                       <Text
                         fontSize="14px"
@@ -272,17 +259,18 @@ const State = () => {
                 </GridItem>
                 <GridItem colSpan={1}>
                   <VStack alignItems={"flex-start"} gap={"24px"}>
-                    <HStack
-                      width={"100%"}
-                      justifyContent={"space-between"}
-                      spacing={20}
-                    >
+                    <HStack width={"100%"} spacing={3}>
                       <Text
                         color={colorScheme.search_icon}
                         fontSize="14px"
                         fontWeight={400}
+                        display={"flex"}
+                        w={"38%"}
                       >
                         Phone Code
+                        <Text marginLeft={"auto"} as={"span"}>
+                          :
+                        </Text>
                       </Text>
                       <Text
                         fontSize="14px"
@@ -292,17 +280,18 @@ const State = () => {
                         {selectedCountry?.phoneCode}
                       </Text>
                     </HStack>
-                    <HStack
-                      width={"100%"}
-                      justifyContent={"space-between"}
-                      spacing={20}
-                    >
+                    <HStack width={"100%"} spacing={3}>
                       <Text
                         color={colorScheme.search_icon}
                         fontSize="14px"
                         fontWeight={400}
+                        display={"flex"}
+                        w={"38%"}
                       >
                         Currency
+                        <Text marginLeft={"auto"} as={"span"}>
+                          :
+                        </Text>
                       </Text>
                       <Text
                         fontSize="14px"
