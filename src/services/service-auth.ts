@@ -1,4 +1,4 @@
-import { toastFail } from "@neo/utility/Toast";
+import { toastFail, toastSuccess } from "@neo/utility/Toast";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
@@ -30,12 +30,17 @@ const useLogoutMutation = () => {
   const navigate = useNavigate();
 
   return useMutation(initLogout, {
-    onSuccess: () => {
+    onSuccess: success => {
       TokenService.clearToken();
       logoutChannel.postMessage("Logout");
       queryClient.clear();
       queryClient.setQueryData(authTokenKey, () => false);
+      toastSuccess(success?.data?.message ?? "Logout Successful");
       navigate("/login", { replace: true });
+    },
+    onError: error => {
+      const logoutErr = error as AxiosError<{ message: string }>;
+      toastFail(logoutErr.response?.data?.message ?? "Logout failed !");
     }
   });
 };

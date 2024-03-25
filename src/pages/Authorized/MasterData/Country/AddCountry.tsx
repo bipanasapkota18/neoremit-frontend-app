@@ -1,9 +1,12 @@
-import { GridItem, SimpleGrid } from "@chakra-ui/react";
+import { InfoIcon } from "@chakra-ui/icons";
+import { GridItem, HStack, SimpleGrid, Tooltip } from "@chakra-ui/react";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { DropzoneComponentControlled } from "@neo/components/Form/DropzoneComponent";
 import Select from "@neo/components/Form/SelectComponent";
 import SwitchInput from "@neo/components/Form/Switch";
 import TextInput from "@neo/components/Form/TextInput";
 import Modal from "@neo/components/Modal";
+import countryAdd from "@neo/schema/country/country";
 import {
   CountriesList,
   useAddCountry,
@@ -22,10 +25,10 @@ const defaultValues = {
   isoNumber: "",
   code: "",
   currencyId: null as ISelectOptions<number> | null,
-  hasState: true,
+  hasState: false,
   flagIcon: "",
-  canReceive: true,
-  canSend: true,
+  canReceive: false,
+  canSend: false,
   isActive: true
 };
 interface AddCountrySetupProps {
@@ -47,7 +50,9 @@ const AddCountrySetup = ({
   const { mutateAsync: mutateAddCountry } = useAddCountry();
   const { mutateAsync: mutateUpdate } = useUpdateCountry();
   const { control, handleSubmit, reset } = useForm({
-    defaultValues: defaultValues
+    defaultValues: defaultValues,
+    resolver: yupResolver(countryAdd),
+    mode: "onChange"
   });
   const { mutateAsync: mutateCurrency, data: currencyData } =
     useGetAllCurrency();
@@ -79,7 +84,6 @@ const AddCountrySetup = ({
         phoneCode: selectedCountry?.phoneCode,
         isoNumber: selectedCountry?.isoNumber,
         hasState: selectedCountry?.hasState,
-        // flagIcon: selectedCountry?.flagIcon,
         canReceive: selectedCountry?.canReceive,
         canSend: selectedCountry?.canSend,
         isActive: selectedCountry?.isActive,
@@ -87,7 +91,7 @@ const AddCountrySetup = ({
       });
     }
   }, [editData, editId]);
-  const onAddCountrySetup = async (data: typeof defaultValues) => {
+  const onAddCountrySetup = async (data: any) => {
     if (editId) {
       await mutateUpdate({
         id: editId,
@@ -156,14 +160,31 @@ const AddCountrySetup = ({
             />
           </GridItem>
           <GridItem colSpan={1}>
-            <TextInput
-              size={"lg"}
-              name="shortName"
-              label="Enter Country Short Name"
-              control={control}
-              type="text"
-              isRequired
-            />
+            <HStack justifyContent={"center"} alignItems={"center"}>
+              <TextInput
+                size={"lg"}
+                name="shortName"
+                label="Enter Country Short Name"
+                control={control}
+                type="text"
+                isRequired
+                endIcons={
+                  <Tooltip
+                    closeDelay={700}
+                    hasArrow
+                    placement="top"
+                    label={"We use ISO 3166-1 alpha-2"}
+                  >
+                    <InfoIcon
+                      cursor={"pointer"}
+                      onClick={() =>
+                        window.open("https://www.iban.com/country-codes")
+                      }
+                    />
+                  </Tooltip>
+                }
+              />
+            </HStack>
           </GridItem>
           <GridItem colSpan={1}>
             <TextInput
