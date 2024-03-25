@@ -10,7 +10,7 @@ export interface IFeeAndChargeResponse {
   country: Country;
   currencyDetailResponseDto: Currency;
   isActive: boolean;
-  feeAndChargesDetails?: any;
+  feeAndChargesDetails?: FeeAndChargesDetail[];
 }
 
 interface Country {
@@ -31,12 +31,35 @@ export interface IFeeAndChargeDetailsResponse {
 }
 
 export interface FeeAndChargesDetail {
-  id: number;
-  paymentMethodIds: any[];
+  id?: number;
+  paymentMethodIds: PaymentMethodId[];
   feeAndChargeType?: string;
-  fromAmount: number;
-  toAmount: number;
-  fee: number;
+  fromAmount: number | null;
+  toAmount: number | null;
+  fee: number | null;
+}
+export interface FeeAndChargesDetailRequest {
+  id?: number;
+  payoutMethodIds: PaymentMethodId[];
+  feeAndChargeType?: string;
+  fromAmount: number | null;
+  toAmount: number | null;
+  fee: number | null;
+}
+export interface PaymentMethodId {
+  id: number;
+  code: string;
+  name: string;
+  description: string;
+  isCash: boolean;
+  isActive: boolean;
+}
+export interface IFeeAndChargeRequest {
+  id?: number | null;
+  feeName: string;
+  countryId: number | string;
+  currencyId: number | string;
+  feeAndChargesDetails?: FeeAndChargesDetail[];
 }
 
 const getAllFeesAndCharges = () => {
@@ -65,8 +88,11 @@ const useGetFeeAndChargesbyId = (id: number | null) => {
     }
   });
 };
-const addFeesAndCharges = (data: any) => {
-  return NeoHttpClient.post<NeoResponse>(api.fee_and_charges.create, data);
+const addFeesAndCharges = (data: IFeeAndChargeRequest) => {
+  return NeoHttpClient.post<NeoResponse<IFeeAndChargeRequest>>(
+    api.fee_and_charges.create,
+    data
+  );
 };
 const useAddFeesAndCharges = () => {
   const queryCLient = useQueryClient();
@@ -80,8 +106,11 @@ const useAddFeesAndCharges = () => {
     }
   });
 };
-const updataFeeAndCharges = (data: any) => {
-  return NeoHttpClient.put<NeoResponse>(api.fee_and_charges.update, data);
+const updataFeeAndCharges = (data: IFeeAndChargeRequest) => {
+  return NeoHttpClient.put<NeoResponse<IFeeAndChargeRequest>>(
+    api.fee_and_charges.update.replace("{id}", data.id + ""),
+    data
+  );
 };
 const useUpdateFeesAndCharges = () => {
   const queryCLient = useQueryClient();
@@ -112,15 +141,32 @@ const useFeeAndChargesDelete = () => {
     }
   });
 };
+const toggleFeeAndChargesStatus = (id: number | null) => {
+  return NeoHttpClient.put<NeoResponse>(
+    api.fee_and_charges.toggleStatus.replace("{id}", id + "")
+  );
+};
+const useFeeandChargeToggle = () => {
+  const queryCLient = useQueryClient();
+  return useMutation(toggleFeeAndChargesStatus, {
+    onSuccess: success => {
+      queryCLient.invalidateQueries(api.fee_and_charges.getAll);
+      toastSuccess(success?.data?.message);
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message || error?.message);
+    }
+  });
+};
 //Fees and Charges Configuration
 const addFeeandChargesDetails = ({
   feeAndChargeId,
   data
 }: {
   feeAndChargeId: number | null;
-  data: any;
+  data: FeeAndChargesDetailRequest;
 }) => {
-  return NeoHttpClient.post<NeoResponse<FeeAndChargesDetail>>(
+  return NeoHttpClient.post<NeoResponse<FeeAndChargesDetailRequest>>(
     api.fee_and_charges_details.create.replace(
       "{feeAndChargeId}",
       feeAndChargeId + ""
@@ -132,7 +178,7 @@ const useAddFeeandChargesDetails = () => {
   const queryCLient = useQueryClient();
   return useMutation(addFeeandChargesDetails, {
     onSuccess: success => {
-      queryCLient.invalidateQueries(api.fee_and_charges_details.getAll);
+      queryCLient.invalidateQueries(api.fee_and_charges.getSingle);
       toastSuccess(success?.data?.message);
     },
     onError: (error: AxiosError<{ message: string }>) => {
@@ -140,9 +186,15 @@ const useAddFeeandChargesDetails = () => {
     }
   });
 };
-const updateFeeandChargesDetails = (data: any) => {
-  return NeoHttpClient.put<NeoResponse<FeeAndChargesDetail>>(
-    api.fee_and_charges_details.update,
+const updateFeeandChargesDetails = ({
+  id,
+  data
+}: {
+  id: number | null;
+  data: FeeAndChargesDetailRequest;
+}) => {
+  return NeoHttpClient.put<NeoResponse<FeeAndChargesDetailRequest>>(
+    api.fee_and_charges_details.update.replace("{id}", id + ""),
     data
   );
 };
@@ -181,6 +233,7 @@ export {
   useAddFeesAndCharges,
   useFeeAndChargesDelete,
   useFeeAndChargesDetailDelete,
+  useFeeandChargeToggle,
   useGetAllFeesAndCharges,
   useGetFeeAndChargesbyId,
   useUpdateFeeandChargesDetails,

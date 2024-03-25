@@ -36,7 +36,7 @@ export const api = {
       update: `${service}/payment-purpose/{id}`
     },
     payout_method: {
-      getAll: `${service}/payout-method`,
+      getAll: `${service}/payout-method/list`,
       create: `${service}/payout-method`,
       update: `${service}/payout-method/{id}`,
       statusChange: `${service}/payout-method/status/{id}`
@@ -67,17 +67,24 @@ export const api = {
     }
   },
   fee_and_charges: {
-    getAll: `${internalService}/api/feeAndCharges/getAll`,
-    create: `${internalService}/api/feeAndCharges/create`,
-    update: `${internalService}/api/feeAndCharges/update/{id}`,
-    delete: `${internalService}/api/feeAndCharges/delete/{id}`,
-    getSingle: `${internalService}/api/feeAndCharges/getFeeAndCharges/{id}`
+    getAll: `${service}/master/fee-Charges/getAll`,
+    create: `${service}/master/fee-Charges/create`,
+    update: `${service}/master/fee-Charges/update/{id}`,
+    delete: `${service}/master/fee-Charges/delete/{id}`,
+    getSingle: `${service}/master/fee-Charges/getFeeAndCharges/{id}`,
+    toggleStatus: `${service}/master/fee-Charges/toggle/status/{id}`
   },
   fee_and_charges_details: {
-    getAll: `${internalService}/api/feeAndChargesDetails/getAll`,
-    create: `${internalService}/api/feeAndChargesDetails/add/{feeAndChargeId}`,
-    update: `${internalService}/api/feeAndChargesDetails/update/{id}`,
-    delete: `${internalService}/api/feeAndChargesDetails/delete/{id}`
+    getAll: `${service}/api/feeAndChargesDetails/getAll`,
+    create: `${service}/master/fee-charges-details/add/{feeAndChargeId}`,
+    update: `${service}/master/fee-charges-details/update/{id}`,
+    delete: `${service}/master/fee-charges-details/delete/{id}`
+  },
+  users: {
+    email: `${service}/users/forgot-password`,
+    otp: `${service}/users/verify/otp`,
+    resendOtp: `${service}/users/otp/resend`,
+    changePassword: `${service}/users/otp/change-password`
   },
 
   init: "/init"

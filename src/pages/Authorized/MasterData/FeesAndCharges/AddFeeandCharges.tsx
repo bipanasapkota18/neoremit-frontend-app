@@ -9,7 +9,6 @@ import {
   HStack,
   Heading,
   SimpleGrid,
-  useDisclosure,
   useMediaQuery
 } from "@chakra-ui/react";
 
@@ -19,7 +18,10 @@ import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
 import Select from "@neo/components/Form/SelectComponent";
 import TextInput from "@neo/components/Form/TextInput";
-import { useGetCountryList } from "@neo/services/MasterData/service-country";
+import {
+  CountriesList,
+  useGetCountryList
+} from "@neo/services/MasterData/service-country";
 import {
   FeeAndChargesDetail,
   IFeeAndChargeResponse,
@@ -31,7 +33,6 @@ import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import { CellContext } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import AddFeeAndChargesDetails from "./AddFeeAndChargesDetails";
 
 const defaultValues = {
   feeName: "",
@@ -55,8 +56,13 @@ const AddFeeandCharges = ({
   });
   const { mutateAsync: mutateAddFeeandCharges } = useAddFeesAndCharges();
   const { mutateAsync: mutateUpdateFeeandCharges } = useUpdateFeesAndCharges();
-  const { isOpen, onOpen, onClose: onModalClose } = useDisclosure();
+  // const {
+  //   isOpen: isOpenAddDetailModal,
+  //   onOpen: onOpenAddDetailModal,
+  //   onClose: onModalClose
+  // } = useDisclosure();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
+  // const [editDetailId, setEditDetailId] = useState<number | null>(null);
   const { data: countryData } = useGetCountryList();
   const { data: feeAndChargeDetails, isLoading: isGetFeeAndChargesLoading } =
     useGetFeeAndChargesbyId(editId);
@@ -65,9 +71,7 @@ const AddFeeandCharges = ({
     valueKey: "id",
     labelKey: "name"
   });
-  const onEditState = () => {
-    //
-  };
+
   const onDeleteState = () => {
     //
   };
@@ -76,7 +80,7 @@ const AddFeeandCharges = ({
       const selectedFee = editData?.find(data => data.id === editId);
 
       const selectedCountry = countryData?.find((country: any) => {
-        return selectedFee?.country?.name === country?.name;
+        return selectedFee?.country?.id === country?.id;
       })?.name;
       reset({
         feeName: selectedFee?.feeName,
@@ -130,7 +134,10 @@ const AddFeeandCharges = ({
         return (
           <HStack>
             <TableActionButton
-              onClickAction={onEditState}
+              onClickAction={() => {
+                // setEditDetailId(cell?.row?.original?.id ?? null);
+                // onOpenAddDetailModal();
+              }}
               icon={<svgAssets.EditButton />}
               label="Edit"
             />
@@ -148,8 +155,8 @@ const AddFeeandCharges = ({
   const handleSaveFeeandCharges = async (data: typeof defaultValues) => {
     if (editId) {
       const selectedFee = editData?.find(data => data.id === editId);
-      console.log(selectedFee);
       await mutateUpdateFeeandCharges({
+        id: editId,
         ...data,
         countryId: selectedFee?.country?.id ?? "",
         currencyId: selectedFee?.currencyDetailResponseDto?.id ?? "",
@@ -161,11 +168,14 @@ const AddFeeandCharges = ({
         ...data,
         countryId: data.countryId?.value ?? "",
         currencyId: countryData?.find(
-          country => data.countryId?.label === country?.name
+          (country: CountriesList) => data.countryId?.label === country?.name
         )?.currency?.id,
         feeAndChargesDetails: []
       });
     }
+    onClose();
+    reset();
+    setEditId(null);
   };
 
   return (
@@ -219,11 +229,11 @@ const AddFeeandCharges = ({
                       isReadOnly
                       value={
                         watch("countryId")
-                          ? countryData?.find(country => {
+                          ? countryData?.find((country: CountriesList) => {
                               return (
                                 watch("countryId")?.label === country?.name
                               );
-                            })?.name
+                            })?.currency?.name
                           : ""
                       }
                     />
@@ -231,59 +241,64 @@ const AddFeeandCharges = ({
                 </SimpleGrid>
               </Box>
             </HStack>
+            {editId ? (
+              <>
+                <Heading
+                  fontSize="17px"
+                  fontStyle="normal"
+                  fontWeight={700}
+                  lineHeight="normal"
+                  color={"#2D3748"}
+                  p={4}
+                >
+                  Fees and Charges Details
+                </Heading>
+                <Card borderRadius={"16px"} borderTop={"1px solid #EDF2F7"}>
+                  <CardBody>
+                    <HStack justifyContent={"space-between"}>
+                      <HStack
+                        display="flex"
+                        padding="24px 20px"
+                        alignItems="center"
+                        gap="16px"
+                        alignSelf="stretch"
+                      >
+                        {isDesktop ? (
+                          <SearchInput
+                            width={"450px"}
+                            label="Search"
+                            name="search"
+                            type="text"
+                          />
+                        ) : (
+                          ""
+                        )}
+                      </HStack>
+                      <Button
+                        minW={"max-content"}
+                        leftIcon={<svgAssets.AddButton />}
+                        // onClick={onOpenAddDetailModal}
+                      >
+                        Add Fee and Charges Details
+                      </Button>
+                    </HStack>
 
-            <Heading
-              fontSize="17px"
-              fontStyle="normal"
-              fontWeight={700}
-              lineHeight="normal"
-              color={"#2D3748"}
-              p={4}
-            >
-              Fees and Charges Details
-            </Heading>
-            <Card borderRadius={"16px"} borderTop={"1px solid #EDF2F7"}>
-              <CardBody>
-                <HStack justifyContent={"space-between"}>
-                  <HStack
-                    display="flex"
-                    padding="24px 20px"
-                    alignItems="center"
-                    gap="16px"
-                    alignSelf="stretch"
-                  >
-                    {isDesktop ? (
-                      <SearchInput
-                        width={"450px"}
-                        label="Search"
-                        name="search"
-                        type="text"
-                      />
-                    ) : (
-                      ""
-                    )}
-                  </HStack>
-                  <Button
-                    minW={"max-content"}
-                    leftIcon={<svgAssets.AddButton />}
-                    onClick={onOpen}
-                  >
-                    Add Fee and Charges Details
-                  </Button>
-                </HStack>
+                    <DataTable
+                      isLoading={isGetFeeAndChargesLoading}
+                      pagination={{
+                        manual: false
+                      }}
+                      data={
+                        feeAndChargeDetails?.data?.data?.feeAndChargesDetails ??
+                        []
+                      }
+                      columns={columns}
+                    />
+                  </CardBody>
+                </Card>
+              </>
+            ) : null}
 
-                <DataTable
-                  isLoading={isGetFeeAndChargesLoading}
-                  pagination={{
-                    manual: false
-                  }}
-                  data={
-                    feeAndChargeDetails?.data?.data?.feeAndChargesDetails ?? []
-                  }
-                  columns={columns}
-                />
-              </CardBody>
-            </Card>
             <Flex
               justifyContent={"flex-end"}
               padding={"16px"}
@@ -298,7 +313,10 @@ const AddFeeandCharges = ({
                 bg={"#FFF5F5"}
                 _active={{ bg: "#FFF5F5" }}
                 fontSize={"17px"}
-                onClick={onClose}
+                onClick={() => {
+                  setEditId(null);
+                  onClose();
+                }}
               >
                 Cancel
               </Button>
@@ -314,15 +332,16 @@ const AddFeeandCharges = ({
           </CardBody>
         </Card>
 
-        <AddFeeAndChargesDetails
-          editId={editId}
-          setEditId={setEditId}
-          data={editData}
-          isOpen={isOpen}
+        {/* <AddFeeAndChargesDetails
+          EditDetailId={editDetailId}
+          setEditDetailId={setEditDetailId}
+          data={feeAndChargeDetails?.data?.data}
+          isOpen={isOpenAddDetailModal}
           onClose={() => {
+            setEditDetailId(null);
             onModalClose();
           }}
-        />
+        /> */}
       </form>
     </Flex>
   );

@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { NeoResponse, api } from "./service-api";
 import { NeoHttpClient } from "./service-axios";
-import TokenService, { NeoTokenDetails, TokenDetails } from "./service-token";
+import TokenService, { NeoTokenDetails } from "./service-token";
 
 import { BroadcastChannel } from "broadcast-channel";
 
@@ -71,7 +71,7 @@ const useLoginMutation = () => {
 
 const initRefreshToken = async () => {
   try {
-    const response = await NeoHttpClient.post<TokenDetails>(
+    const response = await NeoHttpClient.post(
       api.auth.refreshToken,
       TokenService.getToken()?.refresh_token
     );

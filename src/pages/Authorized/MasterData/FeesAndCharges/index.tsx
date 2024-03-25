@@ -6,6 +6,7 @@ import {
   HStack,
   Switch,
   useBoolean,
+  useDisclosure,
   useMediaQuery
 } from "@chakra-ui/react";
 import { svgAssets } from "@neo/assets/images/svgs";
@@ -14,9 +15,12 @@ import FilterButton from "@neo/components/Button/FilterButton";
 import { DataTable } from "@neo/components/DataTable";
 import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
+import ConfirmationModal from "@neo/components/Modal/DeleteModal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import {
   IFeeAndChargeResponse,
+  useFeeAndChargesDelete,
+  useFeeandChargeToggle,
   useGetAllFeesAndCharges
 } from "@neo/services/service-fees-and-charges";
 import { CellContext } from "@tanstack/react-table";
@@ -32,10 +36,42 @@ const FeeAndCharges = () => {
   const [active, setActive] = useState(false);
   const [searchText, setSearchText] = useState<string>("" as string);
   const [editId, setEditId] = useState(null as number | null);
+  const {
+    isOpen: isOpenFeeAndChargeDeleteModal,
+    onOpen: onOpenFeeAndChargeDeleteModal,
+    onClose: onCloseFeeAndChargeDeleteModal
+  } = useDisclosure();
+  const {
+    isOpen: isOpenFeeAndChargeToggleModal,
+    onOpen: onOpenFeeAndChargeToggleModal,
+    onClose: onCloseFeeAndChargeToggleModal
+  } = useDisclosure();
   const { data: feeAndChargesData, isLoading: isDataLoading } =
     useGetAllFeesAndCharges();
-  const onDeleteFeeAndCharges = () => {
-    //
+  const { mutateAsync: mutateDeleteFeeAndCharges, isLoading: isDeleteLoading } =
+    useFeeAndChargesDelete();
+  const {
+    mutateAsync: mutateStatusUpdateFeeAndCharges,
+    isLoading: isStatusUPdateLoading
+  } = useFeeandChargeToggle();
+
+  const handleDelete = async () => {
+    try {
+      await mutateDeleteFeeAndCharges(editId);
+      setEditId(null);
+      onCloseFeeAndChargeDeleteModal();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  const handleStatusChange = async () => {
+    try {
+      await mutateStatusUpdateFeeAndCharges(changeId);
+      setChangeId(null);
+      onCloseFeeAndChargeToggleModal();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const columns = [
@@ -72,7 +108,17 @@ const FeeAndCharges = () => {
       accessorKey: "status",
       size: 20,
       cell: (data: any) => {
-        return <Switch size="lg" isChecked={data?.row?.original?.isActive} />;
+        return (
+          <Switch
+            size="lg"
+            isChecked={data?.row?.original?.isActive}
+            onChange={() => {
+              setActive(!active);
+              setChangeId(data?.row?.original?.id);
+              onOpenFeeAndChargeToggleModal();
+            }}
+          />
+        );
       }
     },
     {
@@ -90,7 +136,10 @@ const FeeAndCharges = () => {
               label="Edit"
             />
             <TableActionButton
-              onClickAction={onDeleteFeeAndCharges}
+              onClickAction={() => {
+                setEditId(cell?.row?.original?.id);
+                onOpenFeeAndChargeDeleteModal();
+              }}
               icon={<svgAssets.DeleteButton />}
               label="Delete"
             />
@@ -173,32 +222,30 @@ const FeeAndCharges = () => {
           )}
         </CardBody>
       </Card>
-      {/* <ConfirmationModal
+      <ConfirmationModal
         variant={"delete"}
         buttonText={"Delete"}
         title={"Are You Sure?"}
         isLoading={isDeleteLoading}
         onApprove={handleDelete}
         message="Deleting will permanently remove this file from the system. This cannot be Undone."
-        isOpen={isOpenPayoutMethodDeleteModal}
-        onClose={() => {
-          setChangeId(null);
-          onClosePayoutMethodDeleteModal();
-        }}
+        isOpen={isOpenFeeAndChargeDeleteModal}
+        onClose={onCloseFeeAndChargeDeleteModal}
       />
+
       <ConfirmationModal
         variant={"edit"}
         buttonText={`${active ? "Disable" : "Enable"}`}
         title={"Are You Sure?"}
         isLoading={isStatusUPdateLoading}
         onApprove={handleStatusChange}
-        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this payout method?`}
-        isOpen={isOpenPayoutMethodStatusUpdateModal}
+        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this fee and charge?`}
+        isOpen={isOpenFeeAndChargeToggleModal}
         onClose={() => {
           setChangeId(null);
-          onClosePayoutMethodStatusUpdateModal();
+          onCloseFeeAndChargeToggleModal();
         }}
-      /> */}
+      />
     </Flex>
   );
 };

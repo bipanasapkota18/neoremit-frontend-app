@@ -2,6 +2,8 @@ import { Button, Text, VStack } from "@chakra-ui/react";
 import TextInput from "@neo/components/Form/TextInput";
 
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useEmailVerification } from "@neo/services/service-forgot-password";
+import { useStore } from "@neo/store/store";
 import { colorScheme } from "@neo/theme/colorScheme";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -16,6 +18,8 @@ const defaultValues = {
 };
 
 const ForgotPasswordForm = ({ setScreen }: AuthPageProps) => {
+  const { setEmail } = useStore();
+  const { mutateAsync: emailVerification, isLoading } = useEmailVerification();
   const schema = yup.object().shape({
     email: yup
       .string()
@@ -32,8 +36,12 @@ const ForgotPasswordForm = ({ setScreen }: AuthPageProps) => {
     resolver: yupResolver(schema),
     mode: "onChange"
   });
-  const submitHandler = () => {
-    setScreen("otp");
+  const submitHandler = async (data: typeof defaultValues) => {
+    const response = await emailVerification(data);
+    if (response.data.responseStatus === "SUCCESS") {
+      setScreen("otp");
+      setEmail(data.email);
+    }
   };
   return (
     <>
@@ -59,7 +67,12 @@ const ForgotPasswordForm = ({ setScreen }: AuthPageProps) => {
           placeholder={"Email"}
           control={control}
         />
-        <Button isDisabled={!isValid} size={"lg"} type="submit">
+        <Button
+          isDisabled={!isValid}
+          isLoading={isLoading}
+          size={"lg"}
+          type="submit"
+        >
           Send Code
         </Button>
       </VStack>
