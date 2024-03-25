@@ -23,7 +23,7 @@ const OTPComponent = ({
   helperText,
   isRequired
 }: OTPProps) => {
-  const otpComponent = Array.from({ length: 5 }, (_, i) => (
+  const otpComponent = Array.from({ length: 6 }, (_, i) => (
     <OTPInput key={i} />
   ));
 

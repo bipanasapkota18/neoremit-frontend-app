@@ -66,6 +66,12 @@ export const api = {
       update: `${service}/source-of-fund/{id}`
     }
   },
+  users: {
+    email: "internal-service/users/forgot-password",
+    otp: "internal-service/users/verify/otp",
+    resendOtp: "internal-service/users/otp/resend",
+    changePassword: "internal-service/users/otp/change-password"
+  },
 
   init: "/init"
 };
