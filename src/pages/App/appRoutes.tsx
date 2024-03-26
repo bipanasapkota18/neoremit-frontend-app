@@ -32,6 +32,9 @@ const PayoutPartner = lazy(
 const FeeAndCharges = lazy(
   () => import("@neo/pages/Authorized/MasterData/FeesAndCharges")
 );
+const Occupation = lazy(
+  () => import("@neo/pages/Authorized/MasterData/Occupation")
+);
 
 export const appRoutes = [
   {
@@ -82,6 +85,10 @@ export const appRoutes = [
       {
         path: NAVIGATION_ROUTES.MASTER_DATA.FEES_AND_CHARGES,
         element: <FeeAndCharges />
+      },
+      {
+        path: NAVIGATION_ROUTES.MASTER_DATA.OCCUPATION,
+        element: <Occupation />
       }
     ]
   }
