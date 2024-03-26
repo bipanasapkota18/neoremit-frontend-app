@@ -1,6 +1,7 @@
 import LayoutWrapper from "@neo/components/LayoutWrapper";
 import { lazy } from "react";
 
+import MaritalStatus from "../Authorized/MasterData/MaritalStatus";
 import { NAVIGATION_ROUTES } from "./navigationRoutes";
 
 const Document = lazy(
@@ -89,6 +90,10 @@ export const appRoutes = [
       {
         path: NAVIGATION_ROUTES.MASTER_DATA.OCCUPATION,
         element: <Occupation />
+      },
+      {
+        path: NAVIGATION_ROUTES.MASTER_DATA.MARITAL_STATUS,
+        element: <MaritalStatus />
       }
     ]
   }

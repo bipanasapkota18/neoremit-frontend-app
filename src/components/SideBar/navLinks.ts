@@ -83,6 +83,11 @@ export const navLinks = [
         icon: sidebarAssets.Ellipse,
         href: NAVIGATION_ROUTES.MASTER_DATA.OCCUPATION,
         label: "Occupation"
+      },
+      {
+        icon: sidebarAssets.Ellipse,
+        href: NAVIGATION_ROUTES.MASTER_DATA.MARITAL_STATUS,
+        label: "Marital Status"
       }
     ]
   }
