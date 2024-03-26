@@ -2,50 +2,144 @@ import { GridItem, SimpleGrid } from "@chakra-ui/react";
 import Select from "@neo/components/Form/SelectComponent";
 import TextInput from "@neo/components/Form/TextInput";
 import Modal from "@neo/components/Modal";
+import { useGetAllPayoutMethod } from "@neo/services/MasterData/service-payout-method";
+import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import { useForm } from "react-hook-form";
 
+import {
+  IFeeAndChargeDetailsResponse,
+  useAddFeeandChargesDetails,
+  useUpdateFeeandChargesDetails
+} from "@neo/services/service-fees-and-charges";
+import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
+
 const defaultValues = {
-  paymentMethod: "",
-  fromAmount: "",
-  toAmount: "",
-  type: "",
-  fee: ""
+  payoutMethodIds: null as ISelectOptions<any>[] | null,
+  fromAmount: null as number | null,
+  toAmount: null as number | null,
+  feeAndChargeType: null as ISelectOptions<string> | null,
+  fee: null as number | null
 };
 interface AddFeeAndChargesDetailsProps {
+  EditDetailId: number | null;
+  data: IFeeAndChargeDetailsResponse | undefined;
+  setEditDetailId: Dispatch<SetStateAction<number | null>>;
   isOpen: boolean;
   onClose: () => void;
 }
 const AddFeeAndChargesDetails = ({
   isOpen,
-  onClose
+  onClose,
+  EditDetailId,
+  data: editData,
+  setEditDetailId
 }: AddFeeAndChargesDetailsProps) => {
-  const { control, handleSubmit } = useForm({
+  const { mutateAsync: mutateAddFeeandChargeDetail } =
+    useAddFeeandChargesDetails();
+  const { mutateAsync: mutateEditFeeAndChargeDetail } =
+    useUpdateFeeandChargesDetails();
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues
   });
-  const onAddFeeAndChargesDetails = () => {
-    //
+  const selectedFeeAndCharge = useMemo(
+    () =>
+      editData?.feeAndChargesDetails?.find(item => item.id === EditDetailId),
+    [editData, EditDetailId]
+  );
+  const { data: payoutMethodData } = useGetAllPayoutMethod();
+  const payOutMethodOptions = formatSelectOptions({
+    data: payoutMethodData,
+    labelKey: "name",
+    valueKey: "id"
+  });
+  const feeTypeOptions = formatSelectOptions({
+    data: [
+      { label: "Percentage", value: "PERCENTAGE" },
+      { label: "Flat", value: "FLAT" }
+    ],
+    labelKey: "label",
+    valueKey: "value"
+  });
+  useEffect(() => {
+    if (EditDetailId) {
+      // console.log(selectedFeeAndCharge);
+      const selectedPayOutMethod = payOutMethodOptions?.filter((item: any) =>
+        selectedFeeAndCharge?.payoutMethods
+          ?.map(item => item.id)
+          .includes(item.value)
+      );
+      const selectedFeeType = feeTypeOptions?.find(
+        (item: any) => item.value === selectedFeeAndCharge?.feeAndChargeType
+      );
+      console.log(selectedPayOutMethod);
+      reset({
+        ...selectedFeeAndCharge,
+        payoutMethodIds: selectedPayOutMethod,
+        feeAndChargeType: selectedFeeType,
+        fromAmount: selectedFeeAndCharge?.fromAmount ?? null,
+        toAmount: selectedFeeAndCharge?.toAmount ?? null,
+        fee: selectedFeeAndCharge?.fee ?? null
+      });
+    }
+  }, [EditDetailId]);
+  const onAddFeeAndChargesDetails = async (data: typeof defaultValues) => {
+    try {
+      if (EditDetailId) {
+        await mutateEditFeeAndChargeDetail({
+          id: EditDetailId,
+          data: {
+            ...data,
+            fromAmount: Number(data?.fromAmount) ?? null,
+            toAmount: Number(data?.toAmount) ?? null,
+            fee: Number(data?.fee) ?? null,
+            payoutMethodIds:
+              data?.payoutMethodIds?.map(item => item.value) ?? [],
+            feeAndChargeType: data?.feeAndChargeType?.value ?? "",
+            id: EditDetailId
+          }
+        });
+      } else {
+        await mutateAddFeeandChargeDetail({
+          feeAndChargeId: editData?.id ?? null,
+          data: {
+            ...data,
+            fromAmount: Number(data?.fromAmount) ?? null,
+            toAmount: Number(data?.toAmount) ?? null,
+            fee: Number(data?.fee) ?? null,
+            payoutMethodIds:
+              data?.payoutMethodIds?.map(item => item.value) ?? [],
+            feeAndChargeType: data?.feeAndChargeType?.value ?? ""
+          }
+        });
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    handleClose();
+  };
+  const handleClose = () => {
+    reset({});
+    setEditDetailId(null);
+    onClose();
   };
   return (
     <>
       <Modal
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleClose}
         submitButtonText="Save"
         cancelButtonText="Cancel"
-        title="Add Fee and Charges Detail"
+        title={EditDetailId ? "Edit Fee and Charges" : "Add Fee and Charges"}
         onSubmit={handleSubmit(onAddFeeAndChargesDetails)}
       >
         <SimpleGrid columns={2} spacing={"16px"}>
           <GridItem colSpan={2}>
             <Select
-              name="paymentMethod"
+              isMulti
+              name="payoutMethodIds"
               placeholder="Payment Method"
               control={control}
-              options={[
-                { label: "Cash", value: "cash" },
-                { label: "Wallet", value: "wallet" },
-                { label: "Bank", value: "bank" }
-              ]}
+              options={payOutMethodOptions ?? []}
             />
           </GridItem>
           <GridItem colSpan={1}>
@@ -70,13 +164,10 @@ const AddFeeAndChargesDetails = ({
           </GridItem>
           <GridItem mt={2} colSpan={2}>
             <Select
-              name="type"
+              name="feeAndChargeType"
               placeholder="Type"
               control={control}
-              options={[
-                { label: "Percentage", value: "percentage" },
-                { label: "Fixed", value: "fixed" }
-              ]}
+              options={feeTypeOptions ?? []}
             />
           </GridItem>
           <GridItem colSpan={2}>

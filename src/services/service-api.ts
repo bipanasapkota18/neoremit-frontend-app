@@ -36,7 +36,7 @@ export const api = {
       update: `${service}/payment-purpose/{id}`
     },
     payout_method: {
-      getAll: `${service}/payout-method`,
+      getAll: `${service}/payout-method/list`,
       create: `${service}/payout-method`,
       update: `${service}/payout-method/{id}`,
       statusChange: `${service}/payout-method/status/{id}`
@@ -78,11 +78,25 @@ export const api = {
       statusChange: `${service}/marital-status/status/{id}`
     }
   },
+  fee_and_charges: {
+    getAll: `${service}/master/fee-Charges/getAll`,
+    create: `${service}/master/fee-Charges/create`,
+    update: `${service}/master/fee-Charges/update/{id}`,
+    delete: `${service}/master/fee-Charges/delete/{id}`,
+    getSingle: `${service}/master/fee-Charges/getFeeAndCharges/{id}`,
+    toggleStatus: `${service}/master/fee-Charges/toggle/status/{id}`
+  },
+  fee_and_charges_details: {
+    getAll: `${service}/api/feeAndChargesDetails/getAll`,
+    create: `${service}/master/fee-charges-details/add/{feeAndChargeId}`,
+    update: `${service}/master/fee-charges-details/update/{id}`,
+    delete: `${service}/master/fee-charges-details/delete/{id}`
+  },
   users: {
-    email: "internal-service/users/forgot-password",
-    otp: "internal-service/users/verify/otp",
-    resendOtp: "internal-service/users/otp/resend",
-    changePassword: "internal-service/users/otp/change-password"
+    email: `${service}/users/forgot-password`,
+    otp: `${service}/users/verify/otp`,
+    resendOtp: `${service}/users/otp/resend`,
+    changePassword: `${service}/users/otp/change-password`
   },
 
   init: "/init"

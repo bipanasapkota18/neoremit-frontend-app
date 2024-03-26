@@ -6,6 +6,7 @@ import {
   HStack,
   Switch,
   useBoolean,
+  useDisclosure,
   useMediaQuery
 } from "@chakra-ui/react";
 import { svgAssets } from "@neo/assets/images/svgs";
@@ -14,7 +15,16 @@ import FilterButton from "@neo/components/Button/FilterButton";
 import { DataTable } from "@neo/components/DataTable";
 import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
+import ConfirmationModal from "@neo/components/Modal/DeleteModal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
+import {
+  IFeeAndChargeResponse,
+  useFeeAndChargesDelete,
+  useFeeandChargeToggle,
+  useGetAllFeesAndCharges
+} from "@neo/services/service-fees-and-charges";
+import { CellContext } from "@tanstack/react-table";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import AddFeeandCharges from "./AddFeeandCharges";
 
@@ -22,70 +32,76 @@ const FeeAndCharges = () => {
   const [flag, setFlag] = useBoolean();
   const { pathname } = useLocation();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
+  const [changeId, setChangeId] = useState(null as number | null);
+  const [active, setActive] = useState(false);
+  const [searchText, setSearchText] = useState<string>("" as string);
+  const [editId, setEditId] = useState(null as number | null);
+  const {
+    isOpen: isOpenFeeAndChargeDeleteModal,
+    onOpen: onOpenFeeAndChargeDeleteModal,
+    onClose: onCloseFeeAndChargeDeleteModal
+  } = useDisclosure();
+  const {
+    isOpen: isOpenFeeAndChargeToggleModal,
+    onOpen: onOpenFeeAndChargeToggleModal,
+    onClose: onCloseFeeAndChargeToggleModal
+  } = useDisclosure();
+  const { data: feeAndChargesData, isLoading: isDataLoading } =
+    useGetAllFeesAndCharges();
+  const { mutateAsync: mutateDeleteFeeAndCharges, isLoading: isDeleteLoading } =
+    useFeeAndChargesDelete();
+  const {
+    mutateAsync: mutateStatusUpdateFeeAndCharges,
+    isLoading: isStatusUPdateLoading
+  } = useFeeandChargeToggle();
 
-  const onEditFeeAndCharges = () => {
-    //
-  };
-  const onDeleteFeeAndCharges = () => {
-    //
-  };
-
-  const tableData = [
-    {
-      sn: 1,
-      name: "Nepali Rupee",
-      country: "Nepal",
-      payoutMethod: "Bank",
-      status: "Active"
-    },
-    {
-      sn: 2,
-      name: "US Dollar",
-      country: "Nepal",
-      payoutMethod: "Bank",
-      status: "Active"
-    },
-    {
-      sn: 3,
-      name: "Euro",
-      country: "Nepal",
-      payoutMethod: "Bank",
-      status: "Active"
-    },
-    {
-      sn: 4,
-      name: "British Pound",
-      country: "Nepal",
-      payoutMethod: "Bank",
-      status: "Active"
-    },
-    {
-      sn: 5,
-      name: "Australian Dollar",
-      country: "Nepal",
-      payoutMethod: "Bank",
-      status: "InActive"
+  const handleDelete = async () => {
+    try {
+      await mutateDeleteFeeAndCharges(editId);
+      setEditId(null);
+      onCloseFeeAndChargeDeleteModal();
+    } catch (e) {
+      console.error(e);
     }
-  ];
+  };
+  const handleStatusChange = async () => {
+    try {
+      await mutateStatusUpdateFeeAndCharges(changeId);
+      setChangeId(null);
+      onCloseFeeAndChargeToggleModal();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const columns = [
     {
       header: "S.N",
-      accessorKey: "sn"
+      accessorKey: "sn",
+      cell: (cell: CellContext<IFeeAndChargeResponse, any>) => {
+        return cell?.row?.index + 1;
+      }
     },
     {
       header: "Fee Name",
-      accessorKey: "name",
+      accessorKey: "feeName",
       size: 40
     },
     {
       header: "Country",
       accessorKey: "country",
-      size: 30
+      size: 30,
+      cell: (data: CellContext<IFeeAndChargeResponse, any>) => {
+        return data.row.original?.country?.name;
+      }
     },
     {
-      header: "Payout Method",
-      accessorKey: "payoutMethod",
-      size: 20
+      header: "Currency",
+      accessorKey: "currency",
+      size: 20,
+      cell: (data: CellContext<IFeeAndChargeResponse, any>) => {
+        return data.row.original?.currencyDetailResponseDto?.name;
+      }
     },
     {
       header: "Status",
@@ -95,7 +111,12 @@ const FeeAndCharges = () => {
         return (
           <Switch
             size="lg"
-            isChecked={data?.row?.original?.status === "Active"}
+            isChecked={data?.row?.original?.isActive}
+            onChange={() => {
+              setActive(!active);
+              setChangeId(data?.row?.original?.id);
+              onOpenFeeAndChargeToggleModal();
+            }}
           />
         );
       }
@@ -103,16 +124,22 @@ const FeeAndCharges = () => {
     {
       header: "Action",
       accessorKey: "action",
-      cell: () => {
+      cell: (cell: CellContext<IFeeAndChargeResponse, any>) => {
         return (
           <HStack>
             <TableActionButton
-              onClickAction={onEditFeeAndCharges}
+              onClickAction={() => {
+                setEditId(cell?.row?.original?.id);
+                setFlag.on();
+              }}
               icon={<svgAssets.EditButton />}
               label="Edit"
             />
             <TableActionButton
-              onClickAction={onDeleteFeeAndCharges}
+              onClickAction={() => {
+                setEditId(cell?.row?.original?.id);
+                onOpenFeeAndChargeDeleteModal();
+              }}
               icon={<svgAssets.DeleteButton />}
               label="Delete"
             />
@@ -136,6 +163,9 @@ const FeeAndCharges = () => {
         <CardBody>
           {flag ? (
             <AddFeeandCharges
+              editId={editId}
+              setEditId={setEditId}
+              data={feeAndChargesData}
               onClose={() => {
                 setFlag.off();
               }}
@@ -155,6 +185,7 @@ const FeeAndCharges = () => {
                       width={"450px"}
                       label="Search"
                       name="search"
+                      onSearch={setSearchText}
                       type="text"
                     />
                   ) : (
@@ -176,16 +207,45 @@ const FeeAndCharges = () => {
                 </Button>
               </HStack>
               <DataTable
+                isLoading={isDataLoading}
                 pagination={{
                   manual: false
                 }}
-                data={tableData}
+                filter={{
+                  globalFilter: searchText,
+                  setGlobalFilter: setSearchText
+                }}
+                data={feeAndChargesData ?? []}
                 columns={columns}
-              />{" "}
+              />
             </>
           )}
         </CardBody>
       </Card>
+      <ConfirmationModal
+        variant={"delete"}
+        buttonText={"Delete"}
+        title={"Are You Sure?"}
+        isLoading={isDeleteLoading}
+        onApprove={handleDelete}
+        message="Deleting will permanently remove this file from the system. This cannot be Undone."
+        isOpen={isOpenFeeAndChargeDeleteModal}
+        onClose={onCloseFeeAndChargeDeleteModal}
+      />
+
+      <ConfirmationModal
+        variant={"edit"}
+        buttonText={`${active ? "Disable" : "Enable"}`}
+        title={"Are You Sure?"}
+        isLoading={isStatusUPdateLoading}
+        onApprove={handleStatusChange}
+        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this fee and charge?`}
+        isOpen={isOpenFeeAndChargeToggleModal}
+        onClose={() => {
+          setChangeId(null);
+          onCloseFeeAndChargeToggleModal();
+        }}
+      />
     </Flex>
   );
 };
