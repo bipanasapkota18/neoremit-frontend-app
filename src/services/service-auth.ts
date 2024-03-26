@@ -41,7 +41,10 @@ const useLogoutMutation = () => {
 };
 
 const initLogin = (loginData: LoginDetails) => {
-  return NeoHttpClient.post<NeoResponse>(api.auth.login, loginData);
+  return NeoHttpClient.post<NeoResponse>(api.auth.login, {
+    ...loginData,
+    loginFrom: "INTERNAL"
+  });
 };
 
 const useLoginMutation = () => {
@@ -71,10 +74,9 @@ const useLoginMutation = () => {
 
 const initRefreshToken = async () => {
   try {
-    const response = await NeoHttpClient.post(
-      api.auth.refreshToken,
-      TokenService.getToken()?.refresh_token
-    );
+    const response = await NeoHttpClient.post(api.auth.refreshToken, {
+      refresh_token: TokenService.getToken()?.refresh_token
+    });
     const tokens = {
       access_token: response.data.access_token,
       refresh_token: response.data.refresh_token

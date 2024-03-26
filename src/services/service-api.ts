@@ -64,6 +64,18 @@ export const api = {
       getAll: `${service}/source-of-fund/list`,
       create: `${service}/source-of-fund`,
       update: `${service}/source-of-fund/{id}`
+    },
+    occupation: {
+      getAll: `${service}/occupation/list`,
+      create: `${service}/occupation`,
+      update: `${service}/occupation/{id}`,
+      statusChange: `${service}/occupation/status/{id}`
+    },
+    marital_status: {
+      getAll: `${service}/marital-status/list`,
+      create: `${service}/marital-status`,
+      update: `${service}/marital-status/{id}`,
+      statusChange: `${service}/marital-status/status/{id}`
     }
   },
   fee_and_charges: {

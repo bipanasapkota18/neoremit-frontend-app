@@ -9,6 +9,7 @@ import {
   HStack,
   Heading,
   SimpleGrid,
+  useDisclosure,
   useMediaQuery
 } from "@chakra-ui/react";
 
@@ -18,6 +19,7 @@ import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
 import Select from "@neo/components/Form/SelectComponent";
 import TextInput from "@neo/components/Form/TextInput";
+import ConfirmationModal from "@neo/components/Modal/DeleteModal";
 import {
   CountriesList,
   useGetCountryList
@@ -26,13 +28,15 @@ import {
   FeeAndChargesDetail,
   IFeeAndChargeResponse,
   useAddFeesAndCharges,
+  useFeeAndChargesDetailDelete,
   useGetFeeAndChargesbyId,
   useUpdateFeesAndCharges
 } from "@neo/services/service-fees-and-charges";
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import { CellContext } from "@tanstack/react-table";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import AddFeeAndChargesDetails from "./AddFeeAndChargesDetails";
 
 const defaultValues = {
   feeName: "",
@@ -56,13 +60,15 @@ const AddFeeandCharges = ({
   });
   const { mutateAsync: mutateAddFeeandCharges } = useAddFeesAndCharges();
   const { mutateAsync: mutateUpdateFeeandCharges } = useUpdateFeesAndCharges();
-  // const {
-  //   isOpen: isOpenAddDetailModal,
-  //   onOpen: onOpenAddDetailModal,
-  //   onClose: onModalClose
-  // } = useDisclosure();
+  const { mutateAsync: mutateDeleteFeeAndCharges, isLoading: isDeleteLoading } =
+    useFeeAndChargesDetailDelete();
+  const {
+    isOpen: isOpenAddDetailModal,
+    onOpen: onOpenAddDetailModal,
+    onClose: onModalClose
+  } = useDisclosure();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
-  // const [editDetailId, setEditDetailId] = useState<number | null>(null);
+  const [editDetailId, setEditDetailId] = useState<number | null>(null);
   const { data: countryData } = useGetCountryList();
   const { data: feeAndChargeDetails, isLoading: isGetFeeAndChargesLoading } =
     useGetFeeAndChargesbyId(editId);
@@ -72,15 +78,17 @@ const AddFeeandCharges = ({
     labelKey: "name"
   });
 
-  const onDeleteState = () => {
-    //
-  };
+  const {
+    isOpen: isOpenFeeAndChargeDeleteModal,
+    onOpen: onOpenFeeAndChargeDeleteModal,
+    onClose: onCloseFeeAndChargeDeleteModal
+  } = useDisclosure();
   useEffect(() => {
     if (editId) {
       const selectedFee = editData?.find(data => data.id === editId);
 
       const selectedCountry = countryData?.find((country: any) => {
-        return selectedFee?.country?.id === country?.id;
+        return selectedFee?.country?.name === country?.name;
       })?.name;
       reset({
         feeName: selectedFee?.feeName,
@@ -99,10 +107,10 @@ const AddFeeandCharges = ({
     },
     {
       header: "Payment Method",
-      accessorKey: "paymentMethod",
+      accessorKey: "payoutMethods",
       size: 100,
       cell: (data: CellContext<FeeAndChargesDetail, any>) => {
-        return data?.row?.original?.paymentMethodIds?.map(
+        return data?.row?.original?.payoutMethods?.map(
           (item: any, index: number) => {
             return (
               <Badge
@@ -130,19 +138,22 @@ const AddFeeandCharges = ({
       header: "Action",
       accessorKey: "action",
 
-      cell: () => {
+      cell: (cell: CellContext<IFeeAndChargeResponse, any>) => {
         return (
           <HStack>
             <TableActionButton
               onClickAction={() => {
-                // setEditDetailId(cell?.row?.original?.id ?? null);
-                // onOpenAddDetailModal();
+                setEditDetailId(cell?.row?.original?.id ?? null);
+                onOpenAddDetailModal();
               }}
               icon={<svgAssets.EditButton />}
               label="Edit"
             />
             <TableActionButton
-              onClickAction={onDeleteState}
+              onClickAction={() => {
+                setEditDetailId(cell?.row?.original?.id ?? null);
+                onOpenFeeAndChargeDeleteModal();
+              }}
               icon={<svgAssets.DeleteButton />}
               label="Delete"
             />
@@ -151,7 +162,15 @@ const AddFeeandCharges = ({
       }
     }
   ];
-
+  const handleDelete = async () => {
+    try {
+      await mutateDeleteFeeAndCharges(editDetailId);
+      // setEditId(null);
+      onCloseFeeAndChargeDeleteModal();
+    } catch (e) {
+      console.error(e);
+    }
+  };
   const handleSaveFeeandCharges = async (data: typeof defaultValues) => {
     if (editId) {
       const selectedFee = editData?.find(data => data.id === editId);
@@ -159,9 +178,9 @@ const AddFeeandCharges = ({
         id: editId,
         ...data,
         countryId: selectedFee?.country?.id ?? "",
-        currencyId: selectedFee?.currencyDetailResponseDto?.id ?? "",
-        feeAndChargesDetails:
-          feeAndChargeDetails?.data?.data?.feeAndChargesDetails ?? []
+        currencyId: selectedFee?.currencyDetailResponseDto?.id ?? ""
+        // feeAndChargesDetails:
+        //   feeAndChargeDetails?.data?.data?.feeAndChargesDetails ?? []
       });
     } else {
       await mutateAddFeeandCharges({
@@ -169,8 +188,8 @@ const AddFeeandCharges = ({
         countryId: data.countryId?.value ?? "",
         currencyId: countryData?.find(
           (country: CountriesList) => data.countryId?.label === country?.name
-        )?.currency?.id,
-        feeAndChargesDetails: []
+        )?.currency?.id
+        // feeAndChargesDetails: []
       });
     }
     onClose();
@@ -277,7 +296,7 @@ const AddFeeandCharges = ({
                       <Button
                         minW={"max-content"}
                         leftIcon={<svgAssets.AddButton />}
-                        // onClick={onOpenAddDetailModal}
+                        onClick={onOpenAddDetailModal}
                       >
                         Add Fee and Charges Details
                       </Button>
@@ -332,7 +351,7 @@ const AddFeeandCharges = ({
           </CardBody>
         </Card>
 
-        {/* <AddFeeAndChargesDetails
+        <AddFeeAndChargesDetails
           EditDetailId={editDetailId}
           setEditDetailId={setEditDetailId}
           data={feeAndChargeDetails?.data?.data}
@@ -341,8 +360,18 @@ const AddFeeandCharges = ({
             setEditDetailId(null);
             onModalClose();
           }}
-        /> */}
+        />
       </form>
+      <ConfirmationModal
+        variant={"delete"}
+        buttonText={"Delete"}
+        title={"Are You Sure?"}
+        isLoading={isDeleteLoading}
+        onApprove={handleDelete}
+        message="Deleting will permanently remove this file from the system. This cannot be Undone."
+        isOpen={isOpenFeeAndChargeDeleteModal}
+        onClose={onCloseFeeAndChargeDeleteModal}
+      />
     </Flex>
   );
 };

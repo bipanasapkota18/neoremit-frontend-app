@@ -1,5 +1,5 @@
 import noImage from "@neo/assets/images/Image-not-found.png";
-import LoginBackground from "@neo/assets/images/Login.svg";
+import LoginBackground from "@neo/assets/images/Login.png";
 import LoginBanner from "@neo/assets/images/LoginBanner.png";
 import UkFlag from "@neo/assets/images/englishLang.png";
 import Loader from "@neo/assets/images/loader.gif";

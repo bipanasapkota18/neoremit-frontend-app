@@ -32,7 +32,7 @@ export interface IFeeAndChargeDetailsResponse {
 
 export interface FeeAndChargesDetail {
   id?: number;
-  paymentMethodIds: PaymentMethodId[];
+  payoutMethods: PaymentMethodId[];
   feeAndChargeType?: string;
   fromAmount: number | null;
   toAmount: number | null;
@@ -81,12 +81,16 @@ const getFeeAndChargesbyId = (id: number | null) => () => {
   );
 };
 const useGetFeeAndChargesbyId = (id: number | null) => {
-  return useQuery(api.fee_and_charges.getSingle, getFeeAndChargesbyId(id), {
-    enabled: !!id,
-    onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message || error?.message);
+  return useQuery(
+    [api.fee_and_charges.getSingle, id],
+    getFeeAndChargesbyId(id),
+    {
+      enabled: !!id,
+      onError: (error: AxiosError<{ message: string }>) => {
+        toastFail(error?.response?.data?.message || error?.message);
+      }
     }
-  });
+  );
 };
 const addFeesAndCharges = (data: IFeeAndChargeRequest) => {
   return NeoHttpClient.post<NeoResponse<IFeeAndChargeRequest>>(
@@ -219,7 +223,7 @@ const useFeeAndChargesDetailDelete = () => {
   const queryCLient = useQueryClient();
   return useMutation(deleteFeeAndChargesDetails, {
     onSuccess: success => {
-      queryCLient.invalidateQueries(api.fee_and_charges_details.getAll);
+      queryCLient.invalidateQueries(api.fee_and_charges.update);
       toastSuccess(success?.data?.message);
     },
     onError: (error: AxiosError<{ message: string }>) => {

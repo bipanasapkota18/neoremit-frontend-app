@@ -23,7 +23,9 @@ export const NAVIGATION_ROUTES = {
     PAYOUT_METHOD: "/payout-method",
     COUNTRY_SETUP: "/country-setup",
     STATE_SETUP: "/state-setup",
-    FEES_AND_CHARGES: "/fees-and-charges"
+    FEES_AND_CHARGES: "/fees-and-charges",
+    OCCUPATION: "/occupation",
+    MARITAL_STATUS: "/marital-status"
   },
   PARTNERS: "/partners"
 };
