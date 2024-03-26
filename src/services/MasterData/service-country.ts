@@ -45,7 +45,7 @@ export interface ICountryRequest {
   flagIcon: string;
   canReceive: boolean;
   canSend: boolean;
-  isActive: boolean;
+  isActive: boolean | null | undefined;
 }
 
 // interface IFilterItems {

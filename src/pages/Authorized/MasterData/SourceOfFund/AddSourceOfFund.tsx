@@ -1,6 +1,8 @@
 import { GridItem, SimpleGrid } from "@chakra-ui/react";
+import { yupResolver } from "@hookform/resolvers/yup";
 import TextInput from "@neo/components/Form/TextInput";
 import Modal from "@neo/components/Modal";
+import sourceSchema from "@neo/schema/sourceoffund/source";
 import {
   ISourceOfFundResponse,
   useAddSourceOfFund,
@@ -18,8 +20,7 @@ interface AddSourceProps {
 }
 const defaultValues = {
   name: "",
-  code: "",
-  isActive: true
+  code: ""
 };
 const AddSourceOfFund = ({
   isOpen,
@@ -38,7 +39,8 @@ const AddSourceOfFund = ({
     isLoading: isStatusUpdateLoading
   } = useUpdateSourceOfFund();
   const { control, handleSubmit, reset } = useForm({
-    defaultValues: defaultValues
+    defaultValues: defaultValues,
+    resolver: yupResolver(sourceSchema)
   });
   useEffect(() => {
     if (editId) {

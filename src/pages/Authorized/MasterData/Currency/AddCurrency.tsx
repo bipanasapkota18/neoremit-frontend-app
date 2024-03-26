@@ -1,8 +1,11 @@
 import { GridItem, SimpleGrid } from "@chakra-ui/react";
+import { yupResolver } from "@hookform/resolvers/yup";
 import TextInput from "@neo/components/Form/TextInput";
 import Modal from "@neo/components/Modal";
+import currencySchema from "@neo/schema/currency/currency";
 import {
   CurrenciesList,
+  ICurrencyRequest,
   useAddCurrency,
   useUpdateCurrency
 } from "@neo/services/MasterData/service-currency";
@@ -38,7 +41,8 @@ const AddCurrency = ({
   const { mutateAsync: mutateUpdateCurrency, isLoading: isUpdateLoading } =
     useUpdateCurrency();
   const { control, handleSubmit, reset } = useForm({
-    defaultValues: defaultValues
+    defaultValues: defaultValues,
+    resolver: yupResolver(currencySchema)
   });
   useEffect(() => {
     if (editId) {
@@ -53,7 +57,7 @@ const AddCurrency = ({
       });
     }
   }, [editId, editData]);
-  const onAddCurrency = async (data: typeof defaultValues) => {
+  const onAddCurrency = async (data: ICurrencyRequest) => {
     if (editId) {
       const selectedCurrency = editData?.find(
         currency => currency.id === editId

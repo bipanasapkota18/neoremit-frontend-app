@@ -9,12 +9,10 @@ const countryAdd = yup.object().shape({
     .string()
     .required("Please enter country Short Name")
     .test("length", "Enter a two digit short name", val => val.length === 2),
-  currencyId: yup.mixed().nullable(),
-  flagIcon: yup.string(),
   canReceive: yup.boolean(),
   canSend: yup.boolean(),
-  isActive: yup.boolean(),
-  hasState: yup.boolean()
+  isActive: yup.boolean().nullable(),
+  hasState: yup.boolean(),
+  currencyId: yup.mixed().required("Currency is required")
 });
-
 export default countryAdd;

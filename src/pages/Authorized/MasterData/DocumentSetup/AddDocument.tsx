@@ -1,7 +1,9 @@
 import { GridItem, SimpleGrid } from "@chakra-ui/react";
+// import { yupResolver } from "@hookform/resolvers/yup";
 import Select from "@neo/components/Form/SelectComponent";
 import TextInput from "@neo/components/Form/TextInput";
 import Modal from "@neo/components/Modal";
+// import documentSchema from "@neo/schema/document/document";
 import {
   useAddDocument,
   useGetAllExtensions,
@@ -21,7 +23,7 @@ interface AddDocumentProps {
 
 const defaultValues = {
   documentName: "",
-  allowedExtensions: null as ISelectOptions<string>[] | null,
+  allowedExtensions: null as unknown as ISelectOptions<string>[] | undefined,
   documentCode: "",
   documentSize: "" as unknown as number
 };
@@ -39,6 +41,7 @@ const AddDocument = ({
     useUpdateDocument();
   const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues
+    // resolver: yupResolver(documentSchema)
   });
   const { data: extensionData } = useGetAllExtensions();
 
@@ -131,7 +134,7 @@ const AddDocument = ({
               name="documentSize"
               label="Document Size(in Mb)"
               control={control}
-              type="text"
+              type="number"
               isRequired
             />
           </GridItem>

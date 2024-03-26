@@ -78,7 +78,7 @@ const initRefreshToken = async () => {
   try {
     const response = await NeoHttpClient.post<TokenDetails>(
       api.auth.refreshToken,
-      TokenService.getToken()?.refresh_token
+      JSON.stringify({ refreshToken: TokenService.getToken()?.refresh_token })
     );
     const tokens = {
       access_token: response.data.access_token,

@@ -1,12 +1,13 @@
 import { InfoIcon } from "@chakra-ui/icons";
 import { GridItem, HStack, SimpleGrid, Tooltip } from "@chakra-ui/react";
-import { yupResolver } from "@hookform/resolvers/yup";
+// import { yupResolver } from "@hookform/resolvers/yup";
 import { DropzoneComponentControlled } from "@neo/components/Form/DropzoneComponent";
 import Select from "@neo/components/Form/SelectComponent";
 import SwitchInput from "@neo/components/Form/Switch";
 import TextInput from "@neo/components/Form/TextInput";
 import Modal from "@neo/components/Modal";
-import countryAdd from "@neo/schema/country/country";
+
+// import countryAdd from "@neo/schema/country/country";
 import {
   CountriesList,
   useAddCountry,
@@ -14,7 +15,7 @@ import {
 } from "@neo/services/MasterData/service-country";
 import { useGetAllCurrency } from "@neo/services/MasterData/service-currency";
 import { baseURL } from "@neo/services/service-axios";
-import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
+import { formatSelectOptions } from "@neo/utility/format";
 import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 
@@ -24,7 +25,7 @@ const defaultValues = {
   phoneCode: "",
   isoNumber: "",
   code: "",
-  currencyId: null as ISelectOptions<number> | null,
+  currencyId: null as any,
   hasState: false,
   flagIcon: "",
   canReceive: false,
@@ -49,9 +50,10 @@ const AddCountrySetup = ({
 }: AddCountrySetupProps) => {
   const { mutateAsync: mutateAddCountry } = useAddCountry();
   const { mutateAsync: mutateUpdate } = useUpdateCountry();
+
   const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues,
-    resolver: yupResolver(countryAdd),
+    // resolver: yupResolver(countryAdd),
     mode: "onChange"
   });
   const { mutateAsync: mutateCurrency, data: currencyData } =
@@ -86,12 +88,12 @@ const AddCountrySetup = ({
         hasState: selectedCountry?.hasState,
         canReceive: selectedCountry?.canReceive,
         canSend: selectedCountry?.canSend,
-        isActive: selectedCountry?.isActive,
+        // isActive: selectedCountry?.isActive,
         currencyId: selectedCurrency
       });
     }
   }, [editData, editId]);
-  const onAddCountrySetup = async (data: any) => {
+  const onAddCountrySetup = async (data: typeof defaultValues) => {
     if (editId) {
       await mutateUpdate({
         id: editId,
