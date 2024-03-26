@@ -24,7 +24,8 @@ export const NAVIGATION_ROUTES = {
     COUNTRY_SETUP: "/country-setup",
     STATE_SETUP: "/state-setup",
     FEES_AND_CHARGES: "/fees-and-charges",
-    OCCUPATION: "/occupation"
+    OCCUPATION: "/occupation",
+    MARITAL_STATUS: "/marital-status"
   },
   PARTNERS: "/partners"
 };

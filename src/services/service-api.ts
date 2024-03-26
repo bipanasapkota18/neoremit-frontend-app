@@ -70,6 +70,12 @@ export const api = {
       create: `${service}/occupation`,
       update: `${service}/occupation/{id}`,
       statusChange: `${service}/occupation/status/{id}`
+    },
+    marital_status: {
+      getAll: `${service}/marital-status/list`,
+      create: `${service}/marital-status`,
+      update: `${service}/marital-status/{id}`,
+      statusChange: `${service}/marital-status/status/{id}`
     }
   },
   users: {
