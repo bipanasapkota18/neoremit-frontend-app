@@ -11,10 +11,10 @@ import {
   Textarea,
   TextareaProps
 } from "@chakra-ui/react";
+import { imageAssets } from "@neo/assets/images";
 import { colorScheme } from "@neo/theme/colorScheme";
 import React from "react";
 import { Control, Controller } from "react-hook-form";
-
 interface TextInputProps {
   name: string;
   control: Control<any>;
@@ -120,6 +120,18 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                     errorBorderColor={colorScheme.danger_500}
                     disabled={disabled}
                     variant={variant}
+                    css={{
+                      "&::-webkit-calendar-picker-indicator": {
+                        color: "rgba(0, 0, 0, 0)",
+                        opacity: 1,
+                        display: "block",
+                        width: "20px",
+                        height: "20px",
+                        borderWidth: "thin",
+                        borderStyle: "solid",
+                        backgroundImage: `url(${imageAssets.CalendarIcon})`
+                      }
+                    }}
                     {...extraProps}
                   />
                 )}

@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   Card,
   CardBody,
@@ -18,13 +19,13 @@ import SearchInput from "@neo/components/Form/SearchInput";
 import ConfirmationModal from "@neo/components/Modal/DeleteModal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import {
-  IPayoutMethodResponse,
-  useDeletePayoutMethod,
-  useGetPayOutMethodById,
-  useToggleStatus
-} from "@neo/services/MasterData/service-payout-method";
-import { useGetAllPromoCode } from "@neo/services/MasterData/service-promo-code";
+  PromoCodeList,
+  useDeletePromoCode,
+  useGetAllPromoCode,
+  useTogglePromoCodeStatus
+} from "@neo/services/MasterData/service-promo-code";
 import { CellContext, PaginationState } from "@tanstack/react-table";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import AddPromoCode from "./AddPromoCode";
@@ -33,14 +34,14 @@ const PromoCode = () => {
   const [flag, setFlag] = useBoolean();
   const { pathname } = useLocation();
   const {
-    isOpen: isOpenPayoutMethodDeleteModal,
-    onOpen: onOpenPayoutMethodDeleteModal,
-    onClose: onClosePayoutMethodDeleteModal
+    isOpen: isOpenPromoCodeDeleteModal,
+    onOpen: onOpenPromoCodeDeleteModal,
+    onClose: onClosePromoCodeDeleteModal
   } = useDisclosure();
   const {
-    isOpen: isOpenPayoutMethodStatusUpdateModal,
-    onOpen: onOpenPayoutMethodStatusUpdateModal,
-    onClose: onClosePayoutMethodStatusUpdateModal
+    isOpen: isOpenPromoCodeStatusUpdateModal,
+    onOpen: onOpenPromoCodeStatusUpdateModal,
+    onClose: onClosePromoCodeStatusUpdateModal
   } = useDisclosure();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
   const [editId, setEditId] = useState(null as number | null);
@@ -51,35 +52,40 @@ const PromoCode = () => {
     pageIndex: 0,
     pageSize: 10
   });
-  // const [filterCount, setFilterCount] = useState(0);
-  const [tableData, setTableData] = useState([]);
-  const { mutateAsync, data: promoCodeData } = useGetAllPromoCode();
+  const [filterCount, setFilterCount] = useState(0);
+  const [tableData, setTableData] = useState<PromoCodeList[] | undefined>();
+  const {
+    mutateAsync,
+    data: promoCodeData,
+    isLoading: isGetAllPromoCodeLoading
+  } = useGetAllPromoCode();
+
   useEffect(() => {
     mutateAsync({
       pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
       filterParams: {}
     });
   }, [pageParams.pageIndex, pageParams.pageSize]);
-  // const refetchData = () => {
-  //   mutateAsync({
-  //     pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
-  //     filterParams: {}
-  //   });
-  // };
+
+  const refetchData = () => {
+    mutateAsync({
+      pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
+      filterParams: {}
+    });
+  };
+
   useEffect(() => {
     setTableData(promoCodeData?.data?.data?.promoCodeList ?? []);
-    // setFilterCount(promoCodeData?.data?.data?.totalItems ?? 0);
+    setFilterCount(promoCodeData?.data?.data?.totalItems ?? 0);
   }, [promoCodeData]);
-  console.log(promoCodeData);
-  const { isLoading: isSingleFetching } = useGetPayOutMethodById(changeId);
 
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
-    useDeletePayoutMethod();
+    useDeletePromoCode();
   const {
     isLoading: isToggling,
     refetch,
     isFetching
-  } = useToggleStatus(changeId);
+  } = useTogglePromoCodeStatus(changeId);
   const columns = [
     {
       header: "S.N",
@@ -91,23 +97,68 @@ const PromoCode = () => {
 
     {
       header: "PromoCode",
-      accessorKey: "name"
+      accessorKey: "code"
     },
     {
       header: "Promo Code Name",
-      accessorKey: "promoCodeName"
+      accessorKey: "name"
     },
     {
       header: "Country",
-      accessorKey: "country"
+      accessorKey: "countryList",
+      cell: (cell: CellContext<PromoCodeList, any>) => {
+        console.log(cell?.row?.original?.countryList?.map(item => item.name));
+        return cell?.row?.original?.countryList?.map(
+          (item: any, index: number) => {
+            return (
+              <Badge
+                key={index}
+                padding="8px 24px"
+                // mx={2}
+                borderRadius={"16px"}
+              >
+                {item?.name}
+              </Badge>
+            );
+          }
+        );
+      }
     },
     {
       header: "Payment Method",
       accessorKey: "paymentMethod",
-      size: 20
+      size: 20,
+      cell: (cell: CellContext<PromoCodeList, any>) => {
+        return cell?.row?.original?.payoutMethodList?.map(
+          (item: any, index: number) => {
+            return (
+              <Badge
+                key={index}
+                padding="8px 24px"
+                // mx={2}
+                borderRadius={"16px"}
+              >
+                {item?.name}
+              </Badge>
+            );
+          }
+        );
+      }
     },
-    { header: "Valid From", accessorKey: "validFrom" },
-    { header: "Valid Till", accessorKey: "validTill" },
+    {
+      header: "Valid From",
+      accessorKey: "validFrom",
+      cell: (cell: CellContext<PromoCodeList, any>) => {
+        return moment(cell?.row?.original?.validFrom).format("DD/MM/YYYY");
+      }
+    },
+    {
+      header: "Valid Till",
+      accessorKey: "validTo",
+      cell: (cell: CellContext<PromoCodeList, any>) => {
+        return moment(cell?.row?.original?.validTo).format("DD/MM/YYYY");
+      }
+    },
     {
       header: "Status",
       accessorKey: "status",
@@ -121,7 +172,7 @@ const PromoCode = () => {
             onChange={() => {
               setActive(data?.row?.original?.isActive);
               setChangeId(data?.row?.original?.id);
-              onOpenPayoutMethodStatusUpdateModal();
+              onOpenPromoCodeStatusUpdateModal();
             }}
           />
         );
@@ -130,7 +181,7 @@ const PromoCode = () => {
     {
       header: "Action",
       accessorKey: "action",
-      cell: (cell: CellContext<IPayoutMethodResponse, any>) => {
+      cell: (cell: CellContext<PromoCodeList, any>) => {
         return (
           <HStack>
             <TableActionButton
@@ -144,7 +195,7 @@ const PromoCode = () => {
             <TableActionButton
               onClickAction={() => {
                 setChangeId(cell?.row?.original?.id || null);
-                onOpenPayoutMethodDeleteModal();
+                onOpenPromoCodeDeleteModal();
               }}
               icon={<svgAssets.DeleteButton />}
               label="Delete"
@@ -154,17 +205,22 @@ const PromoCode = () => {
       }
     }
   ];
+
   const activePath = breadcrumbTitle(pathname);
+
   const handleDelete = async () => {
     await mutateDelete(changeId);
     setChangeId(null);
-    onClosePayoutMethodDeleteModal();
+    refetchData();
+    onClosePromoCodeDeleteModal();
   };
+
   const handleStatusChange = async () => {
     try {
       await refetch();
       setChangeId(null);
-      onClosePayoutMethodStatusUpdateModal();
+      refetchData();
+      onClosePromoCodeStatusUpdateModal();
     } catch (e) {
       console.error(e);
     }
@@ -172,23 +228,24 @@ const PromoCode = () => {
 
   return (
     <Flex direction={"column"} gap={"16px"}>
-      <BreadCrumb currentPage="Promo Code" options={activePath} />
-      <Card
-        borderRadius={"16px"}
-        boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"
-      >
-        <CardBody>
-          {flag ? (
-            <AddPromoCode
-              data={tableData}
-              editId={editId ?? null}
-              setEditId={setEditId}
-              onClose={() => {
-                setFlag.off();
-              }}
-            />
-          ) : (
-            <>
+      {flag ? (
+        <AddPromoCode
+          refetchData={refetchData}
+          data={tableData ?? []}
+          editId={editId ?? null}
+          setEditId={setEditId}
+          onClose={() => {
+            setFlag.off();
+          }}
+        />
+      ) : (
+        <>
+          <BreadCrumb currentPage="Promo Code" options={activePath} />
+          <Card
+            borderRadius={"16px"}
+            boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"
+          >
+            <CardBody>
               <HStack justifyContent={"space-between"}>
                 <HStack
                   display="flex"
@@ -227,6 +284,7 @@ const PromoCode = () => {
                 pagination={{
                   manual: false,
                   pageParams: pageParams,
+                  pageCount: filterCount,
                   onChangePagination: setPageParams
                 }}
                 data={tableData ?? []}
@@ -235,23 +293,23 @@ const PromoCode = () => {
                   globalFilter: searchText,
                   setGlobalFilter: setSearchText
                 }}
-                // isLoading={isPayoutMethodLoading}
+                isLoading={isGetAllPromoCodeLoading}
               />{" "}
-            </>
-          )}
-        </CardBody>
-      </Card>
+            </CardBody>
+          </Card>
+        </>
+      )}
       <ConfirmationModal
         variant={"delete"}
         buttonText={"Delete"}
         title={"Are You Sure?"}
-        isLoading={isDeleteLoading || isSingleFetching}
+        isLoading={isDeleteLoading}
         onApprove={handleDelete}
         message="Deleting will permanently remove this file from the system. This cannot be Undone."
-        isOpen={isOpenPayoutMethodDeleteModal}
+        isOpen={isOpenPromoCodeDeleteModal}
         onClose={() => {
           setChangeId(null);
-          onClosePayoutMethodDeleteModal();
+          onClosePromoCodeDeleteModal();
         }}
       />
       <ConfirmationModal
@@ -260,11 +318,11 @@ const PromoCode = () => {
         title={"Are You Sure?"}
         isLoading={isToggling || isFetching}
         onApprove={handleStatusChange}
-        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this payout method?`}
-        isOpen={isOpenPayoutMethodStatusUpdateModal}
+        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this promo code?`}
+        isOpen={isOpenPromoCodeStatusUpdateModal}
         onClose={() => {
           setChangeId(null);
-          onClosePayoutMethodStatusUpdateModal();
+          onClosePromoCodeStatusUpdateModal();
         }}
       />
     </Flex>

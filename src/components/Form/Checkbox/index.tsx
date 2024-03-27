@@ -18,7 +18,6 @@ interface CheckBoxProps {
 const CheckBox = ({
   name,
   label,
-
   control,
   helperText,
   isRequired
