@@ -32,7 +32,7 @@ export interface IFeeAndChargeDetailsResponse {
 
 export interface FeeAndChargesDetail {
   id?: number;
-  payoutMethods: PaymentMethodId[];
+  payoutMethods: PaymentMethodId[] | undefined;
   feeAndChargeType?: string;
   fromAmount: number | null;
   toAmount: number | null;

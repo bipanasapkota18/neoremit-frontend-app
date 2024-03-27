@@ -43,12 +43,20 @@ const defaultValues = {
   countryId: null as ISelectOptions<number> | null,
   currencyId: null as ISelectOptions<number> | null
 };
+const defaultArrayValues = {
+  payoutMethods: [],
+  feeAndChargeType: "",
+  fromAmount: null as number | null,
+  toAmount: null as number | null,
+  fee: null as number | null
+};
 interface AddFeeandChargesProps {
   onClose: () => void;
   editId: number | null;
   data: IFeeAndChargeResponse[] | undefined;
   setEditId: Dispatch<SetStateAction<number | null>>;
 }
+const initialFeeAndChargeDetails: (typeof defaultArrayValues)[] = [];
 const AddFeeandCharges = ({
   onClose,
   editId,
@@ -58,6 +66,11 @@ const AddFeeandCharges = ({
   const { control, handleSubmit, watch, reset } = useForm({
     defaultValues: defaultValues
   });
+  const [feeAndChargeDetailsArray, setFeeAndChargeDetails] = useState(
+    initialFeeAndChargeDetails
+  );
+  // const [tableData, setTableData] = useState<IFeeAndChargeResponse[]>([]);
+  console.log(feeAndChargeDetailsArray);
   const { mutateAsync: mutateAddFeeandCharges } = useAddFeesAndCharges();
   const { mutateAsync: mutateUpdateFeeandCharges } = useUpdateFeesAndCharges();
   const { mutateAsync: mutateDeleteFeeAndCharges, isLoading: isDeleteLoading } =
@@ -77,7 +90,17 @@ const AddFeeandCharges = ({
     valueKey: "id",
     labelKey: "name"
   });
-
+  // useEffect(() => {
+  //   // Check if initialFeeAndChargeDetails has any items
+  //   if (feeAndChargeDetailsArray.length > 0) {
+  //     // If there are items, set tableData to initialFeeAndChargeDetails
+  //     setTableData(feeAndChargeDetailsArray);
+  //   } else {
+  //     // If initialFeeAndChargeDetails is empty, set tableData to feeAndChargeDetails.data.data.feeAndChargesDetails or an empty array
+  //     setTableData(feeAndChargeDetails?.data?.data?.feeAndChargesDetails ?? []);
+  //   }
+  // }, [feeAndChargeDetailsArray?.length]);
+  // console.log(tableData);
   const {
     isOpen: isOpenFeeAndChargeDeleteModal,
     onOpen: onOpenFeeAndChargeDeleteModal,
@@ -178,9 +201,9 @@ const AddFeeandCharges = ({
         id: editId,
         ...data,
         countryId: selectedFee?.country?.id ?? "",
-        currencyId: selectedFee?.currencyDetailResponseDto?.id ?? ""
-        // feeAndChargesDetails:
-        //   feeAndChargeDetails?.data?.data?.feeAndChargesDetails ?? []
+        currencyId: selectedFee?.currencyDetailResponseDto?.id ?? "",
+        feeAndChargesDetails:
+          feeAndChargeDetails?.data?.data?.feeAndChargesDetails ?? []
       });
     } else {
       await mutateAddFeeandCharges({
@@ -188,8 +211,8 @@ const AddFeeandCharges = ({
         countryId: data.countryId?.value ?? "",
         currencyId: countryData?.find(
           (country: CountriesList) => data.countryId?.label === country?.name
-        )?.currency?.id
-        // feeAndChargesDetails: []
+        )?.currency?.id,
+        feeAndChargesDetails: feeAndChargeDetailsArray
       });
     }
     onClose();
@@ -260,63 +283,57 @@ const AddFeeandCharges = ({
                 </SimpleGrid>
               </Box>
             </HStack>
-            {editId ? (
-              <>
-                <Heading
-                  fontSize="17px"
-                  fontStyle="normal"
-                  fontWeight={700}
-                  lineHeight="normal"
-                  color={"#2D3748"}
-                  p={4}
-                >
-                  Fees and Charges Details
-                </Heading>
-                <Card borderRadius={"16px"} borderTop={"1px solid #EDF2F7"}>
-                  <CardBody>
-                    <HStack justifyContent={"space-between"}>
-                      <HStack
-                        display="flex"
-                        padding="24px 20px"
-                        alignItems="center"
-                        gap="16px"
-                        alignSelf="stretch"
-                      >
-                        {isDesktop ? (
-                          <SearchInput
-                            width={"450px"}
-                            label="Search"
-                            name="search"
-                            type="text"
-                          />
-                        ) : (
-                          ""
-                        )}
-                      </HStack>
-                      <Button
-                        minW={"max-content"}
-                        leftIcon={<svgAssets.AddButton />}
-                        onClick={onOpenAddDetailModal}
-                      >
-                        Add Fee and Charges Details
-                      </Button>
-                    </HStack>
 
-                    <DataTable
-                      isLoading={isGetFeeAndChargesLoading}
-                      pagination={{
-                        manual: false
-                      }}
-                      data={
-                        feeAndChargeDetails?.data?.data?.feeAndChargesDetails ??
-                        []
-                      }
-                      columns={columns}
-                    />
-                  </CardBody>
-                </Card>
-              </>
-            ) : null}
+            <Heading
+              fontSize="17px"
+              fontStyle="normal"
+              fontWeight={700}
+              lineHeight="normal"
+              color={"#2D3748"}
+              p={4}
+            >
+              Fees and Charges Details
+            </Heading>
+            <Card borderRadius={"16px"} borderTop={"1px solid #EDF2F7"}>
+              <CardBody>
+                <HStack justifyContent={"space-between"}>
+                  <HStack
+                    display="flex"
+                    padding="24px 20px"
+                    alignItems="center"
+                    gap="16px"
+                    alignSelf="stretch"
+                  >
+                    {isDesktop ? (
+                      <SearchInput
+                        width={"450px"}
+                        label="Search"
+                        name="search"
+                        type="text"
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </HStack>
+                  <Button
+                    minW={"max-content"}
+                    leftIcon={<svgAssets.AddButton />}
+                    onClick={onOpenAddDetailModal}
+                  >
+                    Add Fee and Charges Details
+                  </Button>
+                </HStack>
+
+                <DataTable
+                  isLoading={isGetFeeAndChargesLoading}
+                  pagination={{
+                    manual: false
+                  }}
+                  data={[]}
+                  columns={columns}
+                />
+              </CardBody>
+            </Card>
 
             <Flex
               justifyContent={"flex-end"}
@@ -352,6 +369,8 @@ const AddFeeandCharges = ({
         </Card>
 
         <AddFeeAndChargesDetails
+          setInitialFeeAndChargeDetails={setFeeAndChargeDetails}
+          initialFeeAndChargeDetails={feeAndChargeDetailsArray}
           EditDetailId={editDetailId}
           setEditDetailId={setEditDetailId}
           data={feeAndChargeDetails?.data?.data}

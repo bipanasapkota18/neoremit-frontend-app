@@ -7,6 +7,7 @@ import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import { useForm } from "react-hook-form";
 
 import {
+  FeeAndChargesDetail,
   IFeeAndChargeDetailsResponse,
   useAddFeeandChargesDetails,
   useUpdateFeeandChargesDetails
@@ -26,6 +27,8 @@ interface AddFeeAndChargesDetailsProps {
   setEditDetailId: Dispatch<SetStateAction<number | null>>;
   isOpen: boolean;
   onClose: () => void;
+  initialFeeAndChargeDetails: FeeAndChargesDetail[];
+  setInitialFeeAndChargeDetails: any;
 }
 const AddFeeAndChargesDetails = ({
   isOpen,
@@ -33,6 +36,8 @@ const AddFeeAndChargesDetails = ({
   EditDetailId,
   data: editData,
   setEditDetailId
+  // initialFeeAndChargeDetails,
+  // setInitialFeeAndChargeDetails
 }: AddFeeAndChargesDetailsProps) => {
   const { mutateAsync: mutateAddFeeandChargeDetail } =
     useAddFeeandChargesDetails();
@@ -62,7 +67,6 @@ const AddFeeAndChargesDetails = ({
   });
   useEffect(() => {
     if (EditDetailId) {
-      // console.log(selectedFeeAndCharge);
       const selectedPayOutMethod = payOutMethodOptions?.filter((item: any) =>
         selectedFeeAndCharge?.payoutMethods
           ?.map(item => item.id)
@@ -71,7 +75,6 @@ const AddFeeAndChargesDetails = ({
       const selectedFeeType = feeTypeOptions?.find(
         (item: any) => item.value === selectedFeeAndCharge?.feeAndChargeType
       );
-      console.log(selectedPayOutMethod);
       reset({
         ...selectedFeeAndCharge,
         payoutMethodIds: selectedPayOutMethod,
@@ -99,18 +102,47 @@ const AddFeeAndChargesDetails = ({
           }
         });
       } else {
-        await mutateAddFeeandChargeDetail({
-          feeAndChargeId: editData?.id ?? null,
-          data: {
-            ...data,
-            fromAmount: Number(data?.fromAmount) ?? null,
-            toAmount: Number(data?.toAmount) ?? null,
-            fee: Number(data?.fee) ?? null,
-            payoutMethodIds:
-              data?.payoutMethodIds?.map(item => item.value) ?? [],
-            feeAndChargeType: data?.feeAndChargeType?.value ?? ""
-          }
-        });
+        if (editData) {
+          await mutateAddFeeandChargeDetail({
+            feeAndChargeId: editData?.id ?? null,
+            data: {
+              ...data,
+              fromAmount: Number(data?.fromAmount) ?? null,
+              toAmount: Number(data?.toAmount) ?? null,
+              fee: Number(data?.fee) ?? null,
+              payoutMethodIds:
+                data?.payoutMethodIds?.map(item => item.value) ?? [],
+              feeAndChargeType: data?.feeAndChargeType?.value ?? ""
+            }
+          });
+        } else {
+          // if (editData) {
+          //   await mutateAddFeeandChargeDetail({
+          //     feeAndChargeId: editData?.id ?? null,
+          //     data: {
+          //       ...data,
+          //       fromAmount: Number(data?.fromAmount) ?? null,
+          //       toAmount: Number(data?.toAmount) ?? null,
+          //       fee: Number(data?.fee) ?? null,
+          //       payoutMethodIds:
+          //         data?.payoutMethodIds?.map(item => item.value) ?? [],
+          //       feeAndChargeType: data?.feeAndChargeType?.value ?? ""
+          //     }
+          //   });
+          // } else {
+          //   initialFeeAndChargeDetails.push({
+          //     feeAndChargeType: data?.feeAndChargeType?.value ?? "",
+          //     payoutMethods: data?.payoutMethodIds?.map(item => ({
+          //       id: item.value,
+          //       name: item.label
+          //     })),
+          //     fromAmount: Number(data?.fromAmount) ?? null,
+          //     toAmount: Number(data?.toAmount) ?? null,
+          //     fee: Number(data?.fee) ?? null
+          //   });
+          //   setInitialFeeAndChargeDetails(initialFeeAndChargeDetails);
+          // }
+        }
       }
     } catch (e) {
       console.error(e);
