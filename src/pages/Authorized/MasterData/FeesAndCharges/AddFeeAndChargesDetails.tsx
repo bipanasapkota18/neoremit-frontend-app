@@ -7,12 +7,12 @@ import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import { useForm } from "react-hook-form";
 
 import {
-  FeeAndChargesDetail,
   IFeeAndChargeDetailsResponse,
   useAddFeeandChargesDetails,
   useUpdateFeeandChargesDetails
 } from "@neo/services/service-fees-and-charges";
 import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
+import { IArrayValues } from "./AddFeeandCharges";
 
 const defaultValues = {
   payoutMethodIds: null as ISelectOptions<any>[] | null,
@@ -27,18 +27,19 @@ interface AddFeeAndChargesDetailsProps {
   setEditDetailId: Dispatch<SetStateAction<number | null>>;
   isOpen: boolean;
   onClose: () => void;
-  initialFeeAndChargeDetails: FeeAndChargesDetail[];
-  setInitialFeeAndChargeDetails: any;
+  tableData: IArrayValues[];
+  setTableData: Dispatch<SetStateAction<IArrayValues[]>>;
 }
 const AddFeeAndChargesDetails = ({
   isOpen,
   onClose,
   EditDetailId,
   data: editData,
-  setEditDetailId
-  // initialFeeAndChargeDetails,
-  // setInitialFeeAndChargeDetails
+  setEditDetailId,
+  setTableData,
+  tableData
 }: AddFeeAndChargesDetailsProps) => {
+  // console.log(EditDetailId);
   const { mutateAsync: mutateAddFeeandChargeDetail } =
     useAddFeeandChargesDetails();
   const { mutateAsync: mutateEditFeeAndChargeDetail } =
@@ -65,8 +66,33 @@ const AddFeeAndChargesDetails = ({
     labelKey: "label",
     valueKey: "value"
   });
+
   useEffect(() => {
-    if (EditDetailId) {
+    console.log("first");
+    console.log(tableData.length);
+    console.log(EditDetailId);
+    if (EditDetailId && tableData.length > 0) {
+      const selectedWhileAdd = tableData.find(
+        item => item.addId === EditDetailId
+      );
+      console.log(selectedWhileAdd);
+      const selectedPayOutMethod = payOutMethodOptions?.filter((item: any) =>
+        selectedWhileAdd?.payoutMethods
+          ?.map((item: any) => item.id)
+          .includes(item.value)
+      );
+      const selectedFeeType = feeTypeOptions?.find(
+        (item: any) => item.value === selectedWhileAdd?.feeAndChargeType
+      );
+      reset({
+        ...selectedWhileAdd,
+        payoutMethodIds: selectedPayOutMethod,
+        feeAndChargeType: selectedFeeType,
+        fromAmount: selectedWhileAdd?.fromAmount ?? null,
+        toAmount: selectedWhileAdd?.toAmount ?? null,
+        fee: selectedWhileAdd?.fee ?? null
+      });
+    } else if (EditDetailId) {
       const selectedPayOutMethod = payOutMethodOptions?.filter((item: any) =>
         selectedFeeAndCharge?.payoutMethods
           ?.map(item => item.id)
@@ -116,32 +142,31 @@ const AddFeeAndChargesDetails = ({
             }
           });
         } else {
-          // if (editData) {
-          //   await mutateAddFeeandChargeDetail({
-          //     feeAndChargeId: editData?.id ?? null,
-          //     data: {
-          //       ...data,
-          //       fromAmount: Number(data?.fromAmount) ?? null,
-          //       toAmount: Number(data?.toAmount) ?? null,
-          //       fee: Number(data?.fee) ?? null,
-          //       payoutMethodIds:
-          //         data?.payoutMethodIds?.map(item => item.value) ?? [],
-          //       feeAndChargeType: data?.feeAndChargeType?.value ?? ""
-          //     }
-          //   });
-          // } else {
-          //   initialFeeAndChargeDetails.push({
-          //     feeAndChargeType: data?.feeAndChargeType?.value ?? "",
-          //     payoutMethods: data?.payoutMethodIds?.map(item => ({
-          //       id: item.value,
-          //       name: item.label
-          //     })),
-          //     fromAmount: Number(data?.fromAmount) ?? null,
-          //     toAmount: Number(data?.toAmount) ?? null,
-          //     fee: Number(data?.fee) ?? null
-          //   });
-          //   setInitialFeeAndChargeDetails(initialFeeAndChargeDetails);
-          // }
+          setTableData(oldValues => [
+            ...oldValues,
+            {
+              addId: oldValues.length + 1,
+              feeAndChargeType: data?.feeAndChargeType?.value ?? "",
+              payoutMethods: data?.payoutMethodIds?.map(item => ({
+                id: item.value,
+                name: item.label
+              })),
+              fromAmount: Number(data?.fromAmount) ?? null,
+              toAmount: Number(data?.toAmount) ?? null,
+              fee: Number(data?.fee) ?? null
+            }
+          ]);
+          // initialFeeAndChargeDetails.push({
+          //   feeAndChargeType: data?.feeAndChargeType?.value ?? "",
+          //   payoutMethods: data?.payoutMethodIds?.map(item => ({
+          //     id: item.value,
+          //     name: item.label
+          //   })),
+          //   fromAmount: Number(data?.fromAmount) ?? null,
+          //   toAmount: Number(data?.toAmount) ?? null,
+          //   fee: Number(data?.fee) ?? null
+          // });
+          // setInitialFeeAndChargeDetails(initialFeeAndChargeDetails);
         }
       }
     } catch (e) {
@@ -149,11 +174,13 @@ const AddFeeAndChargesDetails = ({
     }
     handleClose();
   };
+
   const handleClose = () => {
     reset({});
     setEditDetailId(null);
     onClose();
   };
+
   return (
     <>
       <Modal

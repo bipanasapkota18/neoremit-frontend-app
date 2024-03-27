@@ -34,7 +34,7 @@ import {
 } from "@neo/services/service-fees-and-charges";
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import { CellContext } from "@tanstack/react-table";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import AddFeeAndChargesDetails from "./AddFeeAndChargesDetails";
 
@@ -43,20 +43,22 @@ const defaultValues = {
   countryId: null as ISelectOptions<number> | null,
   currencyId: null as ISelectOptions<number> | null
 };
-const defaultArrayValues = {
-  payoutMethods: [],
-  feeAndChargeType: "",
-  fromAmount: null as number | null,
-  toAmount: null as number | null,
-  fee: null as number | null
-};
+
+export interface IArrayValues {
+  addId: number;
+  payoutMethods: any;
+  feeAndChargeType: string;
+  fromAmount: number;
+  toAmount: number;
+  fee: number;
+}
 interface AddFeeandChargesProps {
   onClose: () => void;
   editId: number | null;
   data: IFeeAndChargeResponse[] | undefined;
   setEditId: Dispatch<SetStateAction<number | null>>;
 }
-const initialFeeAndChargeDetails: (typeof defaultArrayValues)[] = [];
+
 const AddFeeandCharges = ({
   onClose,
   editId,
@@ -66,11 +68,7 @@ const AddFeeandCharges = ({
   const { control, handleSubmit, watch, reset } = useForm({
     defaultValues: defaultValues
   });
-  const [feeAndChargeDetailsArray, setFeeAndChargeDetails] = useState(
-    initialFeeAndChargeDetails
-  );
-  // const [tableData, setTableData] = useState<IFeeAndChargeResponse[]>([]);
-  console.log(feeAndChargeDetailsArray);
+  const [tableData, setTableData] = useState<IArrayValues[]>([]);
   const { mutateAsync: mutateAddFeeandCharges } = useAddFeesAndCharges();
   const { mutateAsync: mutateUpdateFeeandCharges } = useUpdateFeesAndCharges();
   const { mutateAsync: mutateDeleteFeeAndCharges, isLoading: isDeleteLoading } =
@@ -90,17 +88,8 @@ const AddFeeandCharges = ({
     valueKey: "id",
     labelKey: "name"
   });
-  // useEffect(() => {
-  //   // Check if initialFeeAndChargeDetails has any items
-  //   if (feeAndChargeDetailsArray.length > 0) {
-  //     // If there are items, set tableData to initialFeeAndChargeDetails
-  //     setTableData(feeAndChargeDetailsArray);
-  //   } else {
-  //     // If initialFeeAndChargeDetails is empty, set tableData to feeAndChargeDetails.data.data.feeAndChargesDetails or an empty array
-  //     setTableData(feeAndChargeDetails?.data?.data?.feeAndChargesDetails ?? []);
-  //   }
-  // }, [feeAndChargeDetailsArray?.length]);
-  // console.log(tableData);
+
+  console.log(tableData);
   const {
     isOpen: isOpenFeeAndChargeDeleteModal,
     onOpen: onOpenFeeAndChargeDeleteModal,
@@ -120,71 +109,76 @@ const AddFeeandCharges = ({
     }
   }, [editId, editData, countryData]);
 
-  const columns = [
-    {
-      header: "S.N",
-      accessorKey: "sn",
-      cell: (cell: CellContext<FeeAndChargesDetail, any>) => {
-        return cell?.row?.index + 1;
-      }
-    },
-    {
-      header: "Payment Method",
-      accessorKey: "payoutMethods",
-      size: 100,
-      cell: (data: CellContext<FeeAndChargesDetail, any>) => {
-        return data?.row?.original?.payoutMethods?.map(
-          (item: any, index: number) => {
-            return (
-              <Badge
-                key={index}
-                padding="8px 24px"
-                mx={2}
-                borderRadius={"16px"}
-              >
-                {item?.name}
-              </Badge>
-            );
-          }
-        );
-      }
-    },
-    {
-      header: "Fee and Charge Type",
-      accessorKey: "feeAndChargeType"
-    },
-    {
-      header: "Fee",
-      accessorKey: "fee"
-    },
-    {
-      header: "Action",
-      accessorKey: "action",
+  const columns = useMemo(
+    () => [
+      {
+        header: "S.N",
+        accessorKey: "sn",
+        cell: (cell: CellContext<FeeAndChargesDetail, any>) => {
+          return cell?.row?.index + 1;
+        }
+      },
+      {
+        header: "Payment Method",
+        accessorKey: "payoutMethods",
+        size: 100,
+        cell: (data: CellContext<FeeAndChargesDetail, any>) => {
+          return data?.row?.original?.payoutMethods?.map(
+            (item: any, index: number) => {
+              return (
+                <Badge
+                  key={index}
+                  padding="8px 24px"
+                  mx={2}
+                  borderRadius={"16px"}
+                >
+                  {item?.name}
+                </Badge>
+              );
+            }
+          );
+        }
+      },
+      {
+        header: "Fee and Charge Type",
+        accessorKey: "feeAndChargeType"
+      },
+      {
+        header: "Fee",
+        accessorKey: "fee"
+      },
+      {
+        header: "Action",
+        accessorKey: "action",
 
-      cell: (cell: CellContext<IFeeAndChargeResponse, any>) => {
-        return (
-          <HStack>
-            <TableActionButton
-              onClickAction={() => {
-                setEditDetailId(cell?.row?.original?.id ?? null);
-                onOpenAddDetailModal();
-              }}
-              icon={<svgAssets.EditButton />}
-              label="Edit"
-            />
-            <TableActionButton
-              onClickAction={() => {
-                setEditDetailId(cell?.row?.original?.id ?? null);
-                onOpenFeeAndChargeDeleteModal();
-              }}
-              icon={<svgAssets.DeleteButton />}
-              label="Delete"
-            />
-          </HStack>
-        );
+        cell: (cell: CellContext<IFeeAndChargeResponse, any>) => {
+          return (
+            <HStack>
+              <TableActionButton
+                onClickAction={() => {
+                  // console.log(cell?.row?.index);
+
+                  setEditDetailId(cell?.row?.original?.id ?? cell?.row?.index);
+                  onOpenAddDetailModal();
+                }}
+                icon={<svgAssets.EditButton />}
+                label="Edit"
+              />
+              <TableActionButton
+                onClickAction={() => {
+                  setEditDetailId(cell?.row?.original?.id ?? null);
+                  onOpenFeeAndChargeDeleteModal();
+                }}
+                icon={<svgAssets.DeleteButton />}
+                label="Delete"
+              />
+            </HStack>
+          );
+        }
       }
-    }
-  ];
+    ],
+    [tableData]
+  );
   const handleDelete = async () => {
     try {
       await mutateDeleteFeeAndCharges(editDetailId);
@@ -212,7 +206,7 @@ const AddFeeandCharges = ({
         currencyId: countryData?.find(
           (country: CountriesList) => data.countryId?.label === country?.name
         )?.currency?.id,
-        feeAndChargesDetails: feeAndChargeDetailsArray
+        feeAndChargesDetails: tableData
       });
     }
     onClose();
@@ -329,7 +323,12 @@ const AddFeeandCharges = ({
                   pagination={{
                     manual: false
                   }}
-                  data={[]}
+                  data={
+                    tableData?.length > 0
+                      ? tableData
+                      : feeAndChargeDetails?.data?.data?.feeAndChargesDetails ??
+                        []
+                  }
                   columns={columns}
                 />
               </CardBody>
@@ -369,10 +368,10 @@ const AddFeeandCharges = ({
         </Card>
 
         <AddFeeAndChargesDetails
-          setInitialFeeAndChargeDetails={setFeeAndChargeDetails}
-          initialFeeAndChargeDetails={feeAndChargeDetailsArray}
+          tableData={tableData}
           EditDetailId={editDetailId}
           setEditDetailId={setEditDetailId}
+          setTableData={setTableData}
           data={feeAndChargeDetails?.data?.data}
           isOpen={isOpenAddDetailModal}
           onClose={() => {
