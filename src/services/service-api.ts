@@ -76,6 +76,12 @@ export const api = {
       create: `${service}/marital-status`,
       update: `${service}/marital-status/{id}`,
       statusChange: `${service}/marital-status/status/{id}`
+    },
+    promo_code: {
+      getAll: `${service}/promo-code/list`,
+      create: `${service}/promo-code`,
+      update: `${service}/promo-code/{id}`,
+      statusChange: `${service}/promo-code/status/{id}`
     }
   },
   fee_and_charges: {
