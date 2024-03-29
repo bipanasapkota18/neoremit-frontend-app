@@ -11,10 +11,10 @@ import {
   Textarea,
   TextareaProps
 } from "@chakra-ui/react";
+import { imageAssets } from "@neo/assets/images";
 import { colorScheme } from "@neo/theme/colorScheme";
 import React from "react";
 import { Control, Controller } from "react-hook-form";
-
 interface TextInputProps {
   name: string;
   control: Control<any>;
@@ -29,6 +29,7 @@ interface TextInputProps {
   variant?: string;
   noFloating?: boolean;
   colorInput?: boolean;
+  required?: boolean;
 }
 const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
   name,
@@ -44,6 +45,7 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
   variant,
   noFloating,
   colorInput,
+  required,
   ...extraProps
 }) => {
   return (
@@ -120,12 +122,27 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                     errorBorderColor={colorScheme.danger_500}
                     disabled={disabled}
                     variant={variant}
+                    css={{
+                      "&::-webkit-calendar-picker-indicator": {
+                        color: "rgba(0, 0, 0, 0)",
+                        opacity: 1,
+                        display: "block",
+                        width: "20px",
+                        height: "20px",
+                        borderWidth: "thin",
+                        borderStyle: "solid",
+                        backgroundImage: `url(${imageAssets.CalendarIcon})`
+                      }
+                    }}
                     {...extraProps}
                   />
                 )}
                 {!noFloating && (
                   <FormLabel position={"absolute"} left={"60px"}>
                     {label}
+                    {required && (
+                      <span style={{ color: "red", marginLeft: 4 }}>*</span>
+                    )}
                   </FormLabel>
                 )}
                 {endIcons ? (
@@ -137,7 +154,9 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                 )}
               </InputGroup>
 
-              <FormErrorMessage>{error ? error?.message : ""}</FormErrorMessage>
+              <FormErrorMessage ml={2} paddingTop={2}>
+                {error ? error?.message : ""}
+              </FormErrorMessage>
               {helperText ? (
                 <FormHelperText color={colorScheme.sideBar_text} mt={0} ml={2}>
                   {helperText}

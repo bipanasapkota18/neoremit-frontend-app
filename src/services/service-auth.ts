@@ -75,7 +75,7 @@ const useLoginMutation = () => {
 const initRefreshToken = async () => {
   try {
     const response = await NeoHttpClient.post(api.auth.refreshToken, {
-      refresh_token: TokenService.getToken()?.refresh_token
+      refreshToken: TokenService.getToken()?.refresh_token
     });
     const tokens = {
       access_token: response.data.access_token,

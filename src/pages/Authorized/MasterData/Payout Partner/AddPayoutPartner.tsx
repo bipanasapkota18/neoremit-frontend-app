@@ -78,8 +78,14 @@ const AddPayoutPartner = ({
         image: selectedPayoutPartner?.image,
         name: selectedPayoutPartner?.name,
         code: selectedPayoutPartner?.code,
-        countryId: selectedCountry,
-        payoutMethodId: selectedPayoutMethod,
+        countryId: {
+          label: selectedCountry?.label,
+          value: Number(selectedCountry?.value)
+        },
+        payoutMethodId: {
+          label: selectedPayoutMethod?.label,
+          value: Number(selectedPayoutMethod?.value)
+        },
         isActive: selectedPayoutPartner?.isActive
       });
     }

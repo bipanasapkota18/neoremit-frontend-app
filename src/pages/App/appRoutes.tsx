@@ -1,7 +1,6 @@
 import LayoutWrapper from "@neo/components/LayoutWrapper";
 import { lazy } from "react";
 
-import MaritalStatus from "../Authorized/MasterData/MaritalStatus";
 import { NAVIGATION_ROUTES } from "./navigationRoutes";
 
 const Document = lazy(
@@ -35,6 +34,12 @@ const FeeAndCharges = lazy(
 );
 const Occupation = lazy(
   () => import("@neo/pages/Authorized/MasterData/Occupation")
+);
+const MaritalStatus = lazy(
+  () => import("@neo/pages/Authorized/MasterData/MaritalStatus")
+);
+const PromoCode = lazy(
+  () => import("@neo/pages/Authorized/MasterData/PromoCode")
 );
 
 export const appRoutes = [
@@ -94,6 +99,10 @@ export const appRoutes = [
       {
         path: NAVIGATION_ROUTES.MASTER_DATA.MARITAL_STATUS,
         element: <MaritalStatus />
+      },
+      {
+        path: NAVIGATION_ROUTES.MASTER_DATA.PROMO_CODE,
+        element: <PromoCode />
       }
     ]
   }
