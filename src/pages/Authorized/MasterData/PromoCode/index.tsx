@@ -156,7 +156,9 @@ const PromoCode = () => {
       header: "Valid Till",
       accessorKey: "validTo",
       cell: (cell: CellContext<PromoCodeList, any>) => {
-        return moment(cell?.row?.original?.validTo).format("DD/MM/YYYY");
+        return cell?.row?.original?.validTo != null
+          ? moment(cell?.row?.original?.validTo).format("DD/MM/YYYY")
+          : "";
       }
     },
     {

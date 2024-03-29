@@ -88,13 +88,18 @@ const AddPromoCode = ({
   const promocodeSchema = yup.object().shape({
     name: yup.string().required("Please enter promo code name"),
     code: yup.string().required("Please enter promo code code"),
-    validFrom: yup.string().required("Please enter valid from date"),
+    validFrom: yup
+      .date()
+      .typeError("Please enter  from date")
+      .min(new Date(), "Please choose future date")
+      .required("Please enter  from date"),
     doesExpire: yup.string(),
     validTo: yup
-      .string()
+      .date()
+      .typeError("Please enter to date")
       .when("doesExpire", {
         is: (value: string) => value === "Yes", // Condition for validation
-        then: yup.string().required("Please enter valid to date")
+        then: yup.date().typeError("Please enter to date")
       })
       .nullable(),
     hasUsageLimit: yup.string(),
@@ -319,9 +324,7 @@ const AddPromoCode = ({
                   name="validFrom"
                   label="Valid From"
                   required
-                  max={
-                    watch("validTo") ?? moment(new Date()).format("YYYY-MM-DD")
-                  }
+                  max={watch("validTo") ?? new Date().getDate()}
                 />
               </GridItem>
             </SimpleGrid>
