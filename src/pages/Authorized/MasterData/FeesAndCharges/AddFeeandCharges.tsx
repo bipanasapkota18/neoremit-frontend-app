@@ -178,9 +178,9 @@ const AddFeeandCharges = ({
         id: editId,
         ...data,
         countryId: selectedFee?.country?.id ?? "",
-        currencyId: selectedFee?.currencyDetailResponseDto?.id ?? ""
-        // feeAndChargesDetails:
-        //   feeAndChargeDetails?.data?.data?.feeAndChargesDetails ?? []
+        currencyId: selectedFee?.currencyDetailResponseDto?.id ?? "",
+        feeAndChargesDetails:
+          feeAndChargeDetails?.data?.data?.feeAndChargesDetails ?? []
       });
     } else {
       await mutateAddFeeandCharges({
@@ -188,8 +188,8 @@ const AddFeeandCharges = ({
         countryId: data.countryId?.value ?? "",
         currencyId: countryData?.find(
           (country: CountriesList) => data.countryId?.label === country?.name
-        )?.currency?.id
-        // feeAndChargesDetails: []
+        )?.currency?.id,
+        feeAndChargesDetails: []
       });
     }
     onClose();

@@ -29,6 +29,7 @@ interface TextInputProps {
   variant?: string;
   noFloating?: boolean;
   colorInput?: boolean;
+  required?: boolean;
 }
 const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
   name,
@@ -44,6 +45,7 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
   variant,
   noFloating,
   colorInput,
+  required,
   ...extraProps
 }) => {
   return (
@@ -138,6 +140,9 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                 {!noFloating && (
                   <FormLabel position={"absolute"} left={"60px"}>
                     {label}
+                    {required && (
+                      <span style={{ color: "red", marginLeft: 4 }}>*</span>
+                    )}
                   </FormLabel>
                 )}
                 {endIcons ? (
@@ -149,7 +154,9 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                 )}
               </InputGroup>
 
-              <FormErrorMessage>{error ? error?.message : ""}</FormErrorMessage>
+              <FormErrorMessage ml={2} paddingTop={2}>
+                {error ? error?.message : ""}
+              </FormErrorMessage>
               {helperText ? (
                 <FormHelperText color={colorScheme.sideBar_text} mt={0} ml={2}>
                   {helperText}

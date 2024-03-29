@@ -72,6 +72,8 @@ const AddCountrySetup = ({
       const selectedCurrency = currencyOptions?.find(
         (currency: any) => currency.value === selectedCountry?.currency?.id
       );
+      console.log(selectedCurrency);
+
       reset({
         name: selectedCountry?.name,
         shortName: selectedCountry?.shortName,
@@ -83,7 +85,10 @@ const AddCountrySetup = ({
         canReceive: selectedCountry?.canReceive,
         canSend: selectedCountry?.canSend,
         isActive: selectedCountry?.isActive,
-        currencyId: selectedCurrency
+        currencyId: {
+          label: selectedCurrency?.label,
+          value: Number(selectedCurrency?.value)
+        }
       });
     }
   }, [editData, editId]);

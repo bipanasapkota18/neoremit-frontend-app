@@ -75,7 +75,10 @@ const AddFeeAndChargesDetails = ({
       reset({
         ...selectedFeeAndCharge,
         payoutMethodIds: selectedPayOutMethod,
-        feeAndChargeType: selectedFeeType,
+        feeAndChargeType: {
+          label: selectedFeeType?.label,
+          value: selectedFeeType?.value + ""
+        },
         fromAmount: selectedFeeAndCharge?.fromAmount ?? null,
         toAmount: selectedFeeAndCharge?.toAmount ?? null,
         fee: selectedFeeAndCharge?.fee ?? null

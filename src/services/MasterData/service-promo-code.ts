@@ -1,4 +1,5 @@
 import { toastFail, toastSuccess } from "@neo/utility/Toast";
+import { ISelectOptions } from "@neo/utility/format";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "../service-api";
@@ -47,19 +48,19 @@ export interface IPromoCodeRequest {
   id?: number;
   code: string;
   name: string;
-  validFrom: string;
-  validTo: string;
+  validFrom: string | null;
+  validTo: string | null;
   doesExpire: boolean;
   hasUsageLimit: boolean;
-  capAmount: number;
-  deductionFrom: string;
-  payoutMethodIds: number[];
-  countryIds: number[];
-  usageLimit: number;
-  marginDiscountType: string;
-  marginDiscountValue: number;
-  transactionFeeDiscountType: string;
-  transactionFeeDiscountValue: number;
+  capAmount: number | null;
+  deductionFrom: string | null;
+  payoutMethodIds: ISelectOptions<number>[] | null;
+  countryIds: ISelectOptions<number>[] | null;
+  usageLimit: number | null;
+  marginDiscountType: string | null | undefined;
+  marginDiscountValue: number | null | undefined;
+  transactionFeeDiscountType: string | null | undefined;
+  transactionFeeDiscountValue: number | null | undefined;
   description: string;
 }
 
@@ -111,7 +112,7 @@ const updatePromoCode = ({
   id: number | null;
   data: IPromoCodeRequest;
 }) => {
-  return NeoHttpClient.put<NeoResponse<IPromoCodeRequest>>(
+  return NeoHttpClient.post<NeoResponse<IPromoCodeRequest>>(
     api.masterData.promo_code.update.replace("{id}", id + ""),
     data
   );

@@ -114,7 +114,7 @@ const PromoCode = () => {
               <Badge
                 key={index}
                 padding="8px 24px"
-                // mx={2}
+                mx={2}
                 borderRadius={"16px"}
               >
                 {item?.name}
@@ -135,7 +135,7 @@ const PromoCode = () => {
               <Badge
                 key={index}
                 padding="8px 24px"
-                // mx={2}
+                mx={2}
                 borderRadius={"16px"}
               >
                 {item?.name}
