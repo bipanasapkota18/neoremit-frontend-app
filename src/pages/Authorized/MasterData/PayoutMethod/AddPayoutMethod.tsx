@@ -7,6 +7,8 @@ import {
   SimpleGrid
 } from "@chakra-ui/react";
 import Editor from "@neo/components/Editor";
+import { DropzoneComponentControlled } from "@neo/components/Form/DropzoneComponent";
+import SwitchInput from "@neo/components/Form/Switch";
 import TextInput from "@neo/components/Form/TextInput";
 import {
   IPayoutMethodResponse,
@@ -21,7 +23,9 @@ const defaultValues = {
   name: "",
   description: "",
   code: "",
-  isActive: true
+  icon: "",
+  isActive: true,
+  isCash: false
 };
 interface AddPayoutMethodProps {
   editId: number | null;
@@ -65,12 +69,14 @@ const AddPayoutMethod = ({
         id: editId,
         data: {
           ...data,
+          icon: data.icon[0] ?? null,
           id: editId,
-          isActive: selectedPayoutMethod?.isActive ?? true
+          isActive: selectedPayoutMethod?.isActive ?? true,
+          isCash: selectedPayoutMethod?.isCash ?? false
         }
       });
     } else {
-      await useMutateAddPayoutMethod(data);
+      await useMutateAddPayoutMethod({ ...data, icon: data.icon[0] ?? null });
     }
 
     handleCloseModal();
@@ -91,7 +97,19 @@ const AddPayoutMethod = ({
         >
           Add Payout Method
         </Heading>
-        <SimpleGrid columns={2} spacing={"30px"}>
+        <SimpleGrid columns={3} spacing={"30px"}>
+          <GridItem colSpan={3}>
+            <DropzoneComponentControlled
+              name="icon"
+              control={control}
+              options={{ maxSize: 4 }}
+              // imagePreview={
+              //   editId && selectedCountry?.flagIcon != null
+              //     ? `${baseURL}/document-service/master/flag-icon?fileId=${selectedCountry?.flagIcon}`
+              //     : ""
+              // }
+            />
+          </GridItem>
           <GridItem colSpan={1}>
             <TextInput
               size={"lg"}
@@ -110,6 +128,14 @@ const AddPayoutMethod = ({
               control={control}
               type="text"
               isRequired
+            />
+          </GridItem>
+          <GridItem colSpan={1} mt={3}>
+            <SwitchInput
+              name="isCash"
+              size={"lg"}
+              label="Is Cash?"
+              control={control}
             />
           </GridItem>
         </SimpleGrid>
