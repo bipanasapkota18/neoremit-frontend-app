@@ -1,9 +1,8 @@
 import { toastFail, toastSuccess } from "@neo/utility/Toast";
-import { trimObjectValues } from "@neo/utility/helper";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "../service-api";
-import { NeoHttpClient } from "../service-axios";
+import { NeoHttpClient, toFormData } from "../service-axios";
 
 // interface IFilterItems {
 // }
@@ -12,12 +11,16 @@ export interface IPayoutMethodResponse {
   code: string;
   name: string;
   description?: any;
+  isCash: boolean;
+  icon: string;
   isActive: boolean;
 }
 export interface IPayoutMethodRequest {
   id?: number;
   code: string;
   name: string;
+  isCash: boolean;
+  icon?: any;
   description?: any;
   isActive: boolean;
 }
@@ -62,7 +65,7 @@ const useGetPayOutMethodById = (id: number | null) => {
 const addPayoutMethod = (data: IPayoutMethodRequest) => {
   return NeoHttpClient.post<NeoResponse<IPayoutMethodRequest>>(
     api.masterData.payout_method.create,
-    trimObjectValues(data)
+    toFormData(data)
   );
 };
 const useAddPayoutMethod = () => {
@@ -79,9 +82,9 @@ const useAddPayoutMethod = () => {
 };
 
 const updatePayoutMethod = ({ id, data }: { id: number; data: any }) => {
-  return NeoHttpClient.post<NeoResponse>(
+  return NeoHttpClient.post<NeoResponse<IPayoutMethodRequest>>(
     api.masterData.payout_method.update.replace("{id}", id.toString()),
-    trimObjectValues(data)
+    toFormData(data)
   );
 };
 const useUpdatePayoutMethod = () => {
