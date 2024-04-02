@@ -104,6 +104,12 @@ export const api = {
     resendOtp: `${service}/users/otp/resend`,
     changePassword: `${service}/users/otp/change-password`
   },
+  automatic_discount: {
+    getAll: `${service}/master/automatic-discount/getAll`,
+    create: `${service}/master/automatic-discount/create`,
+    update: `${service}/master/automatic-discount/update/{id}`,
+    delete: `${service}/master/automatic-discount/delete/{id}`
+  },
 
   init: "/init"
 };

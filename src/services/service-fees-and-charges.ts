@@ -58,7 +58,7 @@ export interface IFeeAndChargeRequest {
   id?: number | null;
   feeName: string;
   countryId: number | string;
-  currencyId: number | string;
+  currencyId: number | string | undefined;
   feeAndChargesDetails?: FeeAndChargesDetail[];
 }
 
