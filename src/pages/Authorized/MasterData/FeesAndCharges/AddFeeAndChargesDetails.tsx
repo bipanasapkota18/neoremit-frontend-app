@@ -11,7 +11,7 @@ import {
   useAddFeeandChargesDetails,
   useUpdateFeeandChargesDetails
 } from "@neo/services/service-fees-and-charges";
-import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { IArrayValues } from "./AddFeeandCharges";
 
 const defaultValues = {
@@ -47,11 +47,11 @@ const AddFeeAndChargesDetails = ({
   const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues
   });
-  const selectedFeeAndCharge = useMemo(
-    () =>
-      editData?.feeAndChargesDetails?.find(item => item.id === EditDetailId),
-    [editData, EditDetailId]
-  );
+  // const selectedFeeAndCharge = useMemo(
+  //   () =>
+  //     editData?.feeAndChargesDetails?.find(item => item.id === EditDetailId),
+  //   [editData, EditDetailId]
+  // );
   const { data: payoutMethodData } = useGetAllPayoutMethod();
   const payOutMethodOptions = formatSelectOptions({
     data: payoutMethodData,
@@ -67,66 +67,85 @@ const AddFeeAndChargesDetails = ({
     valueKey: "value"
   });
 
-  useEffect(() => {
-    console.log("first");
-    console.log(tableData.length);
-    console.log(EditDetailId);
-    if (EditDetailId && tableData.length > 0) {
-      const selectedWhileAdd = tableData.find(
-        item => item.addId === EditDetailId
-      );
-      console.log(selectedWhileAdd);
-      const selectedPayOutMethod = payOutMethodOptions?.filter((item: any) =>
-        selectedWhileAdd?.payoutMethods
-          ?.map((item: any) => item.id)
-          .includes(item.value)
-      );
-      const selectedFeeType = feeTypeOptions?.find(
-        (item: any) => item.value === selectedWhileAdd?.feeAndChargeType
-      );
-      reset({
-        ...selectedWhileAdd,
-        payoutMethodIds: selectedPayOutMethod,
-        feeAndChargeType: selectedFeeType,
-        fromAmount: selectedWhileAdd?.fromAmount ?? null,
-        toAmount: selectedWhileAdd?.toAmount ?? null,
-        fee: selectedWhileAdd?.fee ?? null
-      });
-    } else if (EditDetailId) {
-      const selectedPayOutMethod = payOutMethodOptions?.filter((item: any) =>
-        selectedFeeAndCharge?.payoutMethods
-          ?.map(item => item.id)
-          .includes(item.value)
-      );
-      const selectedFeeType = feeTypeOptions?.find(
-        (item: any) => item.value === selectedFeeAndCharge?.feeAndChargeType
-      );
-      reset({
-        ...selectedFeeAndCharge,
-        payoutMethodIds: selectedPayOutMethod,
-        feeAndChargeType: selectedFeeType,
-        fromAmount: selectedFeeAndCharge?.fromAmount ?? null,
-        toAmount: selectedFeeAndCharge?.toAmount ?? null,
-        fee: selectedFeeAndCharge?.fee ?? null
-      });
-    }
-  }, [EditDetailId]);
+  // useEffect(() => {
+  //   if (EditDetailId && tableData.length > 0) {
+  //     const selectedWhileAdd = tableData.find(
+  //       item => item.addId === EditDetailId
+  //     );
+  //     const selectedPayOutMethod = payOutMethodOptions?.filter((item: any) =>
+  //       selectedWhileAdd?.payoutMethods
+  //         ?.map((item: any) => item.id)
+  //         .includes(item.value)
+  //     );
+  //     const selectedFeeType = feeTypeOptions?.find(
+  //       (item: any) => item.value === selectedWhileAdd?.feeAndChargeType
+  //     );
+  //     reset({
+  //       ...selectedWhileAdd,
+  //       payoutMethodIds: selectedPayOutMethod,
+  //       feeAndChargeType: selectedFeeType,
+  //       fromAmount: selectedWhileAdd?.fromAmount ?? null,
+  //       toAmount: selectedWhileAdd?.toAmount ?? null,
+  //       fee: selectedWhileAdd?.fee ?? null
+  //     });
+  //   } else if (EditDetailId) {
+  //     const selectedPayOutMethod = payOutMethodOptions?.filter((item: any) =>
+  //       selectedFeeAndCharge?.payoutMethods
+  //         ?.map(item => item.id)
+  //         .includes(item.value)
+  //     );
+  //     const selectedFeeType = feeTypeOptions?.find(
+  //       (item: any) => item.value === selectedFeeAndCharge?.feeAndChargeType
+  //     );
+  //     reset({
+  //       ...selectedFeeAndCharge,
+  //       payoutMethodIds: selectedPayOutMethod,
+  //       feeAndChargeType: selectedFeeType,
+  //       fromAmount: selectedFeeAndCharge?.fromAmount ?? null,
+  //       toAmount: selectedFeeAndCharge?.toAmount ?? null,
+  //       fee: selectedFeeAndCharge?.fee ?? null
+  //     });
+  //   }
+  // }, [EditDetailId]);
   const onAddFeeAndChargesDetails = async (data: typeof defaultValues) => {
     try {
       if (EditDetailId) {
-        await mutateEditFeeAndChargeDetail({
-          id: EditDetailId,
-          data: {
-            ...data,
-            fromAmount: Number(data?.fromAmount) ?? null,
-            toAmount: Number(data?.toAmount) ?? null,
-            fee: Number(data?.fee) ?? null,
-            payoutMethodIds:
-              data?.payoutMethodIds?.map(item => item.value) ?? [],
-            feeAndChargeType: data?.feeAndChargeType?.value ?? "",
-            id: EditDetailId
-          }
-        });
+        if (tableData.length > 0) {
+          // const dataToEdit = tableData.find(
+          //   item => item.addId === EditDetailId
+          // );
+          setTableData(oldValues =>
+            oldValues.map(item =>
+              item.addId === EditDetailId
+                ? {
+                    ...item,
+                    feeAndChargeType: data?.feeAndChargeType?.value ?? "",
+                    payoutMethods: data?.payoutMethodIds?.map(item => ({
+                      id: item.value,
+                      name: item.label
+                    })),
+                    fromAmount: Number(data?.fromAmount) ?? null,
+                    toAmount: Number(data?.toAmount) ?? null,
+                    fee: Number(data?.fee) ?? null
+                  }
+                : item
+            )
+          );
+        } else {
+          await mutateEditFeeAndChargeDetail({
+            id: EditDetailId,
+            data: {
+              ...data,
+              fromAmount: Number(data?.fromAmount) ?? null,
+              toAmount: Number(data?.toAmount) ?? null,
+              fee: Number(data?.fee) ?? null,
+              payoutMethodIds:
+                data?.payoutMethodIds?.map(item => item.value) ?? [],
+              feeAndChargeType: data?.feeAndChargeType?.value ?? "",
+              id: EditDetailId
+            }
+          });
+        }
       } else {
         if (editData) {
           await mutateAddFeeandChargeDetail({
@@ -147,10 +166,7 @@ const AddFeeAndChargesDetails = ({
             {
               addId: oldValues.length + 1,
               feeAndChargeType: data?.feeAndChargeType?.value ?? "",
-              payoutMethods: data?.payoutMethodIds?.map(item => ({
-                id: item.value,
-                name: item.label
-              })),
+              payoutMethodIds: data?.payoutMethodIds?.map(item => item.value),
               fromAmount: Number(data?.fromAmount) ?? null,
               toAmount: Number(data?.toAmount) ?? null,
               fee: Number(data?.fee) ?? null

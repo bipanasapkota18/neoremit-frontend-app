@@ -22,12 +22,11 @@ import TextInput from "@neo/components/Form/TextInput";
 import ConfirmationModal from "@neo/components/Modal/DeleteModal";
 import {
   CountriesList,
-  useGetCountryList
+  useGetAllCountries
 } from "@neo/services/MasterData/service-country";
 import {
   FeeAndChargesDetail,
   IFeeAndChargeResponse,
-  useAddFeesAndCharges,
   useFeeAndChargesDetailDelete,
   useGetFeeAndChargesbyId,
   useUpdateFeesAndCharges
@@ -46,7 +45,7 @@ const defaultValues = {
 
 export interface IArrayValues {
   addId: number;
-  payoutMethods: any;
+  payoutMethodIds: any;
   feeAndChargeType: string;
   fromAmount: number;
   toAmount: number;
@@ -69,7 +68,7 @@ const AddFeeandCharges = ({
     defaultValues: defaultValues
   });
   const [tableData, setTableData] = useState<IArrayValues[]>([]);
-  const { mutateAsync: mutateAddFeeandCharges } = useAddFeesAndCharges();
+  // const { mutateAsync: mutateAddFeeandCharges } = useAddFeesAndCharges();
   const { mutateAsync: mutateUpdateFeeandCharges } = useUpdateFeesAndCharges();
   const { mutateAsync: mutateDeleteFeeAndCharges, isLoading: isDeleteLoading } =
     useFeeAndChargesDetailDelete();
@@ -80,16 +79,23 @@ const AddFeeandCharges = ({
   } = useDisclosure();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
   const [editDetailId, setEditDetailId] = useState<number | null>(null);
-  const { data: countryData } = useGetCountryList();
   const { data: feeAndChargeDetails, isLoading: isGetFeeAndChargesLoading } =
     useGetFeeAndChargesbyId(editId);
+  const { data: countryList, mutateAsync } = useGetAllCountries();
+  useEffect(() => {
+    mutateAsync({
+      pageParams: {
+        page: 0,
+        size: countryList?.data?.data?.totalItems ?? 20
+      },
+      filterParams: {}
+    });
+  }, []);
   const countryOptions = formatSelectOptions({
-    data: countryData,
+    data: countryList?.data?.data?.countriesList,
     valueKey: "id",
     labelKey: "name"
   });
-
-  console.log(tableData);
   const {
     isOpen: isOpenFeeAndChargeDeleteModal,
     onOpen: onOpenFeeAndChargeDeleteModal,
@@ -99,15 +105,20 @@ const AddFeeandCharges = ({
     if (editId) {
       const selectedFee = editData?.find(data => data.id === editId);
 
-      const selectedCountry = countryData?.find((country: any) => {
-        return selectedFee?.country?.name === country?.name;
-      })?.name;
+      const selectedCountry = countryList?.data?.data?.countriesList?.find(
+        (country: any) => {
+          return selectedFee?.country?.name === country?.name;
+        }
+      )?.name;
       reset({
         feeName: selectedFee?.feeName,
-        countryId: selectedCountry
+        countryId: {
+          value: selectedFee?.country?.id,
+          label: selectedCountry
+        }
       });
     }
-  }, [editId, editData, countryData]);
+  }, [editId, editData, countryList?.data?.data?.countriesList]);
 
   const columns = useMemo(
     () => [
@@ -156,9 +167,11 @@ const AddFeeandCharges = ({
             <HStack>
               <TableActionButton
                 onClickAction={() => {
-                  // console.log(cell?.row?.index);
-
-                  setEditDetailId(cell?.row?.original?.id ?? cell?.row?.index);
+                  // if (tableData.length > 0) {
+                  //   setEditDetailId(cell?.row?.original?.addId);
+                  // } else {
+                  setEditDetailId(cell?.row?.original?.id);
+                  // }
                   onOpenAddDetailModal();
                 }}
                 icon={<svgAssets.EditButton />}
@@ -166,7 +179,11 @@ const AddFeeandCharges = ({
               />
               <TableActionButton
                 onClickAction={() => {
-                  setEditDetailId(cell?.row?.original?.id ?? null);
+                  // if (tableData.length > 0) {
+                  //   setEditDetailId(cell?.row?.original?.addId);
+                  // } else {
+                  setEditDetailId(cell?.row?.original?.id);
+                  // }
                   onOpenFeeAndChargeDeleteModal();
                 }}
                 icon={<svgAssets.DeleteButton />}
@@ -181,8 +198,15 @@ const AddFeeandCharges = ({
   );
   const handleDelete = async () => {
     try {
-      await mutateDeleteFeeAndCharges(editDetailId);
-      // setEditId(null);
+      if (tableData.length > 0) {
+        const newTableData = tableData?.filter(
+          data => data.addId !== editDetailId
+        );
+        setTableData(newTableData);
+      } else {
+        await mutateDeleteFeeAndCharges(editDetailId);
+      }
+      setEditDetailId(null);
       onCloseFeeAndChargeDeleteModal();
     } catch (e) {
       console.error(e);
@@ -200,14 +224,15 @@ const AddFeeandCharges = ({
           feeAndChargeDetails?.data?.data?.feeAndChargesDetails ?? []
       });
     } else {
-      await mutateAddFeeandCharges({
-        ...data,
-        countryId: data.countryId?.value ?? "",
-        currencyId: countryData?.find(
-          (country: CountriesList) => data.countryId?.label === country?.name
-        )?.currency?.id,
-        feeAndChargesDetails: tableData
-      });
+      // const finalTable = tableData.map(({ addId, ...item }) => item);
+      // await mutateAddFeeandCharges({
+      //   ...data,
+      //   countryId: data.countryId?.value ?? "",
+      //   currencyId: countryList?.data?.data?.countriesList?.find(
+      //     (country: CountriesList) => data.countryId?.label === country?.name
+      //   )?.currency?.id,
+      //   feeAndChargesDetails: finalTable
+      // });
     }
     onClose();
     reset();
@@ -265,11 +290,13 @@ const AddFeeandCharges = ({
                       isReadOnly
                       value={
                         watch("countryId")
-                          ? countryData?.find((country: CountriesList) => {
-                              return (
-                                watch("countryId")?.label === country?.name
-                              );
-                            })?.currency?.name
+                          ? countryList?.data?.data?.countriesList?.find(
+                              (country: CountriesList) => {
+                                return (
+                                  watch("countryId")?.label === country?.name
+                                );
+                              }
+                            )?.currency?.name
                           : ""
                       }
                     />
