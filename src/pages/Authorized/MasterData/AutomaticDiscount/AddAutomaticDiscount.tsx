@@ -19,7 +19,7 @@ import {
   useAddAutomaticDiscount,
   useUpdateAutomaticDiscount
 } from "@neo/services/MasterData/service-automatic-discount";
-import { useGetAllCountries } from "@neo/services/MasterData/service-country";
+import { useGetCountryList } from "@neo/services/MasterData/service-country";
 import { useGetAllPayoutMethod } from "@neo/services/MasterData/service-payout-method";
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
@@ -77,18 +77,10 @@ const AddAutomaticDiscount = ({
   );
 
   console.log(editData);
-  const { data: countryList, mutateAsync } = useGetAllCountries();
-  useEffect(() => {
-    mutateAsync({
-      pageParams: {
-        page: 0,
-        size: countryList?.data?.data?.totalItems ?? 20
-      },
-      filterParams: {}
-    });
-  }, []);
+  const { data: countryData } = useGetCountryList();
+
   const countryOptions = formatSelectOptions({
-    data: countryList?.data?.data?.countriesList,
+    data: countryData,
     valueKey: "id",
     labelKey: "name"
   });
