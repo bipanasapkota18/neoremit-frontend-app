@@ -3,6 +3,9 @@ import { lazy } from "react";
 
 import { NAVIGATION_ROUTES } from "./navigationRoutes";
 
+const AutomaticDiscount = lazy(
+  () => import("@neo/pages/Authorized/MasterData/AutomaticDiscount")
+);
 const Document = lazy(
   () => import("@neo/pages/Authorized/MasterData/DocumentSetup")
 );
@@ -103,6 +106,10 @@ export const appRoutes = [
       {
         path: NAVIGATION_ROUTES.MASTER_DATA.PROMO_CODE,
         element: <PromoCode />
+      },
+      {
+        path: NAVIGATION_ROUTES.MASTER_DATA.AUTOMATIC_DISCOUNT,
+        element: <AutomaticDiscount />
       }
     ]
   }

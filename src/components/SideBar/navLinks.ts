@@ -93,6 +93,11 @@ export const navLinks = [
         icon: sidebarAssets.Ellipse,
         href: NAVIGATION_ROUTES.MASTER_DATA.PROMO_CODE,
         label: "Promo Code"
+      },
+      {
+        icon: sidebarAssets.Ellipse,
+        href: NAVIGATION_ROUTES.MASTER_DATA.AUTOMATIC_DISCOUNT,
+        label: "Automatic Discount"
       }
     ]
   }

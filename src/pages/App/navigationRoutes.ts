@@ -26,7 +26,8 @@ export const NAVIGATION_ROUTES = {
     FEES_AND_CHARGES: "/fees-and-charges",
     OCCUPATION: "/occupation",
     MARITAL_STATUS: "/marital-status",
-    PROMO_CODE: "/promo-code"
+    PROMO_CODE: "/promo-code",
+    AUTOMATIC_DISCOUNT: "/automatic-discount"
   },
   PARTNERS: "/partners"
 };
