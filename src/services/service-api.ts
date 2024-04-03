@@ -108,7 +108,9 @@ export const api = {
     getAll: `${service}/master/automatic-discount/getAll`,
     create: `${service}/master/automatic-discount/create`,
     update: `${service}/master/automatic-discount/update/{id}`,
-    delete: `${service}/master/automatic-discount/delete/{id}`
+    delete: `${service}/master/automatic-discount/delete/{id}`,
+    statusChange: `${service}/master/automatic-discount/toggle/status/{id}`,
+    getById: `${service}/master/automatic-discount/get/{id}`
   },
 
   init: "/init"

@@ -18,14 +18,13 @@ import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
 import ConfirmationModal from "@neo/components/Modal/DeleteModal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
-import { useGetAllAutomaticDiscounts } from "@neo/services/MasterData/service-automatic-discount";
 import {
-  PromoCodeList,
-  useDeletePromoCode,
-  useTogglePromoCodeStatus
-} from "@neo/services/MasterData/service-promo-code";
+  IAutomaticDiscountResponse,
+  useDeleteAutomaticDiscount,
+  useGetAllAutomaticDiscounts,
+  useToggleAutomaticDiscount
+} from "@neo/services/MasterData/service-automatic-discount";
 import { CellContext, PaginationState } from "@tanstack/react-table";
-import moment from "moment";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import AddAutomaticDiscount from "./AddAutomaticDiscount";
@@ -53,8 +52,10 @@ const AutomaticDiscount = () => {
     pageSize: 10
   });
   const [filterCount, setFilterCount] = useState(0);
-  const [tableData, setTableData] = useState<PromoCodeList[] | undefined>();
-  const { data: promoCodeData, isLoading: isGetAllPromoCodeLoading } =
+  const [tableData, setTableData] = useState<
+    IAutomaticDiscountResponse[] | undefined
+  >();
+  const { data: automaticDiscountData, isLoading: isGetAllPromoCodeLoading } =
     useGetAllAutomaticDiscounts();
 
   //   useEffect(() => {
@@ -62,7 +63,7 @@ const AutomaticDiscount = () => {
   //       pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
   //       filterParams: {}
   //     });
-  //   }, [pageParams.pageIndex, pageParams.pageSize]);
+  //   }, [pageParams.pagefirstNTransactionIndex, pageParams.pageSize]);
 
   const refetchData = () => {
     // mutateAsync({
@@ -72,17 +73,13 @@ const AutomaticDiscount = () => {
   };
 
   useEffect(() => {
-    setTableData(promoCodeData?.data?.data?.promoCodeList ?? []);
-    setFilterCount(promoCodeData?.data?.data?.totalItems ?? 0);
-  }, [promoCodeData]);
+    setTableData(automaticDiscountData?.data?.data ?? []);
+    setFilterCount(automaticDiscountData?.data?.data?.length ?? 0);
+  }, [automaticDiscountData]);
 
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
-    useDeletePromoCode();
-  const {
-    isLoading: isToggling,
-    refetch,
-    isFetching
-  } = useTogglePromoCodeStatus(changeId);
+    useDeleteAutomaticDiscount();
+  const { isLoading: isToggling, mutateAsync } = useToggleAutomaticDiscount();
   const columns = [
     {
       header: "S.N",
@@ -94,39 +91,25 @@ const AutomaticDiscount = () => {
 
     {
       header: "Discount Code",
-      accessorKey: "code"
+      accessorKey: "discountCode"
     },
     {
       header: "Discount Name",
-      accessorKey: "name"
+      accessorKey: "discountName"
     },
     {
       header: "Country",
       accessorKey: "countryList",
-      cell: (cell: CellContext<PromoCodeList, any>) => {
-        console.log(cell?.row?.original?.countryList?.map(item => item.name));
-        return cell?.row?.original?.countryList?.map(
-          (item: any, index: number) => {
-            return (
-              <Badge
-                key={index}
-                padding="8px 24px"
-                mx={2}
-                borderRadius={"16px"}
-              >
-                {item?.name}
-              </Badge>
-            );
-          }
-        );
+      cell: (cell: CellContext<IAutomaticDiscountResponse, any>) => {
+        return cell?.row?.original?.country?.name;
       }
     },
     {
       header: "Payment Method",
       accessorKey: "paymentMethod",
       size: 20,
-      cell: (cell: CellContext<PromoCodeList, any>) => {
-        return cell?.row?.original?.payoutMethodList?.map(
+      cell: (cell: CellContext<IAutomaticDiscountResponse, any>) => {
+        return cell?.row?.original?.payoutMethods?.map(
           (item: any, index: number) => {
             return (
               <Badge
@@ -144,19 +127,11 @@ const AutomaticDiscount = () => {
     },
     {
       header: "Valid From",
-      accessorKey: "validFrom",
-      cell: (cell: CellContext<PromoCodeList, any>) => {
-        return moment(cell?.row?.original?.validFrom).format("DD/MM/YYYY");
-      }
+      accessorKey: "validFrom"
     },
     {
       header: "Valid Till",
-      accessorKey: "validTo",
-      cell: (cell: CellContext<PromoCodeList, any>) => {
-        return cell?.row?.original?.validTo != null
-          ? moment(cell?.row?.original?.validTo).format("DD/MM/YYYY")
-          : "";
-      }
+      accessorKey: "validTill"
     },
     {
       header: "Status",
@@ -180,11 +155,12 @@ const AutomaticDiscount = () => {
     {
       header: "Action",
       accessorKey: "action",
-      cell: (cell: CellContext<PromoCodeList, any>) => {
+      cell: (cell: CellContext<IAutomaticDiscountResponse, any>) => {
         return (
           <HStack>
             <TableActionButton
               onClickAction={() => {
+                console.log(cell?.row?.original, "cell?.row?.original?.id");
                 setEditId(cell?.row?.original?.id || null);
                 setFlag.on();
               }}
@@ -208,6 +184,7 @@ const AutomaticDiscount = () => {
   const activePath = breadcrumbTitle(pathname);
 
   const handleDelete = async () => {
+    console.log(changeId, "changeId");
     await mutateDelete(changeId);
     setChangeId(null);
     refetchData();
@@ -216,7 +193,7 @@ const AutomaticDiscount = () => {
 
   const handleStatusChange = async () => {
     try {
-      await refetch();
+      await mutateAsync(changeId);
       setChangeId(null);
       refetchData();
       onCloseAutomaticDiscountStatusUpdateModal();
@@ -315,7 +292,7 @@ const AutomaticDiscount = () => {
         variant={"edit"}
         buttonText={`${active ? "Disable" : "Enable"}`}
         title={"Are You Sure?"}
-        isLoading={isToggling || isFetching}
+        isLoading={isToggling}
         onApprove={handleStatusChange}
         message={`Are you sure you want to ${active ? "Disable" : "Enable"} this promo code?`}
         isOpen={isOpenAutomaticDiscountStatusUpdateModal}

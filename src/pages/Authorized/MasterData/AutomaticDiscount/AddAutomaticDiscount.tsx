@@ -15,14 +15,14 @@ import Select from "@neo/components/Form/SelectComponent";
 import TextInput from "@neo/components/Form/TextInput";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import {
+  IAutomaticDiscountResponse,
   useAddAutomaticDiscount,
   useUpdateAutomaticDiscount
 } from "@neo/services/MasterData/service-automatic-discount";
 import { useGetAllCountries } from "@neo/services/MasterData/service-country";
 import { useGetAllPayoutMethod } from "@neo/services/MasterData/service-payout-method";
-import { PromoCodeList } from "@neo/services/MasterData/service-promo-code";
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation } from "react-router-dom";
 import * as yup from "yup";
@@ -36,19 +36,19 @@ const defaultValues = {
   payoutMethodIds: null as ISelectOptions<number>[] | null,
   firstNTransactionPerCustomer: {
     noOfTransactions: null as number | null,
-    capAmount: null,
+    capAmount: null as number | null,
     deductionFrom: null as ISelectOptions<string> | null,
     discountType: null as ISelectOptions<string> | null,
-    discountAmount: null
+    discountAmount: null as number | null
   },
   firstNTransaction: {
     noOfTransactions: null as number | null,
-    capAmount: null,
+    capAmount: null as number | null,
     deductionFrom: null as ISelectOptions<string> | null,
-    validFrom: null,
-    validTill: null,
+    validFrom: null as string | null,
+    validTill: null as string | null,
     discountType: null as ISelectOptions<string> | null,
-    discountAmount: null
+    discountAmount: null as number | null
   }
 
   // deductionFrom: null as ISelectOptions<string> | null,
@@ -57,25 +57,26 @@ interface AddPromoCodeProps {
   editId: number | null;
   setEditId: Dispatch<SetStateAction<number | null>>;
   onClose: () => void;
-  data: PromoCodeList[] | undefined;
+  data: IAutomaticDiscountResponse[] | undefined;
   refetchData: () => void;
 }
 
 const AddAutomaticDiscount = ({
   onClose,
   editId,
-  // data: editData,
+  data: editData,
   setEditId
   // refetchData
 }: AddPromoCodeProps) => {
-  // const selectedPromoCode = useMemo(
-  //   () =>
-  //     editData?.find(promoCode => {
-  //       return promoCode.id === editId;
-  //     }),
-  //   [editData, editId]
-  // );
+  const selectedAutomaticDiscount = useMemo(
+    () =>
+      editData?.find(automaticDiscount => {
+        return automaticDiscount.id === editId;
+      }),
+    [editData, editId]
+  );
 
+  console.log(editData);
   const { data: countryList, mutateAsync } = useGetAllCountries();
   useEffect(() => {
     mutateAsync({
@@ -166,16 +167,10 @@ const AddAutomaticDiscount = ({
     description: yup.string().required("Please enter discount description")
   });
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors }
-  } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues,
     resolver: yupResolver(promocodeSchema)
   });
-  console.log(errors);
   const payout_method_options = formatSelectOptions<number>({
     data: payoutMethodData,
     valueKey: "id",
@@ -186,43 +181,71 @@ const AddAutomaticDiscount = ({
 
   const activePath = breadcrumbTitle(pathname);
 
-  // useEffect(() => {
-  //   if (editId) {
-  //   reset({
-  //     name: selectedPromoCode?.name,
-  //     code: selectedPromoCode?.code,
-  //     validFrom: moment(selectedPromoCode?.validFrom).format("YYYY-MM-DD"),
-  //     validTo: moment(selectedPromoCode?.validTo).format("YYYY-MM-DD"),
-  //     doesExpire: selectedPromoCode?.doesExpire ? "Yes" : "No",
-  //     hasUsageLimit: selectedPromoCode?.hasUsageLimit ? "Yes" : "No",
-  //     countryIds: selectedPromoCode?.countryList?.map(country => {
-  //       return { label: country.name, value: country.id };
-  //     }),
-  //     payoutMethodIds: selectedPromoCode?.payoutMethodList?.map(payout => {
-  //       return { label: payout.name, value: payout.id };
-  //     }),
-  //     usageLimit: selectedPromoCode?.usageLimit,
-  //     capAmount: selectedPromoCode?.capAmount,
-  //     deductionFrom: {
-  //       label: selectedPromoCode?.deductionFrom,
-  //       value: selectedPromoCode?.deductionFrom
-  //     },
-  //     marginDiscountType: {
-  //       label: selectedPromoCode?.marginDiscountType,
-  //       value: selectedPromoCode?.marginDiscountType
-  //     },
-  //     marginDiscountValue: selectedPromoCode?.marginDiscountValue,
-  //     transactionFeeDiscountType: {
-  //       label: selectedPromoCode?.transactionFeeDiscountType,
-  //       value: selectedPromoCode?.transactionFeeDiscountType
-  //     },
-  //     transactionFeeDiscountValue:
-  //       selectedPromoCode?.transactionFeeDiscountValue,
+  useEffect(() => {
+    if (editId) {
+      reset({
+        discountName: selectedAutomaticDiscount?.discountName,
+        description: selectedAutomaticDiscount?.description,
+        countryMasterId: {
+          value: selectedAutomaticDiscount?.country?.id,
+          label: selectedAutomaticDiscount?.country?.name
+        },
 
-  //     description: selectedPromoCode?.description
-  //   });
-  // }
-  // }, [editData, editId]);
+        payoutMethodIds: selectedAutomaticDiscount?.payoutMethods.map(
+          (payoutMethod: any) => {
+            return {
+              value: payoutMethod.id,
+              label: payoutMethod.name
+            };
+          }
+        ),
+        firstNTransactionPerCustomer: {
+          noOfTransactions:
+            selectedAutomaticDiscount?.firstNTransactionPerCustomer
+              ?.noOfTransactions,
+          capAmount:
+            selectedAutomaticDiscount?.firstNTransactionPerCustomer
+              ?.capAmount ?? null,
+          deductionFrom: {
+            value:
+              selectedAutomaticDiscount?.firstNTransactionPerCustomer
+                ?.deductionFrom,
+            label:
+              selectedAutomaticDiscount?.firstNTransactionPerCustomer
+                ?.deductionFrom
+          },
+          discountType: {
+            value:
+              selectedAutomaticDiscount?.firstNTransactionPerCustomer
+                ?.discountType,
+            label:
+              selectedAutomaticDiscount?.firstNTransactionPerCustomer
+                ?.discountType
+          },
+          discountAmount:
+            selectedAutomaticDiscount?.firstNTransactionPerCustomer
+              ?.discountAmount
+        },
+        firstNTransaction: {
+          noOfTransactions:
+            selectedAutomaticDiscount?.firstNTransaction?.noOfTransactions,
+          capAmount: selectedAutomaticDiscount?.firstNTransaction?.capAmount,
+          deductionFrom: {
+            value: selectedAutomaticDiscount?.firstNTransaction?.deductionFrom,
+            label: selectedAutomaticDiscount?.firstNTransaction?.deductionFrom
+          },
+          discountType: {
+            value: selectedAutomaticDiscount?.firstNTransaction?.discountType,
+            label: selectedAutomaticDiscount?.firstNTransaction?.discountType
+          },
+          discountAmount:
+            selectedAutomaticDiscount?.firstNTransaction?.discountAmount,
+          validFrom: selectedAutomaticDiscount?.firstNTransaction?.validFrom,
+          validTill: selectedAutomaticDiscount?.firstNTransaction?.validTill
+        }
+      });
+    }
+  }, [editData, editId]);
 
   const onAddAutomaticDiscount = async (data: typeof defaultValues) => {
     const preparedData = {
@@ -253,6 +276,7 @@ const AddAutomaticDiscount = ({
     } else {
       await useMutateAddAutomaticDiscount(preparedData);
     }
+    handleCloseModal();
   };
   const handleCloseModal = () => {
     setEditId(null);
