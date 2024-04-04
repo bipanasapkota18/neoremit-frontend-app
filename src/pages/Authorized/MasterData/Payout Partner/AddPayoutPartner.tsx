@@ -124,7 +124,7 @@ const AddPayoutPartner = ({
         onClose={handleCloseModal}
         submitButtonText="Save"
         cancelButtonText="Cancel"
-        title={editId ? "Edit Payout Partner" : "Add Payout Partner"}
+        title={editId ? "Edit Bank/Wallet List" : "Add Bank/Wallet List"}
         onSubmit={handleSubmit(onAddPayoutPartner)}
       >
         <SimpleGrid columns={2} spacing={"30px"}>

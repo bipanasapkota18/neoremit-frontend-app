@@ -17,7 +17,7 @@ export interface IPurposeRequest {
   id?: number | null;
   code: string;
   name: string;
-  isActive: boolean;
+  isActive?: boolean | null | undefined;
 }
 // interface IFilterItems {
 // }
@@ -50,7 +50,7 @@ const useGetAllPurpose = () => {
 };
 
 const addPurpose = (data: IPurposeRequest) => {
-  return NeoHttpClient.post<NeoResponse>(
+  return NeoHttpClient.post<NeoResponse<IPurposeRequest>>(
     api.masterData.purpose_of_payment.create,
     trimObjectValues(data)
   );

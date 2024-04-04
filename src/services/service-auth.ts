@@ -1,4 +1,4 @@
-import { toastFail } from "@neo/utility/Toast";
+import { toastFail, toastSuccess } from "@neo/utility/Toast";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,17 @@ export interface LoginDetails {
   username: string;
   password: string;
 }
+export interface NeoToken {
+  userDetails: UserDetails;
+  accessToken: string;
+  refreshToken: string;
+  tokenType: string;
+}
 
+export interface UserDetails {
+  id: number;
+  username: string;
+}
 type NeoUserTokenDetails = NeoTokenDetails;
 
 export const authTokenKey = "authToken";
@@ -30,12 +40,17 @@ const useLogoutMutation = () => {
   const navigate = useNavigate();
 
   return useMutation(initLogout, {
-    onSuccess: () => {
+    onSuccess: success => {
       TokenService.clearToken();
       logoutChannel.postMessage("Logout");
       queryClient.clear();
       queryClient.setQueryData(authTokenKey, () => false);
+      toastSuccess(success?.data?.message ?? "Logout Successful");
       navigate("/login", { replace: true });
+    },
+    onError: error => {
+      const logoutErr = error as AxiosError<{ message: string }>;
+      toastFail(logoutErr.response?.data?.message ?? "Logout failed !");
     }
   });
 };
@@ -74,12 +89,12 @@ const useLoginMutation = () => {
 
 const initRefreshToken = async () => {
   try {
-    const response = await NeoHttpClient.post(api.auth.refreshToken, {
+    const response = await NeoHttpClient.post<NeoToken>(api.auth.refreshToken, {
       refreshToken: TokenService.getToken()?.refresh_token
     });
     const tokens = {
-      access_token: response.data.access_token,
-      refresh_token: response.data.refresh_token
+      access_token: response.data.accessToken,
+      refresh_token: response.data.refreshToken
     };
     TokenService.setToken(tokens);
     return true;

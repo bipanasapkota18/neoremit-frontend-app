@@ -1,7 +1,10 @@
 import { GridItem, SimpleGrid } from "@chakra-ui/react";
+import { yupResolver } from "@hookform/resolvers/yup";
 import TextInput from "@neo/components/Form/TextInput";
 import Modal from "@neo/components/Modal";
+import purposeSchema from "@neo/schema/PurposeOfPayment/purpose";
 import {
+  IPurposeRequest,
   IPurposeResponse,
   useAddPurpose,
   useUpdatePurpose
@@ -37,7 +40,8 @@ const AddPurpose = ({
   } = useUpdatePurpose();
 
   const { control, handleSubmit, reset } = useForm({
-    defaultValues: defaultValues
+    defaultValues: defaultValues,
+    resolver: yupResolver(purposeSchema)
   });
   useEffect(() => {
     if (editId) {
@@ -48,7 +52,7 @@ const AddPurpose = ({
       });
     }
   }, [editData, editId]);
-  const onAddPurpose = async (data: typeof defaultValues) => {
+  const onAddPurpose = async (data: IPurposeRequest) => {
     if (editId) {
       const selectedPurpose = editData?.find(purpose => purpose.id === editId);
       await mutateUpdatePurpose({

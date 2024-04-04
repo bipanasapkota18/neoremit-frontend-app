@@ -1,6 +1,8 @@
 import { GridItem, SimpleGrid } from "@chakra-ui/react";
+import { yupResolver } from "@hookform/resolvers/yup";
 import TextInput from "@neo/components/Form/TextInput";
 import Modal from "@neo/components/Modal";
+import relationshipSchema from "@neo/schema/relationship/relation";
 import {
   IRelationshipResponse,
   useAddRelationship,
@@ -33,7 +35,8 @@ const AddRelationship = ({
     useUpdateRelationship();
 
   const { control, handleSubmit, reset } = useForm({
-    defaultValues: defaultValues
+    defaultValues: defaultValues,
+    resolver: yupResolver(relationshipSchema)
   });
   useEffect(() => {
     if (editId) {

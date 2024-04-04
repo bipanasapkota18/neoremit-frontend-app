@@ -76,11 +76,11 @@ export const appRoutes = [
         element: <SourceOfFund />
       },
       {
-        path: NAVIGATION_ROUTES.MASTER_DATA.PAYOUT_PARTNER,
+        path: NAVIGATION_ROUTES.PAYOUT_CONFIG.BANK_WALLET_LIST,
         element: <PayoutPartner />
       },
       {
-        path: NAVIGATION_ROUTES.MASTER_DATA.PAYOUT_METHOD,
+        path: NAVIGATION_ROUTES.PAYOUT_CONFIG.PAYOUT_METHOD,
         element: <PayoutMethod />
       },
       {
@@ -92,7 +92,7 @@ export const appRoutes = [
         element: <State />
       },
       {
-        path: NAVIGATION_ROUTES.MASTER_DATA.FEES_AND_CHARGES,
+        path: NAVIGATION_ROUTES.FEES_AND_CHARGES,
         element: <FeeAndCharges />
       },
       {
@@ -104,11 +104,11 @@ export const appRoutes = [
         element: <MaritalStatus />
       },
       {
-        path: NAVIGATION_ROUTES.MASTER_DATA.PROMO_CODE,
+        path: NAVIGATION_ROUTES.PROMO_CODE,
         element: <PromoCode />
       },
       {
-        path: NAVIGATION_ROUTES.MASTER_DATA.AUTOMATIC_DISCOUNT,
+        path: NAVIGATION_ROUTES.AUTOMATIC_DISCOUNT,
         element: <AutomaticDiscount />
       }
     ]

@@ -110,7 +110,7 @@ const Country = () => {
     {
       header: "Flag",
       accessorKey: "flagIcon",
-      size: 20,
+      size: 50,
       cell: (cell: any) => {
         const memoizedImage = useMemo(() => {
           return (

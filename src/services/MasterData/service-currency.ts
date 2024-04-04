@@ -25,7 +25,7 @@ export interface ICurrencyRequest {
   name: string;
   shortName: string;
   Symbol: string;
-  isActive: boolean;
+  isActive?: boolean;
 }
 // interface IFilterItems {
 // }

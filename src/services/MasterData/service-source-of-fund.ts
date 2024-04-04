@@ -16,8 +16,9 @@ export interface ISourceOfFundRequest {
   id?: number;
   name: string;
   code: string;
-  isActive: boolean;
+  isActive?: boolean | null | undefined;
 }
+
 // interface IFilterItems {
 // }
 interface IFilterParams {
@@ -46,8 +47,8 @@ const useGetAllSourceOfFund = () => {
     }
   });
 };
-const addSourceoffund = (data: any) => {
-  return NeoHttpClient.post<NeoResponse>(
+const addSourceoffund = (data: ISourceOfFundRequest) => {
+  return NeoHttpClient.post<NeoResponse<ISourceOfFundRequest>>(
     api.masterData.source_of_fund.create,
     trimObjectValues(data)
   );

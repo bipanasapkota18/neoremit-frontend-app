@@ -19,15 +19,20 @@ export const NAVIGATION_ROUTES = {
     RELATIONSHIP: "/relationship",
     DOCUMENT_SETUP: "/document-setup",
     SOURCE_OF_FUND: "/source-of-fund",
-    PAYOUT_PARTNER: "/payout-partner",
-    PAYOUT_METHOD: "/payout-method",
+
     COUNTRY_SETUP: "/country-setup",
     STATE_SETUP: "/state-setup",
-    FEES_AND_CHARGES: "/fees-and-charges",
+
     OCCUPATION: "/occupation",
-    MARITAL_STATUS: "/marital-status",
-    PROMO_CODE: "/promo-code",
-    AUTOMATIC_DISCOUNT: "/automatic-discount"
+    MARITAL_STATUS: "/marital-status"
   },
+  COUNTRY_SETUP: "/country-setup",
+  PAYOUT_CONFIG: {
+    BANK_WALLET_LIST: "/bank-wallet-list",
+    PAYOUT_METHOD: "/payout-method"
+  },
+  FEES_AND_CHARGES: "/fees-and-charges",
+  PROMO_CODE: "/promo-code",
+  AUTOMATIC_DISCOUNT: "/automatic-discount",
   PARTNERS: "/partners"
 };
