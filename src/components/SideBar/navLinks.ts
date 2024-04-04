@@ -34,11 +34,11 @@ export const navLinks = [
     label: "Master Data",
     isNotLink: true,
     childNav: [
-      {
-        icon: sidebarAssets.Ellipse,
-        href: NAVIGATION_ROUTES.MASTER_DATA.COUNTRY_SETUP,
-        label: "Country Setup"
-      },
+      // {
+      //   icon: sidebarAssets.Ellipse,
+      //   href: NAVIGATION_ROUTES.MASTER_DATA.COUNTRY_SETUP,
+      //   label: "Country Setup"
+      // },
       {
         icon: sidebarAssets.Ellipse,
         href: NAVIGATION_ROUTES.MASTER_DATA.CURRENCY_SETUP,
@@ -64,29 +64,57 @@ export const navLinks = [
         href: NAVIGATION_ROUTES.MASTER_DATA.SOURCE_OF_FUND,
         label: "Source of Fund"
       },
+
       {
         icon: sidebarAssets.Ellipse,
-        href: NAVIGATION_ROUTES.MASTER_DATA.PAYOUT_PARTNER,
-        label: "Payout Partner"
+        href: NAVIGATION_ROUTES.MASTER_DATA.OCCUPATION,
+        label: "Occupation"
       },
       {
         icon: sidebarAssets.Ellipse,
-        href: NAVIGATION_ROUTES.MASTER_DATA.PAYOUT_METHOD,
-        label: "Payout Method"
-      },
-      {
-        icon: sidebarAssets.Ellipse,
-        href: NAVIGATION_ROUTES.MASTER_DATA.FEES_AND_CHARGES,
-        label: "Fees and Charges"
+        href: NAVIGATION_ROUTES.MASTER_DATA.MARITAL_STATUS,
+        label: "Marital Status"
       }
     ]
+  },
+  {
+    icon: sidebarAssets.CountryFlag,
+    href: NAVIGATION_ROUTES.COUNTRY_SETUP,
+    label: "Country Setup"
+  },
+  {
+    icon: sidebarAssets.MasterData,
+    // href: NAVIGATION_ROUTES.COLLAPSE,
+    label: "Payout Configuration",
+    isNotLink: true,
+    childNav: [
+      {
+        icon: sidebarAssets.Ellipse,
+        href: NAVIGATION_ROUTES.PAYOUT_CONFIG.BANK_WALLET_LIST,
+        label: "Bank/Wallet List"
+      },
+      {
+        icon: sidebarAssets.Ellipse,
+        href: NAVIGATION_ROUTES.PAYOUT_CONFIG.PAYOUT_METHOD,
+        label: "Payout Method"
+      }
+    ]
+  },
+  {
+    icon: sidebarAssets.MasterData,
+    href: NAVIGATION_ROUTES.FEES_AND_CHARGES,
+    label: "Fees and Charges"
+  },
+  {
+    icon: sidebarAssets.MasterData,
+    href: NAVIGATION_ROUTES.PROMO_CODE,
+    label: "Promo Code"
+  },
+  {
+    icon: sidebarAssets.MasterData,
+    href: NAVIGATION_ROUTES.AUTOMATIC_DISCOUNT,
+    label: "Automatic Discount"
   }
-  // {
-  //   icon: sidebarAssets.Partners,
-  //   href: NAVIGATION_ROUTES.PARTNERS,
-  //   label: "Partners"
-  // },
-
   // {
   //   icon: FaIcons,
   //   href: NAVIGATION_ROUTES.EXAMPLE,

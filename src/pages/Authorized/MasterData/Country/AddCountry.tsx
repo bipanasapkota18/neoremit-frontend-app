@@ -1,11 +1,13 @@
 import { InfoIcon } from "@chakra-ui/icons";
 import { GridItem, HStack, SimpleGrid, Tooltip } from "@chakra-ui/react";
+import { yupResolver } from "@hookform/resolvers/yup";
 // import { yupResolver } from "@hookform/resolvers/yup";
 import { DropzoneComponentControlled } from "@neo/components/Form/DropzoneComponent";
 import Select from "@neo/components/Form/SelectComponent";
 import SwitchInput from "@neo/components/Form/Switch";
 import TextInput from "@neo/components/Form/TextInput";
 import Modal from "@neo/components/Modal";
+import countryAdd from "@neo/schema/country/country";
 
 // import countryAdd from "@neo/schema/country/country";
 import {
@@ -53,7 +55,7 @@ const AddCountrySetup = ({
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues,
-    // resolver: yupResolver(countryAdd),
+    resolver: yupResolver(countryAdd),
     mode: "onChange"
   });
   const { mutateAsync: mutateCurrency, data: currencyData } =
@@ -79,6 +81,8 @@ const AddCountrySetup = ({
       const selectedCurrency = currencyOptions?.find(
         (currency: any) => currency.value === selectedCountry?.currency?.id
       );
+      console.log(selectedCurrency);
+
       reset({
         name: selectedCountry?.name,
         shortName: selectedCountry?.shortName,
@@ -88,8 +92,11 @@ const AddCountrySetup = ({
         hasState: selectedCountry?.hasState,
         canReceive: selectedCountry?.canReceive,
         canSend: selectedCountry?.canSend,
-        // isActive: selectedCountry?.isActive,
-        currencyId: selectedCurrency
+        isActive: selectedCountry?.isActive,
+        currencyId: {
+          label: selectedCurrency?.label,
+          value: Number(selectedCurrency?.value)
+        }
       });
     }
   }, [editData, editId]);

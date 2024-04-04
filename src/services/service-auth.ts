@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { NeoResponse, api } from "./service-api";
 import { NeoHttpClient } from "./service-axios";
-import TokenService, { NeoTokenDetails, TokenDetails } from "./service-token";
+import TokenService, { NeoTokenDetails } from "./service-token";
 
 import { BroadcastChannel } from "broadcast-channel";
 
@@ -15,7 +15,17 @@ export interface LoginDetails {
   username: string;
   password: string;
 }
+export interface NeoToken {
+  userDetails: UserDetails;
+  accessToken: string;
+  refreshToken: string;
+  tokenType: string;
+}
 
+export interface UserDetails {
+  id: number;
+  username: string;
+}
 type NeoUserTokenDetails = NeoTokenDetails;
 
 export const authTokenKey = "authToken";
@@ -46,7 +56,10 @@ const useLogoutMutation = () => {
 };
 
 const initLogin = (loginData: LoginDetails) => {
-  return NeoHttpClient.post<NeoResponse>(api.auth.login, loginData);
+  return NeoHttpClient.post<NeoResponse>(api.auth.login, {
+    ...loginData,
+    loginFrom: "INTERNAL"
+  });
 };
 
 const useLoginMutation = () => {
@@ -76,13 +89,12 @@ const useLoginMutation = () => {
 
 const initRefreshToken = async () => {
   try {
-    const response = await NeoHttpClient.post<TokenDetails>(
-      api.auth.refreshToken,
-      JSON.stringify({ refreshToken: TokenService.getToken()?.refresh_token })
-    );
+    const response = await NeoHttpClient.post<NeoToken>(api.auth.refreshToken, {
+      refreshToken: TokenService.getToken()?.refresh_token
+    });
     const tokens = {
-      access_token: response.data.access_token,
-      refresh_token: response.data.refresh_token
+      access_token: response.data.accessToken,
+      refresh_token: response.data.refreshToken
     };
     TokenService.setToken(tokens);
     return true;

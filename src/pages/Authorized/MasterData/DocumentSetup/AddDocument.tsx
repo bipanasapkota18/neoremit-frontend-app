@@ -1,8 +1,10 @@
 import { GridItem, SimpleGrid } from "@chakra-ui/react";
+import { yupResolver } from "@hookform/resolvers/yup";
 // import { yupResolver } from "@hookform/resolvers/yup";
 import Select from "@neo/components/Form/SelectComponent";
 import TextInput from "@neo/components/Form/TextInput";
 import Modal from "@neo/components/Modal";
+import documentSchema from "@neo/schema/document/document";
 // import documentSchema from "@neo/schema/document/document";
 import {
   useAddDocument,
@@ -40,8 +42,8 @@ const AddDocument = ({
   const { mutateAsync: mutateUpdateDocument, isLoading: isUpdateLoading } =
     useUpdateDocument();
   const { control, handleSubmit, reset } = useForm({
-    defaultValues: defaultValues
-    // resolver: yupResolver(documentSchema)
+    defaultValues: defaultValues,
+    resolver: yupResolver(documentSchema)
   });
   const { data: extensionData } = useGetAllExtensions();
 

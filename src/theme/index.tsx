@@ -1,5 +1,6 @@
 import { extendTheme } from "@chakra-ui/react";
 import { FormComponent } from "./Form/Form";
+import { RadioTheme } from "./Form/Radio";
 import { colorScheme } from "./colorScheme";
 import { ButtonConfig } from "./components/Button";
 import Input from "./components/Input";
@@ -18,7 +19,8 @@ export const theme = extendTheme(
       Button: ButtonConfig,
       Input: Input,
       Table: TableConfig,
-      Switch: Switch
+      Switch: Switch,
+      Radio: RadioTheme
     },
     breakpoints: {
       sm: "320px",

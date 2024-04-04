@@ -9,8 +9,10 @@ const documentSchema = yup.object().shape({
     .min(1, "Document size should be greater than 0"),
   allowedExtensions: yup
     .array()
-    .of(yup.mixed())
-    .min(1, "Please select at least one extension")
+    .min(1, "Select at least one extension")
+    .required("Select at least one extension")
+    .of(yup.object())
+    .nullable()
 });
 
 export default documentSchema;

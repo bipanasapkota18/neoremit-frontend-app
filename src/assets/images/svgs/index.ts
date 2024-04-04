@@ -1,6 +1,7 @@
 import { ReactComponent as Background } from "@neo/assets/images/svgs/AuthPageWrapper.svg";
 import { ReactComponent as AddButton } from "@neo/assets/images/svgs/add-square.svg";
 import { ReactComponent as ArrowLeftIcon } from "@neo/assets/images/svgs/arrow_back.svg";
+import { ReactComponent as CalenderIcon } from "@neo/assets/images/svgs/calendar.svg";
 import { ReactComponent as DropDownCaret } from "@neo/assets/images/svgs/dropdown-select-caret.svg";
 import { ReactComponent as EditButton } from "@neo/assets/images/svgs/edit.svg";
 import { ReactComponent as EmailIcon } from "@neo/assets/images/svgs/email.svg";
@@ -21,8 +22,8 @@ import { ReactComponent as PasswordIcon } from "@neo/assets/images/svgs/password
 import { ReactComponent as SelectDropdown } from "@neo/assets/images/svgs/select-arrow.svg";
 import { ReactComponent as SetPasswordBanner } from "@neo/assets/images/svgs/set_pass_banner.svg";
 import { ReactComponent as StateAddIcon } from "@neo/assets/images/svgs/state-add.svg";
+import { ReactComponent as TickSquare } from "@neo/assets/images/svgs/tick-square.svg";
 import { ReactComponent as DeleteButton } from "@neo/assets/images/svgs/trash.svg";
-
 export const svgAssets = {
   ImagePlaceHolderDropzone,
   Background,
@@ -47,5 +48,7 @@ export const svgAssets = {
   EnglishFlag,
   FranceFlag,
   GermanFlag,
-  DropDownCaret
+  DropDownCaret,
+  CalenderIcon,
+  TickSquare
 };

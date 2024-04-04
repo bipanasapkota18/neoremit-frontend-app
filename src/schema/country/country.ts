@@ -8,7 +8,7 @@ const countryAdd = yup.object().shape({
   shortName: yup
     .string()
     .required("Please enter country Short Name")
-    .test("length", "Enter a two digit short name", val => val.length === 2),
+    .test("length", "Enter a two digit short name", val => val?.length === 2),
   canReceive: yup.boolean(),
   canSend: yup.boolean(),
   isActive: yup.boolean().nullable(),

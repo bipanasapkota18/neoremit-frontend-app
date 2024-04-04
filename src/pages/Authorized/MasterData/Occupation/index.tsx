@@ -5,6 +5,7 @@ import {
   Flex,
   HStack,
   Switch,
+  Text,
   useDisclosure,
   useMediaQuery
 } from "@chakra-ui/react";
@@ -17,96 +18,80 @@ import SearchInput from "@neo/components/Form/SearchInput";
 import ConfirmationModal from "@neo/components/Modal/DeleteModal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import {
-  IPayoutPartnerResponse,
-  useDeletePayoutPartner,
-  useGetAllPayoutPartners,
-  useGetPayoutPartnerById,
-  useToggleStatus
-} from "@neo/services/MasterData/service-payout-partner";
+  IOccupationResponse,
+  useDeleteOccupation,
+  useGetAllOccupation,
+  useToggleOccupationStatus
+} from "@neo/services/MasterData/service-occupation";
 import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import AddPayoutPartner from "./AddPayoutPartner";
+import AddOccupation from "./AddOccupationModal";
 
-const PayoutPartner = () => {
+const Occupation = () => {
   const {
-    isOpen: isOpenAddPayoutPartnerModal,
-    onOpen: onOpenAddPayoutPartnerModal,
-    onClose: onCloseAddPayoutPartnerModal
+    isOpen: isOpenOccupationAddModal,
+    onOpen: onOpenOccupationAddModal,
+    onClose: onCloseOccupationAddModal
   } = useDisclosure();
   const {
-    isOpen: isOpenPayoutPartnerDeleteModal,
-    onOpen: onOpenPayoutPartnerDeleteModal,
-    onClose: onClosePayoutPartnerDeleteModal
+    isOpen: isOpenOccupationDeleteModal,
+    onOpen: onOpenOccupationDeleteModal,
+    onClose: onCloseOccupationDeleteModal
   } = useDisclosure();
   const {
-    isOpen: isOpenPayoutPartnerStatusUpdateModal,
-    onOpen: onOpenPayoutPartnerStatusUpdateModal,
-    onClose: onClosePayoutPartnerStatusUpdateModal
+    isOpen: isOpenOccupationStatusUpdateModal,
+    onOpen: onOpenOccupationStatusUpdateModal,
+    onClose: onCloseOccupationStatusUpdateModal
   } = useDisclosure();
   const { pathname } = useLocation();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
+  const [searchText, setSearchText] = useState<string>("" as string);
   const [editId, setEditId] = useState(null as number | null);
   const [changeId, setChangeId] = useState(null as number | null);
   const [active, setActive] = useState(false);
-  const [searchText, setSearchText] = useState<string>("" as string);
   const [pageParams, setPageParams] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10
   });
-  const { data: payoutPartners, isLoading } = useGetAllPayoutPartners();
-  const { mutate: mutateDelete, isLoading: isDeleteLoading } =
-    useDeletePayoutPartner();
-
-  const { isLoading: isSingleFetching } = useGetPayoutPartnerById(editId);
+  const { data: occupationData, isLoading } = useGetAllOccupation();
   const {
     isLoading: isToggling,
     refetch,
     isFetching
-  } = useToggleStatus(changeId);
+  } = useToggleOccupationStatus(changeId);
+  const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
+    useDeleteOccupation();
+
   const columns = [
     {
       header: "S.N",
       accessorKey: "sn",
-      cell: (cell: CellContext<IPayoutPartnerResponse, any>) =>
-        cell?.row?.index + 1
+      cell: (data: any) => {
+        return (
+          <Text>
+            {pageParams.pageIndex * pageParams.pageSize + data.row.index + 1}
+          </Text>
+        );
+      }
     },
-
     {
-      header: "Partner Name",
+      header: "Occupation",
       accessorKey: "name",
-      size: 40
-    },
-    {
-      header: "Country",
-      accessorKey: "country",
-      size: 30,
-      cell: (data: CellContext<IPayoutPartnerResponse, any>) => {
-        return data?.row?.original?.country?.name;
-      }
-    },
-    {
-      header: "Payout Method",
-      accessorKey: "payoutMethod",
-      size: 20,
-      cell: (data: CellContext<IPayoutPartnerResponse, any>) => {
-        return data?.row?.original?.payoutMethod?.name;
-      }
+      size: 100
     },
     {
       header: "Status",
       accessorKey: "status",
-      cell: (data: any) => {
+      cell: (cell: CellContext<IOccupationResponse, any>) => {
         return (
           <Switch
             size="lg"
-            name="status"
-            colorScheme="facebook"
-            isChecked={data?.row?.original?.isActive}
+            isChecked={cell?.row?.original?.isActive}
             onChange={() => {
-              setActive(data?.row?.original?.isActive);
-              setChangeId(data?.row?.original?.id);
-              onOpenPayoutPartnerStatusUpdateModal();
+              setChangeId(cell?.row?.original?.id);
+              setActive(cell?.row?.original?.isActive);
+              onOpenOccupationStatusUpdateModal();
             }}
           />
         );
@@ -115,21 +100,21 @@ const PayoutPartner = () => {
     {
       header: "Action",
       accessorKey: "action",
-      cell: (cell: CellContext<any, any>) => {
+      cell: (cell: CellContext<IOccupationResponse, any>) => {
         return (
           <HStack>
             <TableActionButton
               onClickAction={() => {
-                setEditId(cell?.row?.original?.id || null);
-                onOpenAddPayoutPartnerModal();
+                setEditId(cell?.row?.original?.id);
+                onOpenOccupationAddModal();
               }}
               icon={<svgAssets.EditButton />}
               label="Edit"
             />
             <TableActionButton
               onClickAction={() => {
-                setChangeId(cell?.row?.original?.id || null);
-                onOpenPayoutPartnerDeleteModal();
+                setChangeId(cell?.row?.original?.id);
+                onOpenOccupationDeleteModal();
               }}
               icon={<svgAssets.DeleteButton />}
               label="Delete"
@@ -143,21 +128,20 @@ const PayoutPartner = () => {
   const handleDelete = async () => {
     await mutateDelete(changeId);
     setChangeId(null);
-    onClosePayoutPartnerDeleteModal();
+    onCloseOccupationDeleteModal();
   };
   const handleStatusChange = async () => {
     try {
       await refetch();
       setChangeId(null);
-      onClosePayoutPartnerStatusUpdateModal();
+      onCloseOccupationStatusUpdateModal();
     } catch (e) {
       console.error(e);
     }
   };
-
   return (
     <Flex direction={"column"} gap={"16px"}>
-      <BreadCrumb currentPage="Bank/Wallet List" options={activePath} />
+      <BreadCrumb currentPage="Occupation" options={activePath} />
       <Card
         borderRadius={"16px"}
         boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"
@@ -192,65 +176,60 @@ const PayoutPartner = () => {
             <Button
               minW={"max-content"}
               leftIcon={<svgAssets.AddButton />}
-              onClick={onOpenAddPayoutPartnerModal}
+              onClick={onOpenOccupationAddModal}
             >
-              Add Bank/Wallet List
+              Add Occupation
             </Button>
           </HStack>
           <DataTable
-            pagination={{
-              manual: false,
-              pageParams: pageParams,
-              onChangePagination: setPageParams
-            }}
+            isLoading={isLoading}
             filter={{
               globalFilter: searchText,
               setGlobalFilter: setSearchText
             }}
-            data={payoutPartners ?? []}
+            pagination={{
+              manual: true,
+              pageCount: occupationData?.length ?? 0,
+              pageParams: pageParams,
+              onChangePagination: setPageParams
+            }}
+            data={occupationData ?? []}
             columns={columns}
-            isLoading={isLoading}
           />
         </CardBody>
       </Card>
 
-      <AddPayoutPartner
-        data={payoutPartners}
-        editId={editId ?? null}
+      <AddOccupation
+        editId={editId}
         setEditId={setEditId}
-        isOpen={isOpenAddPayoutPartnerModal}
+        data={occupationData ?? []}
+        isOpen={isOpenOccupationAddModal}
         onClose={() => {
-          onCloseAddPayoutPartnerModal();
+          onCloseOccupationAddModal();
         }}
       />
       <ConfirmationModal
         variant={"delete"}
         buttonText={"Delete"}
         title={"Are You Sure?"}
-        isLoading={isDeleteLoading || isSingleFetching}
+        isLoading={isDeleteLoading}
         onApprove={handleDelete}
         message="Deleting will permanently remove this file from the system. This cannot be Undone."
-        isOpen={isOpenPayoutPartnerDeleteModal}
-        onClose={() => {
-          setChangeId(null);
-          onClosePayoutPartnerDeleteModal();
-        }}
+        isOpen={isOpenOccupationDeleteModal}
+        onClose={onCloseOccupationDeleteModal}
       />
       <ConfirmationModal
         variant={"edit"}
         buttonText={`${active ? "Disable" : "Enable"}`}
         title={"Are You Sure?"}
-        isLoading={isToggling || isFetching}
+        isLoading={isFetching || isToggling}
         onApprove={handleStatusChange}
-        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this payout partner?`}
-        isOpen={isOpenPayoutPartnerStatusUpdateModal}
-        onClose={() => {
-          setChangeId(null);
-          onClosePayoutPartnerStatusUpdateModal();
-        }}
+        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this occupation?`}
+        isOpen={isOpenOccupationStatusUpdateModal}
+        onClose={onCloseOccupationStatusUpdateModal}
       />
     </Flex>
   );
 };
 
-export default PayoutPartner;
+export default Occupation;

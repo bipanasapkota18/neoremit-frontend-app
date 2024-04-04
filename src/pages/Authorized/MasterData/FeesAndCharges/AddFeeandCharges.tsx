@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Button,
   Card,
@@ -12,83 +13,122 @@ import {
   useMediaQuery
 } from "@chakra-ui/react";
 
+import { svgAssets } from "@neo/assets/images/svgs";
 import { DataTable } from "@neo/components/DataTable";
 import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
-
 import Select from "@neo/components/Form/SelectComponent";
 import TextInput from "@neo/components/Form/TextInput";
+import ConfirmationModal from "@neo/components/Modal/DeleteModal";
+import {
+  CountriesList,
+  useGetCountryList
+} from "@neo/services/MasterData/service-country";
+import {
+  FeeAndChargesDetail,
+  IFeeAndChargeResponse,
+  useAddFeesAndCharges,
+  useFeeAndChargesDetailDelete,
+  useGetFeeAndChargesbyId,
+  useUpdateFeesAndCharges
+} from "@neo/services/service-fees-and-charges";
+import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
+import { CellContext } from "@tanstack/react-table";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { svgAssets } from "../../../../assets/images/svgs/index";
 import AddFeeAndChargesDetails from "./AddFeeAndChargesDetails";
 
 const defaultValues = {
   feeName: "",
-  country: "",
-  currency: ""
+  countryId: null as ISelectOptions<number> | null,
+  currencyId: null as ISelectOptions<number> | null
 };
 interface AddFeeandChargesProps {
   onClose: () => void;
+  editId: number | null;
+  data: IFeeAndChargeResponse[] | undefined;
+  setEditId: Dispatch<SetStateAction<number | null>>;
 }
-const AddFeeandCharges = ({ onClose }: AddFeeandChargesProps) => {
-  const { control, handleSubmit } = useForm({
+const AddFeeandCharges = ({
+  onClose,
+  editId,
+  data: editData,
+  setEditId
+}: AddFeeandChargesProps) => {
+  const { control, handleSubmit, watch, reset } = useForm({
     defaultValues: defaultValues
   });
-  const { isOpen, onOpen, onClose: onModalClose } = useDisclosure();
+  const { mutateAsync: mutateAddFeeandCharges } = useAddFeesAndCharges();
+  const { mutateAsync: mutateUpdateFeeandCharges } = useUpdateFeesAndCharges();
+  const { mutateAsync: mutateDeleteFeeAndCharges, isLoading: isDeleteLoading } =
+    useFeeAndChargesDetailDelete();
+  const {
+    isOpen: isOpenAddDetailModal,
+    onOpen: onOpenAddDetailModal,
+    onClose: onModalClose
+  } = useDisclosure();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
+  const [editDetailId, setEditDetailId] = useState<number | null>(null);
+  const { data: countryData } = useGetCountryList();
+  const { data: feeAndChargeDetails, isLoading: isGetFeeAndChargesLoading } =
+    useGetFeeAndChargesbyId(editId);
+  const countryOptions = formatSelectOptions({
+    data: countryData,
+    valueKey: "id",
+    labelKey: "name"
+  });
 
-  const onEditState = () => {
-    //
-  };
-  const onDeleteState = () => {
-    //
-  };
+  const {
+    isOpen: isOpenFeeAndChargeDeleteModal,
+    onOpen: onOpenFeeAndChargeDeleteModal,
+    onClose: onCloseFeeAndChargeDeleteModal
+  } = useDisclosure();
+  useEffect(() => {
+    if (editId) {
+      const selectedFee = editData?.find(data => data.id === editId);
 
-  const tableData = [
-    {
-      sn: 1,
-      paymentMethod: "Nepali Rupee",
-      fee: "100",
-      type: "Flat"
-    },
-    {
-      sn: 2,
-      paymentMethod: "Nepali Rupee",
-      fee: "100",
-      type: "Flat"
-    },
-    {
-      sn: 3,
-      paymentMethod: "Nepali Rupee",
-      fee: "100",
-      type: "Flat"
-    },
-    {
-      sn: 4,
-      paymentMethod: "Nepali Rupee",
-      fee: "100",
-      type: "Percentage"
-    },
-    {
-      sn: 5,
-      paymentMethod: "Nepali Rupee",
-      fee: "100",
-      type: "Flat"
+      const selectedCountry = countryData?.find((country: any) => {
+        return selectedFee?.country?.name === country?.name;
+      })?.name;
+      reset({
+        feeName: selectedFee?.feeName,
+        countryId: selectedCountry
+      });
     }
-  ];
+  }, [editId, editData, countryData]);
+
   const columns = [
     {
       header: "S.N",
-      accessorKey: "sn"
+      accessorKey: "sn",
+      cell: (cell: CellContext<FeeAndChargesDetail, any>) => {
+        return cell?.row?.index + 1;
+      }
     },
     {
       header: "Payment Method",
-      accessorKey: "paymentMethod",
-      size: 100
+      accessorKey: "payoutMethods",
+      size: 100,
+      cell: (data: CellContext<FeeAndChargesDetail, any>) => {
+        return data?.row?.original?.payoutMethods?.map(
+          (item: any, index: number) => {
+            return (
+              <Badge
+                key={index}
+                padding="8px 24px"
+                mx={2}
+                borderRadius={"16px"}
+              >
+                {item?.name}
+              </Badge>
+            );
+          }
+        );
+      }
     },
     {
       header: "Fee and Charge Type",
-      accessorKey: "type"
+      accessorKey: "feeAndChargeType"
     },
     {
       header: "Fee",
@@ -98,16 +138,22 @@ const AddFeeandCharges = ({ onClose }: AddFeeandChargesProps) => {
       header: "Action",
       accessorKey: "action",
 
-      cell: () => {
+      cell: (cell: CellContext<IFeeAndChargeResponse, any>) => {
         return (
           <HStack>
             <TableActionButton
-              onClickAction={onEditState}
+              onClickAction={() => {
+                setEditDetailId(cell?.row?.original?.id ?? null);
+                onOpenAddDetailModal();
+              }}
               icon={<svgAssets.EditButton />}
               label="Edit"
             />
             <TableActionButton
-              onClickAction={onDeleteState}
+              onClickAction={() => {
+                setEditDetailId(cell?.row?.original?.id ?? null);
+                onOpenFeeAndChargeDeleteModal();
+              }}
               icon={<svgAssets.DeleteButton />}
               label="Delete"
             />
@@ -116,9 +162,39 @@ const AddFeeandCharges = ({ onClose }: AddFeeandChargesProps) => {
       }
     }
   ];
-
-  const handleSaveFeeandCharges = () => {
-    //
+  const handleDelete = async () => {
+    try {
+      await mutateDeleteFeeAndCharges(editDetailId);
+      // setEditId(null);
+      onCloseFeeAndChargeDeleteModal();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  const handleSaveFeeandCharges = async (data: typeof defaultValues) => {
+    if (editId) {
+      const selectedFee = editData?.find(data => data.id === editId);
+      await mutateUpdateFeeandCharges({
+        id: editId,
+        ...data,
+        countryId: selectedFee?.country?.id ?? "",
+        currencyId: selectedFee?.currencyDetailResponseDto?.id ?? "",
+        feeAndChargesDetails:
+          feeAndChargeDetails?.data?.data?.feeAndChargesDetails ?? []
+      });
+    } else {
+      await mutateAddFeeandCharges({
+        ...data,
+        countryId: data.countryId?.value ?? "",
+        currencyId: countryData?.find(
+          (country: CountriesList) => data.countryId?.label === country?.name
+        )?.currency?.id,
+        feeAndChargesDetails: []
+      });
+    }
+    onClose();
+    reset();
+    setEditId(null);
   };
 
   return (
@@ -144,7 +220,7 @@ const AddFeeandCharges = ({ onClose }: AddFeeandChargesProps) => {
                 Fee Details
               </Heading>
               <Box padding={"24px"} gap={"20px"} width={"100%"}>
-                <SimpleGrid columns={{ sm: 1, md: 3 }} spacing={10}>
+                <SimpleGrid columns={{ sm: 1, md: 1, lg: 3 }} spacing={10}>
                   <GridItem colSpan={1}>
                     <TextInput
                       control={control}
@@ -156,79 +232,92 @@ const AddFeeandCharges = ({ onClose }: AddFeeandChargesProps) => {
                   </GridItem>
                   <GridItem colSpan={1}>
                     <Select
-                      name="country"
+                      name="countryId"
                       placeholder="Country"
                       control={control}
-                      options={[
-                        { value: "Nepal", label: "Nepal" },
-                        { value: "India", label: "India" },
-                        { value: "China", label: "China" }
-                      ]}
+                      options={countryOptions ?? []}
                     />
                   </GridItem>
                   <GridItem colSpan={1}>
                     <TextInput
                       control={control}
-                      name="currency"
+                      name="currencyId"
                       label="Currency"
                       type="text"
                       isRequired
                       isReadOnly
+                      value={
+                        watch("countryId")
+                          ? countryData?.find((country: CountriesList) => {
+                              return (
+                                watch("countryId")?.label === country?.name
+                              );
+                            })?.currency?.name
+                          : ""
+                      }
                     />
                   </GridItem>
                 </SimpleGrid>
               </Box>
             </HStack>
+            {editId ? (
+              <>
+                <Heading
+                  fontSize="17px"
+                  fontStyle="normal"
+                  fontWeight={700}
+                  lineHeight="normal"
+                  color={"#2D3748"}
+                  p={4}
+                >
+                  Fees and Charges Details
+                </Heading>
+                <Card borderRadius={"16px"} borderTop={"1px solid #EDF2F7"}>
+                  <CardBody>
+                    <HStack justifyContent={"space-between"}>
+                      <HStack
+                        display="flex"
+                        padding="24px 20px"
+                        alignItems="center"
+                        gap="16px"
+                        alignSelf="stretch"
+                      >
+                        {isDesktop ? (
+                          <SearchInput
+                            width={"450px"}
+                            label="Search"
+                            name="search"
+                            type="text"
+                          />
+                        ) : (
+                          ""
+                        )}
+                      </HStack>
+                      <Button
+                        minW={"max-content"}
+                        leftIcon={<svgAssets.AddButton />}
+                        onClick={onOpenAddDetailModal}
+                      >
+                        Add Fee and Charges Details
+                      </Button>
+                    </HStack>
 
-            <Heading
-              fontSize="17px"
-              fontStyle="normal"
-              fontWeight={700}
-              lineHeight="normal"
-              color={"#2D3748"}
-              p={4}
-            >
-              Fees and Charges Details
-            </Heading>
-            <Card borderRadius={"16px"} borderTop={"1px solid #EDF2F7"}>
-              <CardBody>
-                <HStack justifyContent={"space-between"}>
-                  <HStack
-                    display="flex"
-                    padding="24px 20px"
-                    alignItems="center"
-                    gap="16px"
-                    alignSelf="stretch"
-                  >
-                    {isDesktop ? (
-                      <SearchInput
-                        width={"450px"}
-                        label="Search"
-                        name="search"
-                        type="text"
-                      />
-                    ) : (
-                      ""
-                    )}
-                  </HStack>
-                  <Button
-                    minW={"max-content"}
-                    leftIcon={<svgAssets.AddButton />}
-                    onClick={onOpen}
-                  >
-                    Add Fee and Charges Details
-                  </Button>
-                </HStack>
+                    <DataTable
+                      isLoading={isGetFeeAndChargesLoading}
+                      pagination={{
+                        manual: false
+                      }}
+                      data={
+                        feeAndChargeDetails?.data?.data?.feeAndChargesDetails ??
+                        []
+                      }
+                      columns={columns}
+                    />
+                  </CardBody>
+                </Card>
+              </>
+            ) : null}
 
-                <DataTable
-                  pagination={{
-                    manual: false
-                  }}
-                  data={tableData}
-                  columns={columns}
-                />
-              </CardBody>
-            </Card>
             <Flex
               justifyContent={"flex-end"}
               padding={"16px"}
@@ -243,7 +332,10 @@ const AddFeeandCharges = ({ onClose }: AddFeeandChargesProps) => {
                 bg={"#FFF5F5"}
                 _active={{ bg: "#FFF5F5" }}
                 fontSize={"17px"}
-                onClick={onClose}
+                onClick={() => {
+                  setEditId(null);
+                  onClose();
+                }}
               >
                 Cancel
               </Button>
@@ -260,12 +352,26 @@ const AddFeeandCharges = ({ onClose }: AddFeeandChargesProps) => {
         </Card>
 
         <AddFeeAndChargesDetails
-          isOpen={isOpen}
+          EditDetailId={editDetailId}
+          setEditDetailId={setEditDetailId}
+          data={feeAndChargeDetails?.data?.data}
+          isOpen={isOpenAddDetailModal}
           onClose={() => {
+            setEditDetailId(null);
             onModalClose();
           }}
         />
       </form>
+      <ConfirmationModal
+        variant={"delete"}
+        buttonText={"Delete"}
+        title={"Are You Sure?"}
+        isLoading={isDeleteLoading}
+        onApprove={handleDelete}
+        message="Deleting will permanently remove this file from the system. This cannot be Undone."
+        isOpen={isOpenFeeAndChargeDeleteModal}
+        onClose={onCloseFeeAndChargeDeleteModal}
+      />
     </Flex>
   );
 };

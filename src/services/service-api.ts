@@ -36,7 +36,7 @@ export const api = {
       update: `${service}/payment-purpose/{id}`
     },
     payout_method: {
-      getAll: `${service}/payout-method`,
+      getAll: `${service}/payout-method/list`,
       create: `${service}/payout-method`,
       update: `${service}/payout-method/{id}`,
       statusChange: `${service}/payout-method/status/{id}`
@@ -64,13 +64,53 @@ export const api = {
       getAll: `${service}/source-of-fund/list`,
       create: `${service}/source-of-fund`,
       update: `${service}/source-of-fund/{id}`
+    },
+    occupation: {
+      getAll: `${service}/occupation/list`,
+      create: `${service}/occupation`,
+      update: `${service}/occupation/{id}`,
+      statusChange: `${service}/occupation/status/{id}`
+    },
+    marital_status: {
+      getAll: `${service}/marital-status/list`,
+      create: `${service}/marital-status`,
+      update: `${service}/marital-status/{id}`,
+      statusChange: `${service}/marital-status/status/{id}`
+    },
+    promo_code: {
+      getAll: `${service}/promo-code/list`,
+      create: `${service}/promo-code`,
+      update: `${service}/promo-code/{id}`,
+      statusChange: `${service}/promo-code/status/{id}`
     }
   },
+  fee_and_charges: {
+    getAll: `${service}/master/fee-Charges/getAll`,
+    create: `${service}/master/fee-Charges/create`,
+    update: `${service}/master/fee-Charges/update/{id}`,
+    delete: `${service}/master/fee-Charges/delete/{id}`,
+    getSingle: `${service}/master/fee-Charges/getFeeAndCharges/{id}`,
+    toggleStatus: `${service}/master/fee-Charges/toggle/status/{id}`
+  },
+  fee_and_charges_details: {
+    getAll: `${service}/api/feeAndChargesDetails/getAll`,
+    create: `${service}/master/fee-charges-details/add/{feeAndChargeId}`,
+    update: `${service}/master/fee-charges-details/update/{id}`,
+    delete: `${service}/master/fee-charges-details/delete/{id}`
+  },
   users: {
-    email: "internal-service/users/forgot-password",
-    otp: "internal-service/users/verify/otp",
-    resendOtp: "internal-service/users/otp/resend",
-    changePassword: "internal-service/users/otp/change-password"
+    email: `${service}/users/forgot-password`,
+    otp: `${service}/users/verify/otp`,
+    resendOtp: `${service}/users/otp/resend`,
+    changePassword: `${service}/users/otp/change-password`
+  },
+  automatic_discount: {
+    getAll: `${service}/master/automatic-discount/getAll`,
+    create: `${service}/master/automatic-discount/create`,
+    update: `${service}/master/automatic-discount/update/{id}`,
+    delete: `${service}/master/automatic-discount/delete/{id}`,
+    statusChange: `${service}/master/automatic-discount/toggle/status/{id}`,
+    getById: `${service}/master/automatic-discount/get/{id}`
   },
 
   init: "/init"

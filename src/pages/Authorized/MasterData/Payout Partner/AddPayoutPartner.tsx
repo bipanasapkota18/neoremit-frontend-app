@@ -36,13 +36,16 @@ const AddPayoutPartner = ({
   setEditId,
   data: editData
 }: AddPayoutPartnerProps) => {
+  // const [countryId, setCountryId] = useState(null as number | null);
   const { mutateAsync: mutateAddPayoutPartner } = useAddPayoutPartner();
   const { mutateAsync: mutateEditPayoutPartner } = useUpdatePayoutPartner();
   const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues
   });
   const { data: countryData } = useGetCountryList();
-
+  // const { data, isLoading: isSingleFetching } =
+  //   useGetPayoutPartnerById(countryId);
+  // console.log(data);
   const { data: payoutMethod } = useGetAllPayoutMethod();
   const selectedPayoutPartner = useMemo(
     () =>
@@ -75,8 +78,14 @@ const AddPayoutPartner = ({
         image: selectedPayoutPartner?.image,
         name: selectedPayoutPartner?.name,
         code: selectedPayoutPartner?.code,
-        countryId: selectedCountry,
-        payoutMethodId: selectedPayoutMethod,
+        countryId: {
+          label: selectedCountry?.label,
+          value: Number(selectedCountry?.value)
+        },
+        payoutMethodId: {
+          label: selectedPayoutMethod?.label,
+          value: Number(selectedPayoutMethod?.value)
+        },
         isActive: selectedPayoutPartner?.isActive
       });
     }
@@ -115,7 +124,7 @@ const AddPayoutPartner = ({
         onClose={handleCloseModal}
         submitButtonText="Save"
         cancelButtonText="Cancel"
-        title={editId ? "Edit Payout Partner" : "Add Payout Partner"}
+        title={editId ? "Edit Bank/Wallet List" : "Add Bank/Wallet List"}
         onSubmit={handleSubmit(onAddPayoutPartner)}
       >
         <SimpleGrid columns={2} spacing={"30px"}>
@@ -134,19 +143,22 @@ const AddPayoutPartner = ({
           <GridItem colSpan={2}>
             <Select
               size={"lg"}
-              name="payoutMethodId"
-              placeholder="Payout Method"
+              name="countryId"
+              placeholder="Country"
               control={control}
-              options={payoutMethodOptions ?? []}
+              options={countryOptions ?? []}
+              // onChange={() => {
+              //   setCountryId(watch("countryId")?.value);
+              // }}
             />
           </GridItem>
           <GridItem colSpan={2}>
             <Select
               size={"lg"}
-              name="countryId"
-              placeholder="Country"
+              name="payoutMethodId"
+              placeholder="Payout Method"
               control={control}
-              options={countryOptions ?? []}
+              options={payoutMethodOptions ?? []}
             />
           </GridItem>
 
