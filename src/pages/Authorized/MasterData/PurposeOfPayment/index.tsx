@@ -21,7 +21,7 @@ import {
   IPurposeResponse,
   useDeletePurpose,
   useGetAllPurpose,
-  useUpdatePurpose
+  useTogglePurposeStatus
 } from "@neo/services/MasterData/service-purposeofpayment";
 import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
@@ -59,8 +59,11 @@ const PurposeOfPayment = () => {
   const { data: purposeData, mutateAsync, isLoading } = useGetAllPurpose();
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
     useDeletePurpose();
-  const { mutateAsync: mutateStatusUpdate, isLoading: isStatusUPdateLoading } =
-    useUpdatePurpose();
+  const {
+    isLoading: isToggling,
+    refetch,
+    isFetching
+  } = useTogglePurposeStatus(changeId);
   useEffect(() => {
     if (Array.isArray(purposeData?.data?.data)) {
       setTableData(purposeData?.data?.data);
@@ -147,22 +150,14 @@ const PurposeOfPayment = () => {
     refetchData();
   };
   const handleStatusChange = async () => {
-    if (changeId !== null) {
-      const selectedPurpose = tableData?.find(
-        purpose => purpose.id === changeId
-      );
-      await mutateStatusUpdate({
-        id: changeId,
-        data: {
-          code: selectedPurpose?.code ?? "",
-          name: selectedPurpose?.name ?? "",
-          isActive: !active
-        }
-      });
+    try {
+      await refetch();
+      setChangeId(null);
+      refetchData();
+      onClosePurposeStatusUpdateModal();
+    } catch (e) {
+      console.error(e);
     }
-    setChangeId(null);
-    onClosePurposeStatusUpdateModal();
-    refetchData();
   };
   return (
     <Flex direction={"column"} gap={"16px"}>
@@ -248,7 +243,7 @@ const PurposeOfPayment = () => {
         variant={"edit"}
         buttonText={`${active ? "Disable" : "Enable"}`}
         title={"Are You Sure?"}
-        isLoading={isStatusUPdateLoading}
+        isLoading={isToggling || isFetching}
         onApprove={handleStatusChange}
         message={`Are you sure you want to ${active ? "Disable" : "Enable"} this purpose of payment?`}
         isOpen={isOpenPurposeStatusUpdateModal}

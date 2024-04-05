@@ -18,8 +18,7 @@ import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import {
   useDeleteRelationship,
   useGetAllRelationShip,
-  useGetRelationshipById,
-  useUpdateRelationship
+  useToggleRelationshipStatus
 } from "@neo/services/MasterData/service-relationship";
 import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useState } from "react";
@@ -55,11 +54,11 @@ const Relationship = () => {
     pageIndex: 0,
     pageSize: 10
   });
-  const { data: editData } = useGetRelationshipById(changeId);
   const {
-    mutateAsync: mutateUpdateRelationship,
-    isLoading: isStatusUPdateLoading
-  } = useUpdateRelationship();
+    isLoading: isToggling,
+    refetch,
+    isFetching
+  } = useToggleRelationshipStatus(changeId);
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
     useDeleteRelationship();
   const { data: tableData, isLoading: isRelationLoading } =
@@ -132,18 +131,13 @@ const Relationship = () => {
     onCloseRelationshipDeleteModal();
   };
   const handleStatusChange = async () => {
-    if (changeId !== null) {
-      await mutateUpdateRelationship({
-        id: changeId,
-        data: {
-          code: editData?.data?.data?.code ?? "",
-          name: editData?.data?.data?.name ?? "",
-          isActive: !active
-        }
-      });
+    try {
+      await refetch();
+      setChangeId(null);
+      onCloseRelationshipStatusUpdateModal();
+    } catch (e) {
+      console.error(e);
     }
-    setChangeId(null);
-    onCloseRelationshipStatusUpdateModal();
   };
 
   return (
@@ -232,7 +226,7 @@ const Relationship = () => {
         variant={"edit"}
         buttonText={`${active ? "Disable" : "Enable"}`}
         title={"Are You Sure?"}
-        isLoading={isStatusUPdateLoading}
+        isLoading={isToggling || isFetching}
         onApprove={handleStatusChange}
         message={`Are you sure you want to ${active ? "Disable" : "Enable"} this relationship?`}
         isOpen={isOpenRelationshipStatusUpdateModal}

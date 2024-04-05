@@ -45,7 +45,6 @@ const AddPayoutPartner = ({
   const { data: countryData } = useGetCountryList();
   // const { data, isLoading: isSingleFetching } =
   //   useGetPayoutPartnerById(countryId);
-  // console.log(data);
   const { data: payoutMethod } = useGetAllPayoutMethod();
   const selectedPayoutPartner = useMemo(
     () =>

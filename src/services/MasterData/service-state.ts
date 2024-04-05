@@ -31,7 +31,6 @@ interface IFilterParams {
   filterParams: IFilterItems;
 }
 const getAllState = ({ pageParams, filterParams }: IFilterParams) => {
-  console.log(filterParams);
   return NeoHttpClient.post<NeoResponse<IStateResponse>>(
     api.masterData.state.getAll,
     {
@@ -80,4 +79,21 @@ const useDeleteState = () => {
     }
   });
 };
-export { useAddState, useDeleteState, useGetAllState };
+
+const updateState = ({ id, data }: { id: number | null; data: any }) => {
+  return NeoHttpClient.post<NeoResponse>(
+    api.masterData.state.update.replace("{id}", id + ""),
+    data
+  );
+};
+const useUpdateState = () => {
+  return useMutation(updateState, {
+    onSuccess: success => {
+      toastSuccess(success?.data?.message);
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
+    }
+  });
+};
+export { useAddState, useDeleteState, useGetAllState, useUpdateState };

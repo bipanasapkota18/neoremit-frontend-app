@@ -188,8 +188,7 @@ const Occupation = () => {
               setGlobalFilter: setSearchText
             }}
             pagination={{
-              manual: true,
-              pageCount: occupationData?.length ?? 0,
+              manual: false,
               pageParams: pageParams,
               onChangePagination: setPageParams
             }}

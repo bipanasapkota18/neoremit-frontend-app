@@ -136,12 +136,34 @@ const useDeleteDocument = () => {
     }
   });
 };
-
+const toggleStatus = (id: number | null) => () => {
+  return NeoHttpClient.get<NeoResponse>(
+    api.masterData.document.statusChange.replace("{id}", id + "")
+  );
+};
+const useToggleDocumentStatus = (id: number | null) => {
+  const queryClient = useQueryClient();
+  return useQuery(
+    [api.masterData.document.statusChange, id],
+    toggleStatus(id),
+    {
+      enabled: false,
+      onSuccess: success => {
+        queryClient.invalidateQueries(api.masterData.document.getAll);
+        toastSuccess(success?.data?.message);
+      },
+      onError: (error: AxiosError<{ message: string }>) => {
+        toastFail(error?.response?.data?.message ?? "Error");
+      }
+    }
+  );
+};
 export {
   useAddDocument,
   useDeleteDocument,
   useGetAllDocument,
   useGetAllExtensions,
   useGetDocumentById,
+  useToggleDocumentStatus,
   useUpdateDocument
 };

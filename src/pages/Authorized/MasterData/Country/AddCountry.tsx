@@ -81,7 +81,6 @@ const AddCountrySetup = ({
       const selectedCurrency = currencyOptions?.find(
         (currency: any) => currency.value === selectedCountry?.currency?.id
       );
-      console.log(selectedCurrency);
 
       reset({
         name: selectedCountry?.name,

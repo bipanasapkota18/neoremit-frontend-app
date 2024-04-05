@@ -12,7 +12,7 @@ const logoutChannel = new BroadcastChannel("logout");
 const loginChannel = new BroadcastChannel("login");
 
 export interface LoginDetails {
-  username: string;
+  username: string | null;
   password: string;
 }
 export interface NeoToken {

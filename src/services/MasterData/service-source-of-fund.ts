@@ -1,7 +1,7 @@
 import { toastFail, toastSuccess } from "@neo/utility/Toast";
 import { trimObjectValues } from "@neo/utility/helper";
 import { AxiosError } from "axios";
-import { useMutation } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "../service-api";
 import { NeoHttpClient } from "../service-axios";
 import { IPageParams } from "./master-data-common-interface";
@@ -101,9 +101,32 @@ const useDeleteSourceOfFund = () => {
     }
   });
 };
+const toggleStatus = (id: number | null) => () => {
+  return NeoHttpClient.get<NeoResponse>(
+    api.masterData.source_of_fund.statusChange.replace("{id}", id + "")
+  );
+};
+const useToggleSourceStatus = (id: number | null) => {
+  const queryClient = useQueryClient();
+  return useQuery(
+    [api.masterData.source_of_fund.statusChange, id],
+    toggleStatus(id),
+    {
+      enabled: false,
+      onSuccess: success => {
+        queryClient.invalidateQueries(api.masterData.source_of_fund.getAll);
+        toastSuccess(success?.data?.message);
+      },
+      onError: (error: AxiosError<{ message: string }>) => {
+        toastFail(error?.response?.data?.message ?? "Error");
+      }
+    }
+  );
+};
 export {
   useAddSourceOfFund,
   useDeleteSourceOfFund,
   useGetAllSourceOfFund,
+  useToggleSourceStatus,
   useUpdateSourceOfFund
 };
