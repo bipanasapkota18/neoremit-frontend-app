@@ -45,7 +45,6 @@ const AddPayoutPartner = ({
   const { data: countryData } = useGetCountryList();
   // const { data, isLoading: isSingleFetching } =
   //   useGetPayoutPartnerById(countryId);
-  // console.log(data);
   const { data: payoutMethod } = useGetAllPayoutMethod();
   const selectedPayoutPartner = useMemo(
     () =>
@@ -78,8 +77,14 @@ const AddPayoutPartner = ({
         image: selectedPayoutPartner?.image,
         name: selectedPayoutPartner?.name,
         code: selectedPayoutPartner?.code,
-        countryId: selectedCountry,
-        payoutMethodId: selectedPayoutMethod,
+        countryId: {
+          label: selectedCountry?.label,
+          value: Number(selectedCountry?.value)
+        },
+        payoutMethodId: {
+          label: selectedPayoutMethod?.label,
+          value: Number(selectedPayoutMethod?.value)
+        },
         isActive: selectedPayoutPartner?.isActive
       });
     }
@@ -118,7 +123,7 @@ const AddPayoutPartner = ({
         onClose={handleCloseModal}
         submitButtonText="Save"
         cancelButtonText="Cancel"
-        title={editId ? "Edit Payout Partner" : "Add Payout Partner"}
+        title={editId ? "Edit Bank/Wallet List" : "Add Bank/Wallet List"}
         onSubmit={handleSubmit(onAddPayoutPartner)}
       >
         <SimpleGrid columns={2} spacing={"30px"}>

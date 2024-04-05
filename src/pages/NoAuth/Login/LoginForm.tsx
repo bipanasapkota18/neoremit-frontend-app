@@ -13,17 +13,18 @@ import TextInput from "@neo/components/Form/TextInput";
 import { NAVIGATION_ROUTES } from "@neo/pages/App/navigationRoutes";
 import loginSchema from "@neo/schema/auth/login";
 import { useLoginMutation } from "@neo/services/service-auth";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { svgAssets } from "../../../assets/images/svgs/index";
 
 interface LoginPageProps {
-  email: string;
+  email: string | null;
   password: string;
   remember?: boolean | undefined;
 }
 const defaultValues = {
-  email: "",
+  email: "" as null | string,
   password: "",
   remember: false
 };
@@ -32,12 +33,21 @@ const LoginForm = () => {
   const { mutateAsync: login, isLoading: isLoginLoading } = useLoginMutation();
 
   const [flag, setFlag] = useBoolean();
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     defaultValues,
     resolver: yupResolver(loginSchema)
   });
+  useEffect(() => {
+    reset({ email: localStorage.getItem("email") });
+  }, []);
 
   const handleLogin = async (data: LoginPageProps) => {
+    if (data?.remember === true) {
+      localStorage.setItem("email", data?.email + "");
+    }
+    if (data?.remember === false) {
+      localStorage.removeItem("email");
+    }
     try {
       await login({
         username: data.email,
@@ -64,7 +74,6 @@ const LoginForm = () => {
             name="email"
             placeholder="Email"
             control={control}
-            // isRequired
           />
         </HStack>
         <HStack mt={2}>

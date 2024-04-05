@@ -20,8 +20,7 @@ import {
   IDocumentResponse,
   useDeleteDocument,
   useGetAllDocument,
-  useGetDocumentById,
-  useUpdateDocument
+  useToggleDocumentStatus
 } from "@neo/services/MasterData/service-document-setup";
 import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useState } from "react";
@@ -57,13 +56,13 @@ const Document = () => {
     pageSize: 10
   });
   const {
-    mutateAsync: mutateUpdateDocument,
-    isLoading: isStatusUPdateLoading
-  } = useUpdateDocument();
+    isLoading: isToggling,
+    refetch,
+    isFetching
+  } = useToggleDocumentStatus(changeId);
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
     useDeleteDocument();
   const { data: documentData } = useGetAllDocument();
-  const { data: editData } = useGetDocumentById(changeId);
   const columns = [
     {
       header: "S.N",
@@ -149,22 +148,13 @@ const Document = () => {
     onCloseDocumentDeleteModal();
   };
   const handleStatusChange = async () => {
-    if (changeId !== null) {
-      await mutateUpdateDocument({
-        id: changeId,
-        data: {
-          documentName: editData?.data?.data?.documentName ?? "",
-          allowedExtensions: editData?.data?.data?.allowedExtensions ?? [],
-          documentCode: editData?.data?.data?.documentCode ?? "",
-          documentSize:
-            editData?.data?.data?.documentSize ?? ("" as unknown as number),
-
-          isActive: !active
-        }
-      });
+    try {
+      await refetch();
+      setChangeId(null);
+      onCloseDocumentStatusUpdateModal();
+    } catch (e) {
+      console.error(e);
     }
-    setChangeId(null);
-    onCloseDocumentStatusUpdateModal();
   };
   return (
     <Flex direction={"column"} gap={"16px"}>
@@ -250,7 +240,7 @@ const Document = () => {
         variant={"edit"}
         buttonText={`${active ? "Disable" : "Enable"}`}
         title={"Are You Sure?"}
-        isLoading={isStatusUPdateLoading}
+        isLoading={isFetching || isToggling}
         onApprove={handleStatusChange}
         message={`Are you sure you want to ${active ? "Disable" : "Enable"} this document?`}
         isOpen={isOpenDocumentStatusUpdateModal}

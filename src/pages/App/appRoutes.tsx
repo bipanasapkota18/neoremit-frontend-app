@@ -1,9 +1,11 @@
 import LayoutWrapper from "@neo/components/LayoutWrapper";
 import { lazy } from "react";
 
-import MaritalStatus from "../Authorized/MasterData/MaritalStatus";
 import { NAVIGATION_ROUTES } from "./navigationRoutes";
 
+const AutomaticDiscount = lazy(
+  () => import("@neo/pages/Authorized/MasterData/AutomaticDiscount")
+);
 const Document = lazy(
   () => import("@neo/pages/Authorized/MasterData/DocumentSetup")
 );
@@ -35,6 +37,12 @@ const FeeAndCharges = lazy(
 );
 const Occupation = lazy(
   () => import("@neo/pages/Authorized/MasterData/Occupation")
+);
+const MaritalStatus = lazy(
+  () => import("@neo/pages/Authorized/MasterData/MaritalStatus")
+);
+const PromoCode = lazy(
+  () => import("@neo/pages/Authorized/MasterData/PromoCode")
 );
 
 export const appRoutes = [
@@ -68,11 +76,11 @@ export const appRoutes = [
         element: <SourceOfFund />
       },
       {
-        path: NAVIGATION_ROUTES.MASTER_DATA.PAYOUT_PARTNER,
+        path: NAVIGATION_ROUTES.PAYOUT_CONFIG.BANK_WALLET_LIST,
         element: <PayoutPartner />
       },
       {
-        path: NAVIGATION_ROUTES.MASTER_DATA.PAYOUT_METHOD,
+        path: NAVIGATION_ROUTES.PAYOUT_CONFIG.PAYOUT_METHOD,
         element: <PayoutMethod />
       },
       {
@@ -84,7 +92,7 @@ export const appRoutes = [
         element: <State />
       },
       {
-        path: NAVIGATION_ROUTES.MASTER_DATA.FEES_AND_CHARGES,
+        path: NAVIGATION_ROUTES.FEES_AND_CHARGES,
         element: <FeeAndCharges />
       },
       {
@@ -94,6 +102,14 @@ export const appRoutes = [
       {
         path: NAVIGATION_ROUTES.MASTER_DATA.MARITAL_STATUS,
         element: <MaritalStatus />
+      },
+      {
+        path: NAVIGATION_ROUTES.PROMO_CODE,
+        element: <PromoCode />
+      },
+      {
+        path: NAVIGATION_ROUTES.AUTOMATIC_DISCOUNT,
+        element: <AutomaticDiscount />
       }
     ]
   }

@@ -30,7 +30,7 @@ const Banner = ({ screen }: IBanner) => {
       default:
         return (
           <ScaleFade initialScale={0.1} in={true}>
-            <Image src={imageAssets.LoginBanner} />;
+            <Image src={imageAssets.LoginBanner} />
           </ScaleFade>
         );
     }

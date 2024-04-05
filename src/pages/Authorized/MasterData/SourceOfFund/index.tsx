@@ -20,7 +20,7 @@ import {
   ISourceOfFundResponse,
   useDeleteSourceOfFund,
   useGetAllSourceOfFund,
-  useUpdateSourceOfFund
+  useToggleSourceStatus
 } from "@neo/services/MasterData/service-source-of-fund";
 import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
@@ -64,9 +64,10 @@ const SourceOfFund = () => {
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
     useDeleteSourceOfFund();
   const {
-    mutateAsync: mutateUpdateSourceOfFund,
-    isLoading: isStatusUPdateLoading
-  } = useUpdateSourceOfFund();
+    isLoading: isToggling,
+    refetch,
+    isFetching
+  } = useToggleSourceStatus(changeId);
   useEffect(() => {
     setTableData(sourceOfFundData?.data?.data ?? []);
   }, [sourceOfFundData]);
@@ -90,20 +91,14 @@ const SourceOfFund = () => {
     refetchData();
   };
   const handleStatusChange = async () => {
-    if (changeId !== null) {
-      const selectedSource = tableData?.find(source => source.id === changeId);
-      await mutateUpdateSourceOfFund({
-        id: changeId,
-        data: {
-          code: selectedSource?.code ?? "",
-          name: selectedSource?.name ?? "",
-          isActive: !active
-        }
-      });
+    try {
+      await refetch();
+      setChangeId(null);
+      refetchData();
+      onCloseSourceStatusUpdateModal();
+    } catch (e) {
+      console.error(e);
     }
-    setChangeId(null);
-    onCloseSourceStatusUpdateModal();
-    refetchData();
   };
 
   const columns = [
@@ -214,8 +209,7 @@ const SourceOfFund = () => {
           </HStack>
           <DataTable
             pagination={{
-              manual: true,
-              pageCount: tableData?.length ?? 0,
+              manual: false,
               pageParams: pageParams,
               onChangePagination: setPageParams
             }}
@@ -253,7 +247,7 @@ const SourceOfFund = () => {
         variant={"edit"}
         buttonText={`${active ? "Disable" : "Enable"}`}
         title={"Are You Sure?"}
-        isLoading={isStatusUPdateLoading}
+        isLoading={isFetching || isToggling}
         onApprove={handleStatusChange}
         message={`Are you sure you want to ${active ? "Disable" : "Enable"} this source of fund?`}
         isOpen={isOpenSourceStatusUpdateModal}

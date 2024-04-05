@@ -194,22 +194,25 @@ export default function Sidebar({
             onClick={handleLogout}
             background={colorScheme.logout_button}
             _hover={{ background: colorScheme.logout_button }}
-            borderRadius={0}
+            alignItems={"center"}
+            alignSelf={"stretch"}
+            borderRadius={"8px"}
             size={"lg"}
             isDisabled={isLoading}
+            marginBottom={8}
           >
             <HStack justifyContent="space-between">
               <HStack alignItems="center" flex={1}>
-                <Icon as={svgAssets.Logout} fontSize="xl" mb={1} />
+                <Icon as={svgAssets.Logout} height={"24px"} width={"24px"} />
                 <HStack
                   justifyContent={"space-between"}
                   alignItems={"center"}
                   w={"100%"}
                 >
                   <Text
-                    color={colorScheme.danger_500}
-                    fontSize="md"
-                    fontWeight="medium"
+                    color={"#E53E3E"}
+                    fontSize="md12px"
+                    fontWeight={800}
                     whiteSpace="nowrap"
                     display={isCollapsed && !isHovered ? "none" : "block"}
                     transition={animate}

@@ -13,6 +13,7 @@ import {
   useMediaQuery
 } from "@chakra-ui/react";
 
+import { yupResolver } from "@hookform/resolvers/yup";
 import { svgAssets } from "@neo/assets/images/svgs";
 import { DataTable } from "@neo/components/DataTable";
 import TableActionButton from "@neo/components/DataTable/Action Buttons";
@@ -27,6 +28,7 @@ import {
 import {
   FeeAndChargesDetail,
   IFeeAndChargeResponse,
+  useAddFeesAndCharges,
   useFeeAndChargesDetailDelete,
   useGetFeeAndChargesbyId,
   useUpdateFeesAndCharges
@@ -35,6 +37,7 @@ import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import { CellContext } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
+import * as yup from "yup";
 import AddFeeAndChargesDetails from "./AddFeeAndChargesDetails";
 
 const defaultValues = {
@@ -45,7 +48,7 @@ const defaultValues = {
 
 export interface IArrayValues {
   addId: number;
-  payoutMethodIds: any;
+  payoutMethods: any;
   feeAndChargeType: string;
   fromAmount: number;
   toAmount: number;
@@ -64,11 +67,16 @@ const AddFeeandCharges = ({
   data: editData,
   setEditId
 }: AddFeeandChargesProps) => {
+  const schema = yup.object().shape({
+    feeName: yup.string().required("Fee Name is required"),
+    countryId: yup.object().required("Country is required")
+  });
   const { control, handleSubmit, watch, reset } = useForm({
-    defaultValues: defaultValues
+    defaultValues: defaultValues,
+    resolver: yupResolver(schema)
   });
   const [tableData, setTableData] = useState<IArrayValues[]>([]);
-  // const { mutateAsync: mutateAddFeeandCharges } = useAddFeesAndCharges();
+  const { mutateAsync: mutateAddFeeandCharges } = useAddFeesAndCharges();
   const { mutateAsync: mutateUpdateFeeandCharges } = useUpdateFeesAndCharges();
   const { mutateAsync: mutateDeleteFeeAndCharges, isLoading: isDeleteLoading } =
     useFeeAndChargesDetailDelete();
@@ -143,7 +151,7 @@ const AddFeeandCharges = ({
                   mx={2}
                   borderRadius={"16px"}
                 >
-                  {item?.name}
+                  {tableData?.length > 0 ? item?.label : item?.name}
                 </Badge>
               );
             }
@@ -167,11 +175,11 @@ const AddFeeandCharges = ({
             <HStack>
               <TableActionButton
                 onClickAction={() => {
-                  // if (tableData.length > 0) {
-                  //   setEditDetailId(cell?.row?.original?.addId);
-                  // } else {
-                  setEditDetailId(cell?.row?.original?.id);
-                  // }
+                  if (tableData.length > 0) {
+                    setEditDetailId(cell?.row?.original?.addId ?? null);
+                  } else {
+                    setEditDetailId(cell?.row?.original?.id);
+                  }
                   onOpenAddDetailModal();
                 }}
                 icon={<svgAssets.EditButton />}
@@ -179,11 +187,11 @@ const AddFeeandCharges = ({
               />
               <TableActionButton
                 onClickAction={() => {
-                  // if (tableData.length > 0) {
-                  //   setEditDetailId(cell?.row?.original?.addId);
-                  // } else {
-                  setEditDetailId(cell?.row?.original?.id);
-                  // }
+                  if (tableData.length > 0) {
+                    setEditDetailId(cell?.row?.original?.addId ?? null);
+                  } else {
+                    setEditDetailId(cell?.row?.original?.id);
+                  }
                   onOpenFeeAndChargeDeleteModal();
                 }}
                 icon={<svgAssets.DeleteButton />}
@@ -224,14 +232,31 @@ const AddFeeandCharges = ({
           feeAndChargeDetails?.data?.data?.feeAndChargesDetails ?? []
       });
     } else {
-      // const finalTable = tableData.map(({ addId, ...item }) => item);
+      const finalTable = tableData.map(item => ({
+        fromAmount: item.fromAmount,
+        toAmount: item.toAmount,
+        feeAndChargeType: item.feeAndChargeType,
+        fee: item.fee,
+        payoutMethods:
+          item?.payoutMethods?.map(
+            (item: ISelectOptions<number>) => item.value
+          ) ?? []
+      }));
+      await mutateAddFeeandCharges({
+        ...data,
+        countryId: data.countryId?.value ?? "",
+        currencyId: countryList?.data?.data?.countriesList?.find(
+          (country: CountriesList) => data.countryId?.label === country?.name
+        )?.currency?.id,
+        feeAndChargesDetails: finalTable
+      });
       // await mutateAddFeeandCharges({
       //   ...data,
       //   countryId: data.countryId?.value ?? "",
-      //   currencyId: countryList?.data?.data?.countriesList?.find(
+      //   currencyId: countryData?.find(
       //     (country: CountriesList) => data.countryId?.label === country?.name
       //   )?.currency?.id,
-      //   feeAndChargesDetails: finalTable
+      //   feeAndChargesDetails: []
       // });
     }
     onClose();
@@ -269,7 +294,7 @@ const AddFeeandCharges = ({
                       name="feeName"
                       label="Enter Fee Name"
                       type="text"
-                      isRequired
+                      required
                     />
                   </GridItem>
                   <GridItem colSpan={1}>
@@ -278,6 +303,7 @@ const AddFeeandCharges = ({
                       placeholder="Country"
                       control={control}
                       options={countryOptions ?? []}
+                      required
                     />
                   </GridItem>
                   <GridItem colSpan={1}>
@@ -339,7 +365,10 @@ const AddFeeandCharges = ({
                   <Button
                     minW={"max-content"}
                     leftIcon={<svgAssets.AddButton />}
-                    onClick={onOpenAddDetailModal}
+                    onClick={() => {
+                      console.log(editDetailId);
+                      onOpenAddDetailModal();
+                    }}
                   >
                     Add Fee and Charges Details
                   </Button>

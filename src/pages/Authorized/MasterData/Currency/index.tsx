@@ -21,8 +21,7 @@ import {
   CurrenciesList,
   useDeleteCurrency,
   useGetAllCurrency,
-  useGetCurrencyById,
-  useUpdateCurrency
+  useToggleCurrencyStatus
 } from "@neo/services/MasterData/service-currency";
 import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
@@ -56,14 +55,14 @@ const Currency = () => {
     pageIndex: 0,
     pageSize: 10
   });
-  const { data: editData } = useGetCurrencyById(changeId);
+  const {
+    isLoading: isToggling,
+    refetch,
+    isFetching
+  } = useToggleCurrencyStatus(changeId);
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
     useDeleteCurrency();
   const { data: currencyData, mutateAsync, isLoading } = useGetAllCurrency();
-  const {
-    mutateAsync: mutateUpdateCurrency,
-    isLoading: isStatusUPdateLoading
-  } = useUpdateCurrency();
 
   const { pathname } = useLocation();
   useEffect(() => {
@@ -168,21 +167,14 @@ const Currency = () => {
     refetchData();
   };
   const handleStatusChange = async () => {
-    if (changeId !== null) {
-      await mutateUpdateCurrency({
-        id: changeId,
-        data: {
-          code: editData?.data?.data?.code ?? "",
-          name: editData?.data?.data?.name ?? "",
-          shortName: editData?.data?.data?.shortName ?? "",
-          Symbol: editData?.data?.data?.symbol ?? "",
-          isActive: !active
-        }
-      });
+    try {
+      await refetch();
+      setChangeId(null);
+      refetchData();
+      onCloseCurrencyStatusUpdateModal();
+    } catch (e) {
+      console.error(e);
     }
-    setChangeId(null);
-    onCloseCurrencyStatusUpdateModal();
-    refetchData();
   };
   return (
     <Flex direction={"column"} gap={"16px"}>
@@ -265,7 +257,7 @@ const Currency = () => {
         variant={"edit"}
         buttonText={`${active ? "Disable" : "Enable"}`}
         title={"Are You Sure?"}
-        isLoading={isStatusUPdateLoading}
+        isLoading={isToggling || isFetching}
         onApprove={handleStatusChange}
         message={`Are you sure you want to ${active ? "Disable" : "Enable"} this currency?`}
         isOpen={isOpenCurrencyStatusUpdateModal}

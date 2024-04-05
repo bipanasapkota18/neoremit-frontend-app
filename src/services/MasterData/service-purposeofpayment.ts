@@ -1,7 +1,7 @@
 import { toastFail, toastSuccess } from "@neo/utility/Toast";
 import { trimObjectValues } from "@neo/utility/helper";
 import { AxiosError } from "axios";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "../service-api";
 import { NeoHttpClient } from "../service-axios";
 import { IPageParams } from "./master-data-common-interface";
@@ -17,7 +17,7 @@ export interface IPurposeRequest {
   id?: number | null;
   code: string;
   name: string;
-  isActive: boolean;
+  isActive?: boolean | null | undefined;
 }
 // interface IFilterItems {
 // }
@@ -50,7 +50,7 @@ const useGetAllPurpose = () => {
 };
 
 const addPurpose = (data: IPurposeRequest) => {
-  return NeoHttpClient.post<NeoResponse>(
+  return NeoHttpClient.post<NeoResponse<IPurposeRequest>>(
     api.masterData.purpose_of_payment.create,
     trimObjectValues(data)
   );
@@ -105,4 +105,33 @@ const useDeletePurpose = () => {
   });
 };
 
-export { useAddPurpose, useDeletePurpose, useGetAllPurpose, useUpdatePurpose };
+const toggleStatus = (id: number | null) => () => {
+  return NeoHttpClient.get<NeoResponse>(
+    api.masterData.purpose_of_payment.statusChange.replace("{id}", id + "")
+  );
+};
+const useTogglePurposeStatus = (id: number | null) => {
+  const queryClient = useQueryClient();
+  return useQuery(
+    [api.masterData.purpose_of_payment.statusChange, id],
+    toggleStatus(id),
+    {
+      enabled: false,
+      onSuccess: success => {
+        queryClient.invalidateQueries(api.masterData.purpose_of_payment.getAll);
+        toastSuccess(success?.data?.message);
+      },
+      onError: (error: AxiosError<{ message: string }>) => {
+        toastFail(error?.response?.data?.message ?? "Error");
+      }
+    }
+  );
+};
+
+export {
+  useAddPurpose,
+  useDeletePurpose,
+  useGetAllPurpose,
+  useTogglePurposeStatus,
+  useUpdatePurpose
+};
