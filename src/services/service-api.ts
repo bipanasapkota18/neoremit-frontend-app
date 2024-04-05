@@ -22,18 +22,21 @@ export const api = {
     currency: {
       getAll: `${service}/currency-master/list`,
       create: `${service}/currency-master`,
-      update: `${service}/currency-master/{id}`
+      update: `${service}/currency-master/{id}`,
+      toggleStatus: `${service}/currency-master/status/{id}`
     },
     document: {
       getAll: `${service}/doc`,
       create: `${service}/doc`,
       update: `${service}/doc/{id}`,
-      extension: `${service}/doc/extension`
+      extension: `${service}/doc/extension`,
+      statusChange: `${service}/doc/status/{id}`
     },
     purpose_of_payment: {
       getAll: `${service}/payment-purpose/list`,
       create: `${service}/payment-purpose`,
-      update: `${service}/payment-purpose/{id}`
+      update: `${service}/payment-purpose/{id}`,
+      statusChange: `${service}/payment-purpose/status/{id}`
     },
     payout_method: {
       getAll: `${service}/payout-method/list`,
@@ -51,7 +54,8 @@ export const api = {
       getAll: `${service}/relationship`,
       create: `${service}/relationship`,
       update: `${service}/relationship/{id}`,
-      getById: `${service}/relationship/{id}`
+      getById: `${service}/relationship/{id}`,
+      statusChange: `${service}/relationship/status/{id}`
     },
     role: {
       getAll: `${service}/roles/getAllRoles`,
@@ -63,7 +67,8 @@ export const api = {
     source_of_fund: {
       getAll: `${service}/source-of-fund/list`,
       create: `${service}/source-of-fund`,
-      update: `${service}/source-of-fund/{id}`
+      update: `${service}/source-of-fund/{id}`,
+      statusChange: `${service}/source-of-fund/status/{id}`
     },
     occupation: {
       getAll: `${service}/occupation/list`,

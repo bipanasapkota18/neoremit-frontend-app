@@ -132,11 +132,33 @@ const useDeleteCurrency = () => {
     }
   });
 };
-
+const toggleStatus = (id: number | null) => () => {
+  return NeoHttpClient.get<NeoResponse>(
+    api.masterData.currency.toggleStatus.replace("{id}", id + "")
+  );
+};
+const useToggleCurrencyStatus = (id: number | null) => {
+  const queryClient = useQueryClient();
+  return useQuery(
+    [api.masterData.currency.toggleStatus, id],
+    toggleStatus(id),
+    {
+      enabled: false,
+      onSuccess: success => {
+        queryClient.invalidateQueries(api.masterData.currency.getAll);
+        toastSuccess(success?.data?.message);
+      },
+      onError: (error: AxiosError<{ message: string }>) => {
+        toastFail(error?.response?.data?.message ?? "Error");
+      }
+    }
+  );
+};
 export {
   useAddCurrency,
   useDeleteCurrency,
   useGetAllCurrency,
   useGetCurrencyById,
+  useToggleCurrencyStatus,
   useUpdateCurrency
 };

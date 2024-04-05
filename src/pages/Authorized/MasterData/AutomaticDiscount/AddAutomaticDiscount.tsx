@@ -76,7 +76,6 @@ const AddAutomaticDiscount = ({
     [editData, editId]
   );
 
-  console.log(editData);
   const { data: countryData } = useGetCountryList();
 
   const countryOptions = formatSelectOptions({

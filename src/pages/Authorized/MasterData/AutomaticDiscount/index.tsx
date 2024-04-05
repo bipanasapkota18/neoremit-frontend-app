@@ -160,7 +160,6 @@ const AutomaticDiscount = () => {
           <HStack>
             <TableActionButton
               onClickAction={() => {
-                console.log(cell?.row?.original, "cell?.row?.original?.id");
                 setEditId(cell?.row?.original?.id || null);
                 setFlag.on();
               }}
@@ -184,7 +183,6 @@ const AutomaticDiscount = () => {
   const activePath = breadcrumbTitle(pathname);
 
   const handleDelete = async () => {
-    console.log(changeId, "changeId");
     await mutateDelete(changeId);
     setChangeId(null);
     refetchData();

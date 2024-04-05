@@ -62,7 +62,6 @@ const AddFeeAndChargesDetails = ({
   });
   useEffect(() => {
     if (EditDetailId) {
-      // console.log(selectedFeeAndCharge);
       const selectedPayOutMethod = payOutMethodOptions?.filter((item: any) =>
         selectedFeeAndCharge?.payoutMethods
           ?.map(item => item.id)
@@ -71,7 +70,6 @@ const AddFeeAndChargesDetails = ({
       const selectedFeeType = feeTypeOptions?.find(
         (item: any) => item.value === selectedFeeAndCharge?.feeAndChargeType
       );
-      console.log(selectedPayOutMethod);
       reset({
         ...selectedFeeAndCharge,
         payoutMethodIds: selectedPayOutMethod,

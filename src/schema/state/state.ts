@@ -1,8 +1,8 @@
 import * as yup from "yup";
 
-const relationshipSchema = yup.object().shape({
-  name: yup.string().required("Please enter relationship Name"),
-  code: yup.string().required("Please enter relationship Code")
+const stateSchema = yup.object().shape({
+  name: yup.string().required("Please enter State Name"),
+  code: yup.string().required("Please enter State Code")
 });
 
-export default relationshipSchema;
+export default stateSchema;

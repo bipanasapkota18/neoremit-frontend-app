@@ -1,9 +1,12 @@
 import { GridItem, SimpleGrid } from "@chakra-ui/react";
+import { yupResolver } from "@hookform/resolvers/yup";
 import TextInput from "@neo/components/Form/TextInput";
 import Modal from "@neo/components/Modal";
+import stateSchema from "@neo/schema/state/state";
 import {
   StatesList,
-  useAddState
+  useAddState,
+  useUpdateState
 } from "@neo/services/MasterData/service-state";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -31,8 +34,10 @@ const AddState = ({
   countryId
 }: AddStateProps) => {
   const { mutateAsync: mutateAddState } = useAddState();
+  const { mutateAsync: mutateEditState } = useUpdateState();
   const { control, handleSubmit, reset } = useForm({
-    defaultValues: defaultValues
+    defaultValues: defaultValues,
+    resolver: yupResolver(stateSchema)
   });
   useEffect(() => {
     if (editId) {
@@ -44,7 +49,17 @@ const AddState = ({
     }
   }, [editData, editId]);
   const onAddState = async (data: typeof defaultValues) => {
-    await mutateAddState({ ...data, countryId: countryId });
+    if (editId) {
+      await mutateEditState({
+        id: editId,
+        data: {
+          ...data,
+          countryId: countryId
+        }
+      });
+    } else {
+      await mutateAddState({ ...data, countryId: countryId });
+    }
     handleCloseModal();
   };
   const handleCloseModal = () => {

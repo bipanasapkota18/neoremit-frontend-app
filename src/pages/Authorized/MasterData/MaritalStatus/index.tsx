@@ -189,8 +189,7 @@ const MaritalStatus = () => {
               setGlobalFilter: setSearchText
             }}
             pagination={{
-              manual: true,
-              pageCount: maritalStatusData?.length ?? 0,
+              manual: false,
               pageParams: pageParams,
               onChangePagination: setPageParams
             }}

@@ -118,11 +118,33 @@ const useDeleteRelationship = () => {
     }
   });
 };
-
+const toggleStatus = (id: number | null) => () => {
+  return NeoHttpClient.get<NeoResponse>(
+    api.masterData.relationship.statusChange.replace("{id}", id + "")
+  );
+};
+const useToggleRelationshipStatus = (id: number | null) => {
+  const queryClient = useQueryClient();
+  return useQuery(
+    [api.masterData.relationship.statusChange, id],
+    toggleStatus(id),
+    {
+      enabled: false,
+      onSuccess: success => {
+        queryClient.invalidateQueries(api.masterData.relationship.getAll);
+        toastSuccess(success?.data?.message);
+      },
+      onError: (error: AxiosError<{ message: string }>) => {
+        toastFail(error?.response?.data?.message ?? "Error");
+      }
+    }
+  );
+};
 export {
   useAddRelationship,
   useDeleteRelationship,
   useGetAllRelationShip,
   useGetRelationshipById,
+  useToggleRelationshipStatus,
   useUpdateRelationship
 };

@@ -107,7 +107,6 @@ const PromoCode = () => {
       header: "Country",
       accessorKey: "countryList",
       cell: (cell: CellContext<PromoCodeList, any>) => {
-        console.log(cell?.row?.original?.countryList?.map(item => item.name));
         return cell?.row?.original?.countryList?.map(
           (item: any, index: number) => {
             return (
