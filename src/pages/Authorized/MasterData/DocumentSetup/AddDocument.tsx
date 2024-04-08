@@ -25,7 +25,7 @@ interface AddDocumentProps {
 
 const defaultValues = {
   documentName: "",
-  allowedExtensions: null as unknown as ISelectOptions<string>[] | undefined,
+  allowedExtensions: null as unknown as ISelectOptions<string>[] | null,
   documentCode: "",
   documentSize: "" as unknown as number
 };
@@ -71,15 +71,12 @@ const AddDocument = ({
   }, [editData, editId]);
   const onAddDocument = async (documentData: typeof defaultValues) => {
     if (editId) {
-      const selectedDocument = editData?.find((document: any) => {
-        return document.id === editId;
-      });
       await mutateUpdateDocument({
         id: editId,
         data: {
           ...documentData,
           id: editId,
-          isActive: selectedDocument?.isActive ?? true,
+          documentName: documentData?.documentName.trim(),
           allowedExtensions:
             documentData?.allowedExtensions?.map((item: any) => item.label) ??
             []
@@ -88,8 +85,9 @@ const AddDocument = ({
     } else {
       await mutateAddDocument({
         ...documentData,
+        documentName: documentData?.documentName.trim(),
         allowedExtensions:
-          documentData?.allowedExtensions?.map(item => item.label) ?? ""
+          documentData?.allowedExtensions?.map(item => item.label) ?? null
       });
     }
     handleCloseModal();

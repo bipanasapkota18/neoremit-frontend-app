@@ -9,9 +9,8 @@ export interface IDocumentRequest {
   id?: number | null;
   documentName: string;
   documentCode: string;
-  allowedExtensions: string[];
+  allowedExtensions: string[] | null;
   documentSize: number;
-  isActive: boolean;
 }
 export interface IDocumentResponse {
   id: number;
@@ -55,7 +54,7 @@ const useGetAllExtensions = () => {
     }
   });
 };
-const addDocument = (data: any) => {
+const addDocument = (data: IDocumentRequest) => {
   return NeoHttpClient.post<NeoResponse<IDocumentRequest>>(
     api.masterData.document.create,
     trimObjectValues(data)
@@ -68,8 +67,8 @@ const useAddDocument = () => {
       queryClient.invalidateQueries(api.masterData.document.getAll);
       toastSuccess(success?.data?.message);
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };
