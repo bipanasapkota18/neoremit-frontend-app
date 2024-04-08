@@ -5,6 +5,7 @@ import { NeoResponse, api } from "./service-api";
 import { NeoHttpClient } from "./service-axios";
 
 export interface IFeeAndChargeResponse {
+  addId?: number | null;
   id: number;
   feeName: string;
   country: Country;
@@ -32,7 +33,7 @@ export interface IFeeAndChargeDetailsResponse {
 
 export interface FeeAndChargesDetail {
   id?: number;
-  payoutMethods: PaymentMethodId[];
+  payoutMethods: PaymentMethodId[] | undefined;
   feeAndChargeType?: string;
   fromAmount: number | null;
   toAmount: number | null;
@@ -40,7 +41,7 @@ export interface FeeAndChargesDetail {
 }
 export interface FeeAndChargesDetailRequest {
   id?: number;
-  payoutMethodIds: PaymentMethodId[];
+  payoutMethods: PaymentMethodId[];
   feeAndChargeType?: string;
   fromAmount: number | null;
   toAmount: number | null;
