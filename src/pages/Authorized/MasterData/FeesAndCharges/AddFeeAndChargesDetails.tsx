@@ -142,7 +142,6 @@ const AddFeeAndChargesDetails = ({
           // const dataToEdit = tableData.find(
           //   item => item.addId === EditDetailId
           // );
-          console.log(data?.payoutMethods?.map(item => item.value));
           setTableData(oldValues =>
             oldValues.map(item =>
               item.addId === EditDetailId

@@ -366,7 +366,6 @@ const AddFeeandCharges = ({
                     minW={"max-content"}
                     leftIcon={<svgAssets.AddButton />}
                     onClick={() => {
-                      console.log(editDetailId);
                       onOpenAddDetailModal();
                     }}
                   >
