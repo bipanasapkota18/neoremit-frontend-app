@@ -56,7 +56,7 @@ const useLogoutMutation = () => {
 };
 
 const initLogin = (loginData: LoginDetails) => {
-  return NeoHttpClient.post<NeoResponse>(api.auth.login, {
+  return NeoHttpClient.post<NeoResponse<NeoToken>>(api.auth.login, {
     ...loginData,
     loginFrom: "INTERNAL"
   });
@@ -69,8 +69,8 @@ const useLoginMutation = () => {
     onSuccess: response => {
       loginChannel.postMessage("Login");
       const tokens = {
-        access_token: response?.data?.data?.accessToken,
-        refresh_token: response?.data?.data?.refreshToken
+        accessToken: response?.data?.data?.accessToken,
+        refreshToken: response?.data?.data?.refreshToken
       };
       TokenService.setToken(tokens);
       queryClient.setQueryData(authTokenKey, () => true);
@@ -90,11 +90,11 @@ const useLoginMutation = () => {
 const initRefreshToken = async () => {
   try {
     const response = await NeoHttpClient.post<NeoToken>(api.auth.refreshToken, {
-      refreshToken: TokenService.getToken()?.refresh_token
+      refreshToken: TokenService.getToken()?.refreshToken
     });
     const tokens = {
-      access_token: response.data.accessToken,
-      refresh_token: response.data.refreshToken
+      accessToken: response.data.accessToken,
+      refreshToken: response.data.refreshToken
     };
     TokenService.setToken(tokens);
     return true;
@@ -111,7 +111,7 @@ const checkAuthentication = async () => {
       return initRefreshToken();
     }
     return Promise.resolve(true);
-  } else if (TokenService.getToken()?.refresh_token) {
+  } else if (TokenService.getToken()?.refreshToken) {
     return initRefreshToken();
   }
   return Promise.resolve(null);
