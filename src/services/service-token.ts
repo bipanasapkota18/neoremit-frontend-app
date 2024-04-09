@@ -1,17 +1,17 @@
 export interface TokenDetails {
-  access_token: string;
-  refresh_token: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface NeoTokenDetails {
-  refresh_token: string;
+  refreshToken: string;
   exp: number;
 }
 
 function setToken(token: TokenDetails) {
   try {
-    localStorage.setItem("token", token.access_token);
-    localStorage.setItem("refresh_token", token.refresh_token);
+    localStorage.setItem("token", token.accessToken);
+    localStorage.setItem("refreshToken", token.refreshToken);
   } catch (e) {
     console.error("Error storing token", e);
   }
@@ -20,8 +20,8 @@ function setToken(token: TokenDetails) {
 function getToken() {
   try {
     return {
-      access_token: localStorage.getItem("token") ?? "",
-      refresh_token: localStorage.getItem("refresh_token") ?? ""
+      accessToken: localStorage.getItem("token") ?? "",
+      refreshToken: localStorage.getItem("refreshToken") ?? ""
     } as TokenDetails;
   } catch (e) {
     return null;
@@ -34,7 +34,7 @@ function getTokenDetails(): NeoTokenDetails | null {
 
     return token
       ? (JSON.parse(
-          window.atob(token.access_token.split(".")[1])
+          window.atob(token.accessToken.split(".")[1])
         ) as NeoTokenDetails)
       : null;
   } catch (e) {
@@ -53,7 +53,7 @@ function isAuthenticated() {
 
 function clearToken() {
   localStorage.removeItem("token");
-  localStorage.removeItem("refresh_token");
+  localStorage.removeItem("refreshToken");
 }
 
 const TokenService = {

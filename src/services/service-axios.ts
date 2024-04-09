@@ -18,7 +18,7 @@ const NeoHttpClient = axios.create({
  * Pass Integito API Key in Header
  */
 NeoHttpClient.interceptors.request.use(async config => {
-  const token = TokenService.getToken()?.access_token;
+  const token = TokenService.getToken()?.accessToken;
 
   if (config && config.headers) {
     if (token && config.headers["Authorization"] !== "") {

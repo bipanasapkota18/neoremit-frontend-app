@@ -208,8 +208,7 @@ const PurposeOfPayment = () => {
               setGlobalFilter: setSearchText
             }}
             pagination={{
-              manual: true,
-              pageCount: tableData?.length ?? 0,
+              manual: false,
               pageParams: pageParams,
               onChangePagination: setPageParams
             }}
