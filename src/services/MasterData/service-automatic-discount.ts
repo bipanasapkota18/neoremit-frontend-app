@@ -15,7 +15,7 @@ export interface IAutomaticDiscountResponse {
   isActive: boolean;
   description: string;
   firstNTransactionPerCustomer: FirstNTransactionPerCustomer;
-  firstNTransaction: FirstNTransaction;
+  // firstNTransaction: FirstNTransaction;
 }
 
 export interface PayoutMethod {
@@ -36,7 +36,7 @@ export interface IAutomaticDiscountRequest {
   description: string;
   countryMasterId: number | undefined;
   payoutMethodIds: number[] | undefined;
-  firstNTransaction: FirstNTransaction;
+  // firstNTransaction: FirstNTransaction;
   firstNTransactionPerCustomer: FirstNTransactionPerCustomer;
   discountName: string;
 }
