@@ -26,7 +26,6 @@ import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation } from "react-router-dom";
 import * as yup from "yup";
-import ADTabbedPanel from "./ADTabbedPanel";
 
 const defaultValues = {
   discountName: "",
@@ -40,16 +39,16 @@ const defaultValues = {
     deductionFrom: null as ISelectOptions<string> | null,
     discountType: null as ISelectOptions<string> | null,
     discountAmount: null as number | null
-  },
-  firstNTransaction: {
-    noOfTransactions: null as number | null,
-    capAmount: null as number | null,
-    deductionFrom: null as ISelectOptions<string> | null,
-    validFrom: null as string | null,
-    validTill: null as string | null,
-    discountType: null as ISelectOptions<string> | null,
-    discountAmount: null as number | null
   }
+  // firstNTransaction: {
+  //   noOfTransactions: null as number | null,
+  //   capAmount: null as number | null,
+  //   deductionFrom: null as ISelectOptions<string> | null,
+  //   validFrom: null as string | null,
+  //   validTill: null as string | null,
+  //   discountType: null as ISelectOptions<string> | null,
+  //   discountAmount: null as number | null
+  // }
 
   // deductionFrom: null as ISelectOptions<string> | null,
 };
@@ -61,6 +60,28 @@ interface AddPromoCodeProps {
   refetchData: () => void;
 }
 
+const deductionFromArray = [
+  { value: "BOTH", label: "BOTH" },
+  { value: "MARGIN", label: "MARGIN" },
+  { value: "TRANSACTION_FEE", label: "TRANSACTION_FEE" }
+];
+
+const disCountTypeArray = [
+  { value: "FLAT", label: "FLAT" },
+  { value: "PERCENTAGE", label: "PERCENTAGE" }
+];
+
+const discount_type_options = formatSelectOptions<string>({
+  data: disCountTypeArray,
+  valueKey: "value",
+  labelKey: "label"
+});
+
+const deduction_from_options = formatSelectOptions<string>({
+  data: deductionFromArray,
+  valueKey: "value",
+  labelKey: "label"
+});
 const AddAutomaticDiscount = ({
   onClose,
   editId,
@@ -108,45 +129,45 @@ const AddAutomaticDiscount = ({
       capAmount: yup
         .number()
         .typeError("Please enter cap amount")
-        .min(1, "Cap Amount cannot be less than 1")
+        .min(0.1, "Cap Amount cannot be less than 0.1")
         .required("Please enter cap amount"),
       deductionFrom: yup.mixed().required("Select Deduction From").nullable(),
       discountType: yup.mixed().required("Select Discount Type").nullable(),
       discountAmount: yup
         .number()
         .typeError("Please enter discount amount")
-        .min(1, "Discount Amount cannot be less than 1")
+        .min(0.1, "Discount Amount cannot be less than 0.1")
         .required("Please enter discount amount")
     }),
-    firstNTransaction: yup.object().shape({
-      noOfTransactions: yup
-        .number()
-        .typeError("Please enter number of transactions")
-        .min(1, "Number of transactions cannot be less than 1")
-        .required("Please enter number of transactions"),
-      capAmount: yup
-        .number()
-        .typeError("Please enter cap amount")
-        .min(1, "Cap Amount cannot be less than 1")
-        .required("Please enter cap amount"),
-      deductionFrom: yup.mixed().required("Select Deduction From").nullable(),
-      discountType: yup.mixed().required("Select Discount Type").nullable(),
-      discountAmount: yup
-        .number()
-        .typeError("Please enter discount amount")
-        .min(1, "Discount Amount cannot be less than 1")
-        .required("Please enter discount amount"),
-      validFrom: yup
-        .date()
-        .typeError("Please enter  from date")
-        .min(new Date(), "Please choose future date")
-        .required("Please enter  from date"),
-      validTill: yup
-        .date()
-        .typeError("Please enter  from date")
-        .min(new Date(), "Please choose future date")
-        .required("Please enter  from date")
-    }),
+    // firstNTransaction: yup.object().shape({
+    //   noOfTransactions: yup
+    //     .number()
+    //     .typeError("Please enter number of transactions")
+    //     .min(1, "Number of transactions cannot be less than 1")
+    //     .required("Please enter number of transactions"),
+    //   capAmount: yup
+    //     .number()
+    //     .typeError("Please enter cap amount")
+    //     .min(1, "Cap Amount cannot be less than 1")
+    //     .required("Please enter cap amount"),
+    //   deductionFrom: yup.mixed().required("Select Deduction From").nullable(),
+    //   discountType: yup.mixed().required("Select Discount Type").nullable(),
+    //   discountAmount: yup
+    //     .number()
+    //     .typeError("Please enter discount amount")
+    //     .min(1, "Discount Amount cannot be less than 1")
+    //     .required("Please enter discount amount"),
+    //   validFrom: yup
+    //     .date()
+    //     .typeError("Please enter  from date")
+    //     .min(new Date(), "Please choose future date")
+    //     .required("Please enter  from date"),
+    //   validTill: yup
+    //     .date()
+    //     .typeError("Please enter  from date")
+    //     .min(new Date(), "Please choose future date")
+    //     .required("Please enter  from date")
+    // }),
 
     payoutMethodIds: yup
       .array()
@@ -216,24 +237,24 @@ const AddAutomaticDiscount = ({
           discountAmount:
             selectedAutomaticDiscount?.firstNTransactionPerCustomer
               ?.discountAmount
-        },
-        firstNTransaction: {
-          noOfTransactions:
-            selectedAutomaticDiscount?.firstNTransaction?.noOfTransactions,
-          capAmount: selectedAutomaticDiscount?.firstNTransaction?.capAmount,
-          deductionFrom: {
-            value: selectedAutomaticDiscount?.firstNTransaction?.deductionFrom,
-            label: selectedAutomaticDiscount?.firstNTransaction?.deductionFrom
-          },
-          discountType: {
-            value: selectedAutomaticDiscount?.firstNTransaction?.discountType,
-            label: selectedAutomaticDiscount?.firstNTransaction?.discountType
-          },
-          discountAmount:
-            selectedAutomaticDiscount?.firstNTransaction?.discountAmount,
-          validFrom: selectedAutomaticDiscount?.firstNTransaction?.validFrom,
-          validTill: selectedAutomaticDiscount?.firstNTransaction?.validTill
         }
+        // firstNTransaction: {
+        //   noOfTransactions:
+        //     selectedAutomaticDiscount?.firstNTransaction?.noOfTransactions,
+        //   capAmount: selectedAutomaticDiscount?.firstNTransaction?.capAmount,
+        //   deductionFrom: {
+        //     value: selectedAutomaticDiscount?.firstNTransaction?.deductionFrom,
+        //     label: selectedAutomaticDiscount?.firstNTransaction?.deductionFrom
+        //   },
+        //   discountType: {
+        //     value: selectedAutomaticDiscount?.firstNTransaction?.discountType,
+        //     label: selectedAutomaticDiscount?.firstNTransaction?.discountType
+        //   },
+        //   discountAmount:
+        //     selectedAutomaticDiscount?.firstNTransaction?.discountAmount,
+        //   validFrom: selectedAutomaticDiscount?.firstNTransaction?.validFrom,
+        //   validTill: selectedAutomaticDiscount?.firstNTransaction?.validTill
+        // }
       });
     }
   }, [editData, editId]);
@@ -251,13 +272,13 @@ const AddAutomaticDiscount = ({
         ...data.firstNTransactionPerCustomer,
         deductionFrom: data?.firstNTransactionPerCustomer?.deductionFrom?.value,
         discountType: data?.firstNTransactionPerCustomer?.discountType?.value
-      },
-      firstNTransaction: {
-        ...data.firstNTransaction,
-        noOfTransactions: data?.firstNTransaction?.noOfTransactions ?? null,
-        deductionFrom: data?.firstNTransaction?.deductionFrom?.value,
-        discountType: data?.firstNTransaction?.discountType?.value
       }
+      // firstNTransaction: {
+      //   ...data.firstNTransaction,
+      //   noOfTransactions: data?.firstNTransaction?.noOfTransactions ?? null,
+      //   deductionFrom: data?.firstNTransaction?.deductionFrom?.value,
+      //   discountType: data?.firstNTransaction?.discountType?.value
+      // }
     };
     if (editId) {
       await useMutateUpdateAutomaticDiscount({
@@ -314,10 +335,57 @@ const AddAutomaticDiscount = ({
                 />
               </GridItem>
             </SimpleGrid>
+            <SimpleGrid columns={3} columnGap={"8px"} spacing={"8px"}>
+              <GridItem colSpan={1}>
+                <TextInput
+                  type="number"
+                  control={control}
+                  name="firstNTransactionPerCustomer.noOfTransactions"
+                  label="Number Of Transactions"
+                  required
+                />
+              </GridItem>
+              <GridItem colSpan={1}>
+                <TextInput
+                  type="number"
+                  control={control}
+                  name="firstNTransactionPerCustomer.capAmount"
+                  label="Enter Cap Amount"
+                  required
+                />
+              </GridItem>
+              <GridItem colSpan={1}>
+                <Select
+                  placeholder="-Deduction From-"
+                  control={control}
+                  name="firstNTransactionPerCustomer.deductionFrom"
+                  // label="Deduction From"
+                  options={deduction_from_options ?? []}
+                />
+              </GridItem>
+              <GridItem colSpan={1}>
+                <Select
+                  control={control}
+                  placeholder="-Discount Type-"
+                  name="firstNTransactionPerCustomer.discountType"
+                  // label="Deduction From"
+                  options={discount_type_options ?? []}
+                />
+              </GridItem>
+              <GridItem colSpan={1}>
+                <TextInput
+                  type="number"
+                  control={control}
+                  name="firstNTransactionPerCustomer.discountAmount"
+                  label="Enter Discount Amount"
+                  required
+                />
+              </GridItem>
+            </SimpleGrid>
             <HStack>
               <Editor control={control} name="description" />
             </HStack>
-            <HStack
+            {/* <HStack
               alignItems={"flex-start"}
               flexDirection={"column"}
               width={"100%"}
@@ -325,10 +393,10 @@ const AddAutomaticDiscount = ({
               <Heading fontSize={"17px"} fontWeight={700} color={"#2D3748"}>
                 Allow automatic discount on
               </Heading>
-            </HStack>
-            <ADTabbedPanel control={control} />
+            </HStack> */}
+            {/* <ADTabbedPanel control={control} /> */}
           </Box>
-          <HStack justifyContent={"flex-end"}>
+          <HStack mt={3} justifyContent={"flex-end"}>
             <Button
               padding={"16px 32px"}
               fontWeight={600}
