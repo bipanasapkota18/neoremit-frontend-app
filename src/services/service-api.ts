@@ -117,6 +117,12 @@ export const api = {
     statusChange: `${service}/master/automatic-discount/toggle/status/{id}`,
     getById: `${service}/master/automatic-discount/get/{id}`
   },
+  role: {
+    getAllRoles: `${service}/roles/getAllRoles`,
+    createRole: `${service}/roles/create-role`,
+    updateRole: `${service}/roles/update-role/{id}`,
+    deleteRole: `${service}/roles/delete-role/{id}`
+  },
 
   init: "/init"
 };

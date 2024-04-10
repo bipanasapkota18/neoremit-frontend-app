@@ -114,7 +114,21 @@ export const navLinks = [
     icon: sidebarAssets.MasterData,
     href: NAVIGATION_ROUTES.AUTOMATIC_DISCOUNT,
     label: "Automatic Discount"
+  },
+  {
+    icon: sidebarAssets.MasterData,
+    // href: NAVIGATION_ROUTES.COLLAPSE,
+    label: "User Management",
+    isNotLink: true,
+    childNav: [
+      {
+        icon: sidebarAssets.MasterData,
+        href: NAVIGATION_ROUTES.INTERNAL_USER.ROLE_SETUP,
+        label: "Role Setup"
+      }
+    ]
   }
+
   // {
   //   icon: FaIcons,
   //   href: NAVIGATION_ROUTES.EXAMPLE,
