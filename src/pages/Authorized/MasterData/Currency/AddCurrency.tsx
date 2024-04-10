@@ -85,6 +85,7 @@ const AddCurrency = ({
   return (
     <>
       <Modal
+        size={"xl"}
         isOpen={isOpen}
         onClose={handleCloseModal}
         submitButtonText="Save"

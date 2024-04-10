@@ -23,9 +23,16 @@ import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { IStepProps } from "../CountryDetails/AddCountry";
-import AddState from "./AddState";
+import AddBaseRate from "./AddBaseRateModal";
+// import AddState from "./AddState";
 
-const State = ({ stepProps }: IStepProps) => {
+export interface IBaseRateData {
+  id: number;
+  country: string;
+  baseRate: string;
+}
+
+const BaseRate = ({ stepProps }: IStepProps) => {
   const {
     isOpen: isOpenAddStateModal,
     onOpen: onOpenAddStateModal,
@@ -38,7 +45,7 @@ const State = ({ stepProps }: IStepProps) => {
   } = useDisclosure();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
   const [filterCount, setFilterCount] = useState(0);
-  const [tableData, setTableData] = useState<StatesList[] | undefined>();
+  const [tableData, setTableData] = useState<IBaseRateData[] | undefined>();
   const [searchText, setSearchText] = useState<string>("" as string);
   const [editId, setEditId] = useState(null as number | null);
   const [changeId, setChangeId] = useState(null as number | null);
@@ -53,13 +60,10 @@ const State = ({ stepProps }: IStepProps) => {
   );
   const {
     mutateAsync,
-    isLoading: isGetStateLoading,
-    data: stateData
+    isLoading: isGetStateLoading
+    // data: stateData
   } = useGetAllState();
-  useEffect(() => {
-    setTableData(stateData?.data?.data?.statesList ?? []);
-    setFilterCount(stateData?.data?.data?.totalItems ?? 0);
-  }, [stateData]);
+
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
     useDeleteState();
   useEffect(() => {
@@ -80,7 +84,27 @@ const State = ({ stepProps }: IStepProps) => {
     onCloseStateDeleteModal();
     refetchData();
   };
-
+  const baseRateData = [
+    {
+      id: 1,
+      country: "Nepal",
+      baseRate: " $1.00 = NRS 132.70"
+    },
+    {
+      id: 2,
+      country: "India",
+      baseRate: " $1.00 = INR 83.30"
+    },
+    {
+      id: 3,
+      country: "Pakistan",
+      baseRate: " $1.00 = Pakistan rs 277.87"
+    }
+  ];
+  useEffect(() => {
+    setTableData(baseRateData ?? []);
+    setFilterCount(baseRateData.length ?? 0);
+  }, [baseRateData]);
   const columns = [
     {
       header: "S.N",
@@ -94,8 +118,13 @@ const State = ({ stepProps }: IStepProps) => {
       }
     },
     {
-      header: "State Name",
-      accessorKey: "name",
+      header: "Country",
+      accessorKey: "country",
+      size: 50
+    },
+    {
+      header: "Base Rate",
+      accessorKey: "baseRate",
       size: 100
     },
 
@@ -116,7 +145,7 @@ const State = ({ stepProps }: IStepProps) => {
             />
             <TableActionButton
               onClickAction={() => {
-                setChangeId(cell?.row?.original?.id);
+                // setChangeId(cell?.row?.original?.id);
                 onOpenStateDeleteModal();
               }}
               icon={<svgAssets.DeleteButton />}
@@ -144,7 +173,7 @@ const State = ({ stepProps }: IStepProps) => {
             color={"#2D3748"}
             p={4}
           >
-            State Setup
+            Base Rate Setup
           </Heading>
           <Card borderRadius={"16px"} borderTop={"1px solid #EDF2F7"}>
             <CardBody>
@@ -173,7 +202,7 @@ const State = ({ stepProps }: IStepProps) => {
                   leftIcon={<svgAssets.AddButton />}
                   onClick={onOpenAddStateModal}
                 >
-                  Add State
+                  Add Base Rate
                 </Button>
               </HStack>
 
@@ -208,7 +237,7 @@ const State = ({ stepProps }: IStepProps) => {
         </CardBody>
       </Card>
 
-      <AddState
+      <AddBaseRate
         refetchData={refetchData}
         countryId={selectedCountry?.id ?? null}
         editId={editId}
@@ -233,4 +262,4 @@ const State = ({ stepProps }: IStepProps) => {
   );
 };
 
-export default State;
+export default BaseRate;

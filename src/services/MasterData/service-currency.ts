@@ -154,11 +154,26 @@ const useToggleCurrencyStatus = (id: number | null) => {
     }
   );
 };
+
+const getCurrencyList = () => {
+  return NeoHttpClient.get<NeoResponse<ICurrencyResponse>>(
+    api.masterData.currency.getCurrencyList
+  );
+};
+const useGetCurrencyList = () => {
+  return useQuery(api.masterData.currency.getCurrencyList, getCurrencyList, {
+    select: data => data?.data?.data,
+    onError: (error: AxiosError) => {
+      toastFail(error?.message);
+    }
+  });
+};
 export {
   useAddCurrency,
   useDeleteCurrency,
   useGetAllCurrency,
   useGetCurrencyById,
+  useGetCurrencyList,
   useToggleCurrencyStatus,
   useUpdateCurrency
 };

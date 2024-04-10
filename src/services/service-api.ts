@@ -23,7 +23,8 @@ export const api = {
       getAll: `${service}/currency-master/list`,
       create: `${service}/currency-master`,
       update: `${service}/currency-master/{id}`,
-      toggleStatus: `${service}/currency-master/status/{id}`
+      toggleStatus: `${service}/currency-master/status/{id}`,
+      getCurrencyList: `${service}/currency-master/list`
     },
     document: {
       getAll: `${service}/doc`,

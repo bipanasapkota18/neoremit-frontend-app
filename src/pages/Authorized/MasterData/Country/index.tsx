@@ -191,8 +191,15 @@ const Country = () => {
             />
             <TableActionButton
               onClickAction={() => {
-                setEditId(cell?.row?.original?.id);
-                onOpenCountryAddModal();
+                navigate(NAVIGATION_ROUTES.COUNTRY, {
+                  state: {
+                    countryData: countryData?.data?.data?.countriesList,
+                    countryId: cell?.row?.original?.id
+                  }
+                });
+
+                // setEditId(cell?.row?.original?.id);
+                // onOpenCountryAddModal();
               }}
               icon={<svgAssets.EditButton />}
               label="Edit"

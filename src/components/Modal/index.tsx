@@ -2,7 +2,6 @@ import {
   Button,
   Modal as ChakraModal,
   ModalProps as ChakraModalProps,
-  Divider,
   HStack,
   ModalBody,
   ModalCloseButton,
@@ -15,6 +14,7 @@ import {
 //to use other provided props of chakra modal
 type ModalProps = {
   title?: string;
+  width?: string;
   submitButtonText?: string;
   cancelButtonText?: string;
   isSubmitting?: boolean;
@@ -25,11 +25,10 @@ const Modal = ({
   onClose,
   title,
   children,
-  size = "2xl",
-
+  size,
+  width,
   isSubmitting,
   onSubmit,
-
   submitButtonText,
   cancelButtonText,
   ...rest
@@ -46,7 +45,9 @@ const Modal = ({
         display={"flex"}
         justifyContent={"center"}
         gap={"32px"}
-        width={"552px"}
+        width={width ? width : "552px"}
+        minWidth="fit-content"
+        height="fit-content"
         padding={"32px"}
         borderRadius={"32px"}
         background="#FEFEFE"
@@ -64,17 +65,17 @@ const Modal = ({
             borderRadius={"full"}
           />
         </HStack>
-        <Divider color={"#EDF2F7"} />
+        {/* <Divider color={"#EDF2F7"} /> */}
 
         <ModalBody py={4} px={0}>
           {children}
         </ModalBody>
-        <Divider color={"#EDF2F7"} />
+        {/* <Divider color={"#EDF2F7"} /> */}
 
         <ModalFooter
           display="flex"
           justifyContent={"space-between"}
-          align-items="flex-start"
+          align-items={size === "xl" ? "flex-end" : "flex-start"}
           gap="24px"
           align-self="stretch"
         >

@@ -34,5 +34,6 @@ export const NAVIGATION_ROUTES = {
   FEES_AND_CHARGES: "/fees-and-charges",
   PROMO_CODE: "/promo-code",
   AUTOMATIC_DISCOUNT: "/automatic-discount",
-  PARTNERS: "/partners"
+  PARTNERS: "/partners",
+  COUNTRY: "/country"
 };

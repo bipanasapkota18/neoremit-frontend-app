@@ -10,6 +10,7 @@ export interface NeoTokenDetails {
 
 function setToken(token: TokenDetails) {
   try {
+    console.log(token);
     localStorage.setItem("token", token.accessToken);
     localStorage.setItem("refreshToken", token.refreshToken);
   } catch (e) {
