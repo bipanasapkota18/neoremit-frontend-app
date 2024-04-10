@@ -33,7 +33,7 @@ export const CounrtyDetails = () => {
   const bg = "white";
 
   return (
-    <Flex flexDir="column" width="100%">
+    <Flex flexDir="column" width="100%" userSelect={"none"}>
       <Steps
         onClickStep={i => {
           setStep(i);

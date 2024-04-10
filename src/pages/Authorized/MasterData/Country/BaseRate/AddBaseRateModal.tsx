@@ -148,8 +148,8 @@ const AddBaseRate = ({
         title={"Base Rate Configuration"}
         onSubmit={handleSubmit(onAddBaseRate)}
       >
-        <SimpleGrid columns={3} spacing={"30px"}>
-          <GridItem colSpan={3}>
+        <SimpleGrid columns={5} spacing={"30px"}>
+          <GridItem colSpan={5}>
             <HStack alignItems={"flex-start"} flexDir={"column"}>
               <Text
                 color={colorScheme.primary_400}
@@ -177,8 +177,9 @@ const AddBaseRate = ({
               )}
             </HStack>
           </GridItem>
-          <GridItem colSpan={1}>
+          <GridItem colSpan={2}>
             <Select
+              size="lg"
               placeholder="Select Base Rate Type"
               control={control}
               name="baseRateType"
@@ -186,7 +187,7 @@ const AddBaseRate = ({
               options={base_rate_options ?? []}
             />
           </GridItem>
-          <GridItem colSpan={1}>
+          <GridItem colSpan={2}>
             <Select
               placeholder="-Select Partner-"
               control={control}

@@ -91,7 +91,7 @@ const AddCountry = ({ stepProps }: IStepProps) => {
         isActive: selectedCountry?.isActive
       });
     }
-  }, [location?.state]);
+  }, [location?.state, currencyData]);
 
   const onAddCountrySetup = async (data: typeof defaultValues) => {
     if (location?.state?.countryId) {
@@ -122,8 +122,8 @@ const AddCountry = ({ stepProps }: IStepProps) => {
   };
   return (
     <form onSubmit={handleSubmit(onAddCountrySetup)}>
-      <SimpleGrid columns={2} spacing={"30px"}>
-        <GridItem colSpan={2}>
+      <SimpleGrid columns={3} spacing={"30px"}>
+        <GridItem colSpan={3}>
           <DropzoneComponentControlled
             name="flagIcon"
             control={control}
@@ -135,7 +135,7 @@ const AddCountry = ({ stepProps }: IStepProps) => {
             }
           />
         </GridItem>
-        <GridItem colSpan={2}>
+        <GridItem colSpan={1}>
           <TextInput
             size={"lg"}
             name="name"
@@ -145,7 +145,7 @@ const AddCountry = ({ stepProps }: IStepProps) => {
             isRequired
           />
         </GridItem>
-        <GridItem colSpan={2}>
+        <GridItem colSpan={1}>
           <Select
             size={"lg"}
             name="currencyId"
@@ -235,8 +235,9 @@ const AddCountry = ({ stepProps }: IStepProps) => {
           />
         </GridItem>
       </SimpleGrid>
-      <HStack justifyContent={"flex-end"}>
+      <HStack mt={2} justifyContent={"space-between"}>
         <Button
+          minW={"max-content"}
           variant="outline"
           mr={1}
           borderColor="purple.400"
@@ -244,8 +245,12 @@ const AddCountry = ({ stepProps }: IStepProps) => {
         >
           Back
         </Button>
-        <Button type="submit" isLoading={isAddLoading || isUpdateLoading}>
-          Next
+        <Button
+          minW={"max-content"}
+          type="submit"
+          isLoading={isAddLoading || isUpdateLoading}
+        >
+          Save and Proceed
         </Button>
       </HStack>
     </form>
