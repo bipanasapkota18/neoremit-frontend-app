@@ -2,7 +2,8 @@ import { Box } from "@chakra-ui/layout";
 import { Flex, Heading } from "@chakra-ui/react";
 import { svgAssets } from "@neo/assets/images/svgs";
 import { Step, Steps, useSteps } from "chakra-ui-steps";
-import BaseRate from "../BaseRate";
+import { useLocation } from "react-router-dom";
+// import BaseRate from "../BaseRate";
 import State from "../State";
 import AddCountry from "./AddCountry";
 
@@ -10,6 +11,8 @@ export const CounrtyDetails = () => {
   const { nextStep, prevStep, activeStep, setStep } = useSteps({
     initialStep: 0
   });
+  const location = useLocation();
+  console.log(location);
 
   const steps = [
     {
@@ -24,8 +27,8 @@ export const CounrtyDetails = () => {
     },
     {
       label: "Base Rate Setup",
-      icon: svgAssets.BaseRate,
-      component: <BaseRate stepProps={{ nextStep, prevStep }} />
+      icon: svgAssets.BaseRate
+      // component: <BaseRate stepProps={{ nextStep, prevStep }} />
     }
   ];
   // const isLastStep = activeStep === steps.length - 1;
@@ -36,10 +39,18 @@ export const CounrtyDetails = () => {
     <Flex flexDir="column" width="100%" userSelect={"none"}>
       <Steps
         onClickStep={i => {
-          setStep(i);
+          location?.state?.countryId
+            ? setStep(i)
+            : activeStep > i
+              ? setStep(i)
+              : null;
         }}
         variant={"circles-alt"}
         colorScheme="purple"
+        style={{
+          padding: 4,
+          boxShadow: "md"
+        }}
         activeStep={activeStep}
       >
         {steps.map(({ label, icon, component }) => (

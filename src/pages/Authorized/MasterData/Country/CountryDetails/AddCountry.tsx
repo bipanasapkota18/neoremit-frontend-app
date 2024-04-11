@@ -22,7 +22,7 @@ import { baseURL } from "@neo/services/service-axios";
 import { formatSelectOptions } from "@neo/utility/format";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 const defaultValues = {
   name: "",
@@ -45,6 +45,8 @@ export interface IStepProps {
 }
 const AddCountry = ({ stepProps }: IStepProps) => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  console.log(searchParams);
   const { mutateAsync: mutateAddCountry, isLoading: isAddLoading } =
     useAddCountry();
   const { mutateAsync: mutateUpdate, isLoading: isUpdateLoading } =
@@ -104,16 +106,22 @@ const AddCountry = ({ stepProps }: IStepProps) => {
           isActive: selectedCountry?.isActive ?? true
         }
       });
-      console.log(updateresponse);
       if (updateresponse?.status === 200) {
         stepProps.nextStep();
       }
     } else {
-      await mutateAddCountry({
+      const createResponse = await mutateAddCountry({
         ...data,
         flagIcon: data.flagIcon[0],
         currencyId: data?.currencyId?.value ?? null
       });
+      if (createResponse?.status === 200) {
+        console.log(createResponse);
+        setSearchParams({
+          countryId: createResponse?.data?.data?.id
+        });
+        stepProps.nextStep();
+      }
     }
     handleCloseModal();
   };

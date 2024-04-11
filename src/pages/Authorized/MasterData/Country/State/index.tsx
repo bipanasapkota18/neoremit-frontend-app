@@ -21,7 +21,7 @@ import {
 } from "@neo/services/MasterData/service-state";
 import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { IStepProps } from "../CountryDetails/AddCountry";
 import AddState from "./AddState";
 
@@ -43,37 +43,50 @@ const State = ({ stepProps }: IStepProps) => {
   const [editId, setEditId] = useState(null as number | null);
   const [changeId, setChangeId] = useState(null as number | null);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [pageParams, setPageParams] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10
   });
+
   const { state } = useLocation();
   const selectedCountry = state?.countryData?.find(
     (country: any) => country.id === state?.countryId
   );
+
   const {
     mutateAsync,
     isLoading: isGetStateLoading,
     data: stateData
   } = useGetAllState();
+
   useEffect(() => {
     setTableData(stateData?.data?.data?.statesList ?? []);
     setFilterCount(stateData?.data?.data?.totalItems ?? 0);
   }, [stateData]);
+
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
     useDeleteState();
+
   useEffect(() => {
     mutateAsync({
       pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
-      filterParams: { countryId: selectedCountry?.id }
+      filterParams: {
+        countryId: searchParams.get("countryId") ?? selectedCountry?.id
+      }
     });
   }, [pageParams.pageIndex, pageParams.pageSize, selectedCountry]);
+
   const refetchData = () => {
     mutateAsync({
       pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
-      filterParams: { countryId: selectedCountry?.id }
+      filterParams: {
+        countryId: searchParams.get("countryId") ?? selectedCountry?.id
+      }
     });
   };
+
   const handleDelete = async () => {
     await mutateDelete(changeId);
     setChangeId(null);
@@ -201,7 +214,17 @@ const State = ({ stepProps }: IStepProps) => {
                 >
                   Back
                 </Button>
-                <Button onClick={() => stepProps.nextStep()}>Next</Button>
+                <Button
+                  onClick={() => {
+                    setSearchParams({
+                      countryId:
+                        searchParams.get("countryId") ?? selectedCountry?.id
+                    });
+                    stepProps.nextStep();
+                  }}
+                >
+                  Next
+                </Button>
               </HStack>
             </CardBody>
           </Card>
@@ -210,7 +233,7 @@ const State = ({ stepProps }: IStepProps) => {
 
       <AddState
         refetchData={refetchData}
-        countryId={selectedCountry?.id ?? null}
+        countryId={searchParams.get("countryId") ?? selectedCountry?.id}
         editId={editId}
         setEditId={setEditId}
         data={tableData}

@@ -31,14 +31,13 @@ import { baseURL } from "@neo/services/service-axios";
 import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import AddCountrySetup from "./AddCountry";
 
 const Country = () => {
-  const {
-    isOpen: isCountryAddModalOpen,
-    onOpen: onOpenCountryAddModal,
-    onClose: onCloseCountryAddModal
-  } = useDisclosure();
+  // const {
+  //   isOpen: isCountryAddModalOpen,
+  //   onOpen: onOpenCountryAddModal,
+  //   onClose: onCloseCountryAddModal
+  // } = useDisclosure();
   const {
     isOpen: isOpenCountryDeleteModal,
     onOpen: onOpenCountryDeleteModal,
@@ -54,7 +53,7 @@ const Country = () => {
   const [filterCount, setFilterCount] = useState(0);
   const [tableData, setTableData] = useState<CountriesList[] | undefined>();
   const [searchText, setSearchText] = useState<string>("" as string);
-  const [editId, setEditId] = useState(null as number | null);
+  // const [editId, setEditId] = useState(null as number | null);
   const [changeId, setChangeId] = useState(null as number | null);
   const [active, setActive] = useState(false);
   const [pageParams, setPageParams] = useState<PaginationState>({
@@ -270,7 +269,7 @@ const Country = () => {
             <Button
               minW={"max-content"}
               leftIcon={<svgAssets.AddButton />}
-              onClick={onOpenCountryAddModal}
+              onClick={() => navigate(NAVIGATION_ROUTES.COUNTRY)}
             >
               Add Country
             </Button>
@@ -293,14 +292,14 @@ const Country = () => {
         </CardBody>
       </Card>
 
-      <AddCountrySetup
+      {/* <AddCountrySetup
         refetchData={refetchData}
         data={countryData?.data?.data?.countriesList}
         editId={editId}
         setEditId={setEditId}
         isOpen={isCountryAddModalOpen}
         onClose={onCloseCountryAddModal}
-      />
+      /> */}
       <ConfirmationModal
         variant={"delete"}
         buttonText={"Delete"}

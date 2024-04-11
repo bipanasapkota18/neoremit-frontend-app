@@ -89,7 +89,7 @@ const useGetCountryList = () => {
   });
 };
 const addCountry = (data: ICountryRequest) => {
-  return NeoHttpClient.post<NeoResponse<ICountryRequest>>(
+  return NeoHttpClient.post<NeoResponse>(
     api.masterData.country.create,
     toFormData(data)
   );
