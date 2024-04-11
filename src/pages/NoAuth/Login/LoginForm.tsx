@@ -39,19 +39,16 @@ const LoginForm = () => {
   });
   useEffect(() => {
     reset({
-      email: localStorage.getItem("email"),
-      remember: true
+      email: localStorage.getItem("email")
     });
   }, []);
 
   const handleLogin = async (data: LoginPageProps) => {
     if (data?.remember === true) {
       localStorage.setItem("email", data?.email + "");
-      localStorage.setItem("remember", data?.remember + "");
     }
     if (data?.remember === false) {
       localStorage.removeItem("email");
-      localStorage.removeItem("remember");
     }
     try {
       await login({
