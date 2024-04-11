@@ -38,7 +38,9 @@ const LoginForm = () => {
     resolver: yupResolver(loginSchema)
   });
   useEffect(() => {
-    reset({ email: localStorage.getItem("email") });
+    reset({
+      email: localStorage.getItem("email")
+    });
   }, []);
 
   const handleLogin = async (data: LoginPageProps) => {

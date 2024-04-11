@@ -229,7 +229,7 @@ const Document = () => {
         title={"Are You Sure?"}
         isLoading={isDeleteLoading}
         onApprove={handleDelete}
-        message="Deleting will permanently remove this file from the system. This cannot be Undone."
+        message="Deleting will permanently remove this data from the system. This cannot be Undone."
         isOpen={isOpenDocumentDeleteModal}
         onClose={() => {
           setChangeId(null);
