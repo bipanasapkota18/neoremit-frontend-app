@@ -24,7 +24,6 @@ import {
   CountriesList,
   useDeleteCountry,
   useGetAllCountries,
-  useGetCountryById,
   useToggleStatus
 } from "@neo/services/MasterData/service-country";
 import { baseURL } from "@neo/services/service-axios";
@@ -67,7 +66,6 @@ const Country = () => {
     data: countryData,
     isLoading
   } = useGetAllCountries();
-  const { isLoading: isSingleFetching } = useGetCountryById(changeId);
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
     useDeleteCountry();
 
@@ -175,19 +173,6 @@ const Country = () => {
       cell: (cell: CellContext<CountriesList, any>) => {
         return (
           <HStack>
-            <TableActionButton
-              isDisabled={!cell?.row?.original?.hasState}
-              onClickAction={() => {
-                navigate(NAVIGATION_ROUTES.MASTER_DATA.STATE_SETUP, {
-                  state: {
-                    countryData: countryData?.data?.data?.countriesList,
-                    countryId: cell?.row?.original?.id
-                  }
-                });
-              }}
-              icon={<svgAssets.StateAddIcon />}
-              label="Add State"
-            />
             <TableActionButton
               onClickAction={() => {
                 navigate(NAVIGATION_ROUTES.COUNTRY, {
@@ -304,7 +289,7 @@ const Country = () => {
         variant={"delete"}
         buttonText={"Delete"}
         title={"Are You Sure?"}
-        isLoading={isDeleteLoading || isSingleFetching}
+        isLoading={isDeleteLoading}
         onApprove={handleDelete}
         message="Deleting will permanently remove this data from the system. This cannot be Undone."
         isOpen={isOpenCountryDeleteModal}

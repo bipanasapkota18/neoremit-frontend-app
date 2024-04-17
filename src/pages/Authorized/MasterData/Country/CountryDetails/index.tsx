@@ -3,7 +3,7 @@ import { Flex, Heading } from "@chakra-ui/react";
 import { svgAssets } from "@neo/assets/images/svgs";
 import { Step, Steps, useSteps } from "chakra-ui-steps";
 import { useLocation } from "react-router-dom";
-// import BaseRate from "../BaseRate";
+import BaseRate from "../BaseRate";
 import State from "../State";
 import AddCountry from "./AddCountry";
 
@@ -12,7 +12,6 @@ export const CounrtyDetails = () => {
     initialStep: 0
   });
   const location = useLocation();
-  console.log(location);
 
   const steps = [
     {
@@ -27,8 +26,8 @@ export const CounrtyDetails = () => {
     },
     {
       label: "Base Rate Setup",
-      icon: svgAssets.BaseRate
-      // component: <BaseRate stepProps={{ nextStep, prevStep }} />
+      icon: svgAssets.BaseRate,
+      component: <BaseRate stepProps={{ nextStep, prevStep }} />
     }
   ];
   // const isLastStep = activeStep === steps.length - 1;

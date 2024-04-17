@@ -2,6 +2,7 @@ import {
   Button,
   Modal as ChakraModal,
   ModalProps as ChakraModalProps,
+  Divider,
   HStack,
   ModalBody,
   ModalCloseButton,
@@ -65,12 +66,12 @@ const Modal = ({
             borderRadius={"full"}
           />
         </HStack>
-        {/* <Divider color={"#EDF2F7"} /> */}
+        <Divider color={"#EDF2F7"} />
 
         <ModalBody py={4} px={0}>
           {children}
         </ModalBody>
-        {/* <Divider color={"#EDF2F7"} /> */}
+        <Divider color={"#EDF2F7"} />
 
         <ModalFooter
           display="flex"

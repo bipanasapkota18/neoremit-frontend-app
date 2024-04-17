@@ -41,7 +41,7 @@ export const ButtonConfig: ComponentStyleConfig = {
       lineHeight: "17.57px"
     }),
     filter: () => ({
-      height: "56px",
+      height: "52px",
       background: colorScheme.primary_50,
       borderRadius: "30px",
       padding: "14px 32px",

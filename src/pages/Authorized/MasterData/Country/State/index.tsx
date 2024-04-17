@@ -205,25 +205,26 @@ const State = ({ stepProps }: IStepProps) => {
                 data={tableData ?? []}
                 columns={columns}
               />
-              <HStack justifyContent={"flex-end"}>
+              <HStack justifyContent={"space-between"}>
                 <Button
-                  variant="outline"
+                  variant="filter"
                   mr={1}
-                  borderColor="purple.400"
                   onClick={() => stepProps.prevStep()}
                 >
-                  Back
+                  Previous
                 </Button>
                 <Button
                   onClick={() => {
-                    setSearchParams({
-                      countryId:
-                        searchParams.get("countryId") ?? selectedCountry?.id
-                    });
+                    searchParams.get("countryId")
+                      ? setSearchParams({
+                          countryId:
+                            searchParams.get("countryId") ?? selectedCountry?.id
+                        })
+                      : null;
                     stepProps.nextStep();
                   }}
                 >
-                  Next
+                  Save and Proceed
                 </Button>
               </HStack>
             </CardBody>

@@ -2,6 +2,7 @@ import { ReactComponent as Background } from "@neo/assets/images/svgs/AuthPageWr
 import { ReactComponent as AddButton } from "@neo/assets/images/svgs/add-square.svg";
 import { ReactComponent as ArrowLeftIcon } from "@neo/assets/images/svgs/arrow_back.svg";
 import { ReactComponent as BaseRate } from "@neo/assets/images/svgs/base-rate.svg";
+import { ReactComponent as BaseRateConfig } from "@neo/assets/images/svgs/base_rate_config.svg";
 import { ReactComponent as CalenderIcon } from "@neo/assets/images/svgs/calendar.svg";
 import { ReactComponent as CountryDetails } from "@neo/assets/images/svgs/country-details.svg";
 import { ReactComponent as DropDownCaret } from "@neo/assets/images/svgs/dropdown-select-caret.svg";
@@ -28,7 +29,6 @@ import { ReactComponent as StateAddIcon } from "@neo/assets/images/svgs/state-ad
 import { ReactComponent as StateSetup } from "@neo/assets/images/svgs/state-setup.svg";
 import { ReactComponent as TickSquare } from "@neo/assets/images/svgs/tick-square.svg";
 import { ReactComponent as DeleteButton } from "@neo/assets/images/svgs/trash.svg";
-
 export const svgAssets = {
   ImagePlaceHolderDropzone,
   Background,
@@ -59,5 +59,6 @@ export const svgAssets = {
   CountryDetails,
   BaseRate,
   MarginSetup,
-  StateSetup
+  StateSetup,
+  BaseRateConfig
 };

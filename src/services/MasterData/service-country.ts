@@ -77,17 +77,19 @@ const useGetAllCountries = () => {
   });
 };
 
-const getCountryList = () => {
-  return NeoHttpClient.get<NeoResponse>(api.masterData.country.getList);
+const getCountryList = async () => {
+  return await NeoHttpClient.get<NeoResponse<CountriesList[]>>(
+    api.masterData.country.getList
+  );
 };
 const useGetCountryList = () => {
   return useQuery(api.masterData.country.getList, getCountryList, {
-    select: data => data?.data?.data,
     onError: (error: AxiosError) => {
       toastFail(error?.message);
     }
   });
 };
+
 const addCountry = (data: ICountryRequest) => {
   return NeoHttpClient.post<NeoResponse>(
     api.masterData.country.create,

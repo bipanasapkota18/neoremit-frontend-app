@@ -45,8 +45,7 @@ export interface IStepProps {
 }
 const AddCountry = ({ stepProps }: IStepProps) => {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  console.log(searchParams);
+  const [, setSearchParams] = useSearchParams();
   const { mutateAsync: mutateAddCountry, isLoading: isAddLoading } =
     useAddCountry();
   const { mutateAsync: mutateUpdate, isLoading: isUpdateLoading } =
@@ -116,18 +115,20 @@ const AddCountry = ({ stepProps }: IStepProps) => {
         currencyId: data?.currencyId?.value ?? null
       });
       if (createResponse?.status === 200) {
-        console.log(createResponse);
         setSearchParams({
-          countryId: createResponse?.data?.data?.id
+          countryId: createResponse?.data?.data?.id,
+          hasState: createResponse?.data?.data?.hasState
         });
         stepProps.nextStep();
       }
     }
     handleCloseModal();
   };
+
   const handleCloseModal = () => {
     reset(defaultValues);
   };
+
   return (
     <form onSubmit={handleSubmit(onAddCountrySetup)}>
       <SimpleGrid columns={3} spacing={"30px"}>
@@ -150,11 +151,12 @@ const AddCountry = ({ stepProps }: IStepProps) => {
             label="Enter Country Name"
             control={control}
             type="text"
-            isRequired
+            required
           />
         </GridItem>
         <GridItem colSpan={1}>
           <Select
+            required
             size={"lg"}
             name="currencyId"
             placeholder="Currency"
@@ -170,7 +172,7 @@ const AddCountry = ({ stepProps }: IStepProps) => {
               label="Enter Country Short Name"
               control={control}
               type="text"
-              isRequired
+              required
               endIcons={
                 <Tooltip
                   closeDelay={700}
@@ -196,6 +198,7 @@ const AddCountry = ({ stepProps }: IStepProps) => {
             label="Enter ISO Number "
             control={control}
             type="number"
+            required
           />
         </GridItem>
         <GridItem colSpan={1}>
@@ -205,7 +208,7 @@ const AddCountry = ({ stepProps }: IStepProps) => {
             label="Enter Country Code"
             control={control}
             type="text"
-            isRequired
+            required
           />
         </GridItem>
         <GridItem colSpan={1}>
@@ -215,7 +218,7 @@ const AddCountry = ({ stepProps }: IStepProps) => {
             label="Enter Phone Code"
             control={control}
             type="number"
-            isRequired
+            required
           />
         </GridItem>
         <GridItem colSpan={1}>
@@ -246,12 +249,11 @@ const AddCountry = ({ stepProps }: IStepProps) => {
       <HStack mt={2} justifyContent={"space-between"}>
         <Button
           minW={"max-content"}
-          variant="outline"
+          variant={"filter"}
           mr={1}
-          borderColor="purple.400"
           onClick={() => navigate(NAVIGATION_ROUTES.MASTER_DATA.COUNTRY_SETUP)}
         >
-          Back
+          Prevoius
         </Button>
         <Button
           minW={"max-content"}
