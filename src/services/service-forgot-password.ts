@@ -27,8 +27,8 @@ const emailVerification = (data: IEmailVerification) => {
 
 const useEmailVerification = () => {
   return useMutation(emailVerification, {
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message || error?.message);
     }
   });
 };
@@ -38,8 +38,8 @@ const verifyOTP = (data: IOTPVerification) => {
 };
 const useVerifyOTP = () => {
   return useMutation(verifyOTP, {
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message || error?.message);
     }
   });
 };
@@ -48,8 +48,8 @@ const resendOTP = (data: IResendOTP) => {
 };
 const useResendOTP = () => {
   return useMutation(resendOTP, {
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message || error?.message);
     }
   });
 };
@@ -61,8 +61,8 @@ const resetPassword = (data: ISetPassword) => {
 };
 const useResetPassword = () => {
   return useMutation(resetPassword, {
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message || error?.message);
     }
   });
 };
