@@ -14,6 +14,11 @@ export const api = {
       update: `${service}/country/{id}`,
       statusChange: `${service}/country/status/{id}`
     },
+    base_rate: {
+      baseRateSetup: `${service}/master/base-rate-config/baseRateSetup/{id}`,
+      getBaseRate: `${service}/master/base-rate-config/getBaseRateSetup/sender/{senderId}/receiver/{receiverId}`,
+      baseRateConfig: `${service}/master/base-rate-config/baseRateConfig`
+    },
     state: {
       getAll: `${service}/state/list`,
       create: `${service}/state`,
@@ -23,7 +28,8 @@ export const api = {
       getAll: `${service}/currency-master/list`,
       create: `${service}/currency-master`,
       update: `${service}/currency-master/{id}`,
-      toggleStatus: `${service}/currency-master/status/{id}`
+      toggleStatus: `${service}/currency-master/status/{id}`,
+      getCurrencyList: `${service}/currency-master/list`
     },
     document: {
       getAll: `${service}/doc`,

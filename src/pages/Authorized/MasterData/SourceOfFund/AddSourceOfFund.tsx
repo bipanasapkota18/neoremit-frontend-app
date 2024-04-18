@@ -81,7 +81,7 @@ const AddSourceOfFund = ({
     <>
       <Modal
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleCloseModal}
         submitButtonText="Save"
         cancelButtonText="Cancel"
         title={editId ? "Edit Source Of Fund" : "Add Source Of Fund"}

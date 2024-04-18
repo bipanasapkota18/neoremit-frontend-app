@@ -1,6 +1,7 @@
 import LayoutWrapper from "@neo/components/LayoutWrapper";
 import { lazy } from "react";
 
+import { CounrtyDetails } from "../Authorized/MasterData/Country/CountryDetails";
 import { NAVIGATION_ROUTES } from "./navigationRoutes";
 
 const AutomaticDiscount = lazy(
@@ -14,9 +15,9 @@ const Currency = lazy(
   () => import("@neo/pages/Authorized/MasterData/Currency")
 );
 const Country = lazy(() => import("@neo/pages/Authorized/MasterData/Country"));
-const State = lazy(
-  () => import("@neo/pages/Authorized/MasterData/Country/State")
-);
+// const State = lazy(
+//   () => import("@neo/pages/Authorized/MasterData/Country/State")
+// );
 const Relationship = lazy(
   () => import("@neo/pages/Authorized/MasterData/Relationship")
 );
@@ -88,10 +89,10 @@ export const appRoutes = [
         path: NAVIGATION_ROUTES.MASTER_DATA.COUNTRY_SETUP,
         element: <Country />
       },
-      {
-        path: NAVIGATION_ROUTES.MASTER_DATA.STATE_SETUP,
-        element: <State />
-      },
+      // {
+      //   path: NAVIGATION_ROUTES.MASTER_DATA.STATE_SETUP,
+      //   element: <State />
+      // },
       {
         path: NAVIGATION_ROUTES.FEES_AND_CHARGES,
         element: <FeeAndCharges />
@@ -115,6 +116,10 @@ export const appRoutes = [
       {
         path: NAVIGATION_ROUTES.INTERNAL_USER.ROLE_SETUP,
         element: <RoleSetup />
+      },
+      {
+        path: NAVIGATION_ROUTES.COUNTRY,
+        element: <CounrtyDetails />
       }
     ]
   }

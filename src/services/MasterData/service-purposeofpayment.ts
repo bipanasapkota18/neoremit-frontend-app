@@ -43,8 +43,8 @@ const getAllPurpose = ({ pageParams, filterParams }: IFilterParams) => {
 
 const useGetAllPurpose = () => {
   return useMutation(getAllPurpose, {
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };
@@ -62,8 +62,8 @@ const useAddPurpose = () => {
       queryClient.invalidateQueries(api.masterData.purpose_of_payment.getAll);
       toastSuccess(success?.data?.message);
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };
@@ -81,8 +81,8 @@ const useUpdatePurpose = () => {
       queryClient.invalidateQueries([api.masterData.purpose_of_payment.getAll]);
       toastSuccess(success?.data?.message);
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };
@@ -99,8 +99,8 @@ const useDeletePurpose = () => {
       queryClient.invalidateQueries(api.masterData.purpose_of_payment.getAll);
       toastSuccess(success?.data?.message);
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };

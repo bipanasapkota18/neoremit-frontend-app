@@ -58,8 +58,8 @@ const useAddSourceOfFund = () => {
     onSuccess: success => {
       toastSuccess(success?.data?.message);
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };
@@ -80,8 +80,8 @@ const useUpdateSourceOfFund = () => {
     onSuccess: success => {
       toastSuccess(success?.data?.message);
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };
@@ -96,8 +96,8 @@ const useDeleteSourceOfFund = () => {
     onSuccess: success => {
       toastSuccess(success?.data?.message);
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };

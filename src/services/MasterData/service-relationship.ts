@@ -29,8 +29,8 @@ const getAllRelationShip = () => {
 const useGetAllRelationShip = () => {
   return useQuery(api.masterData.relationship.getAll, getAllRelationShip, {
     select: data => data?.data?.data,
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };
@@ -50,8 +50,8 @@ const useGetRelationshipById = (id: number | null) => {
       onSuccess: () => {
         queryClient.invalidateQueries(api.masterData.relationship.getById);
       },
-      onError: (error: AxiosError) => {
-        toastFail(error?.message);
+      onError: (error: AxiosError<{ message: string }>) => {
+        toastFail(error?.response?.data?.message ?? error?.message);
       }
     }
   );
@@ -70,8 +70,8 @@ const useAddRelationship = () => {
       queryClient.invalidateQueries(api.masterData.relationship.getAll);
       toastSuccess(success?.data?.message);
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };
@@ -95,8 +95,8 @@ const useUpdateRelationship = () => {
       queryClient.invalidateQueries([api.masterData.relationship.getAll]);
       toastSuccess(success?.data?.message);
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };
@@ -113,8 +113,8 @@ const useDeleteRelationship = () => {
       queryClient.invalidateQueries(api.masterData.relationship.getAll);
       toastSuccess(success?.data?.message);
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };

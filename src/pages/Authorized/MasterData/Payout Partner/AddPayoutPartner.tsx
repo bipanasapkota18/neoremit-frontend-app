@@ -54,7 +54,7 @@ const AddPayoutPartner = ({
     [editId]
   );
   const countryOptions = formatSelectOptions({
-    data: countryData,
+    data: countryData?.data?.data,
     valueKey: "id",
     labelKey: "name"
   });
@@ -119,6 +119,7 @@ const AddPayoutPartner = ({
   return (
     <>
       <Modal
+        size={"xl"}
         isOpen={isOpen}
         onClose={handleCloseModal}
         submitButtonText="Save"

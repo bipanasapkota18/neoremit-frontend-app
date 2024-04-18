@@ -128,6 +128,8 @@ const AddCountrySetup = ({
   return (
     <>
       <Modal
+        size={"xl"}
+        width="1000px"
         isOpen={isOpen}
         onClose={handleCloseModal}
         submitButtonText="Save"

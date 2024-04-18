@@ -51,8 +51,8 @@ const getAllCurrency = ({ pageParams, filterParams }: IFilterParams) => {
 
 const useGetAllCurrency = () => {
   return useMutation(getAllCurrency, {
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };
@@ -65,8 +65,8 @@ const getCurrencyById = (id: number | null) => {
 const useGetCurrencyById = (id: number | null) => {
   return useQuery([id], () => getCurrencyById(id), {
     enabled: !!id,
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };
@@ -84,8 +84,8 @@ const useAddCurrency = () => {
       queryClient.invalidateQueries(api.masterData.currency.getAll);
       toastSuccess(success?.data?.message);
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };
@@ -109,8 +109,8 @@ const useUpdateCurrency = () => {
       queryClient.invalidateQueries([api.masterData.currency.getAll]);
       toastSuccess(success?.data?.message);
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };
@@ -127,8 +127,8 @@ const useDeleteCurrency = () => {
       queryClient.invalidateQueries(api.masterData.currency.getAll);
       toastSuccess(success?.data?.message);
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? error?.message);
     }
   });
 };
@@ -154,11 +154,26 @@ const useToggleCurrencyStatus = (id: number | null) => {
     }
   );
 };
+
+const getCurrencyList = () => {
+  return NeoHttpClient.get<NeoResponse<ICurrencyResponse>>(
+    api.masterData.currency.getCurrencyList
+  );
+};
+const useGetCurrencyList = () => {
+  return useQuery(api.masterData.currency.getCurrencyList, getCurrencyList, {
+    select: data => data?.data?.data,
+    onError: (error: AxiosError) => {
+      toastFail(error?.message);
+    }
+  });
+};
 export {
   useAddCurrency,
   useDeleteCurrency,
   useGetAllCurrency,
   useGetCurrencyById,
+  useGetCurrencyList,
   useToggleCurrencyStatus,
   useUpdateCurrency
 };

@@ -24,21 +24,19 @@ import {
   CountriesList,
   useDeleteCountry,
   useGetAllCountries,
-  useGetCountryById,
   useToggleStatus
 } from "@neo/services/MasterData/service-country";
 import { baseURL } from "@neo/services/service-axios";
 import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import AddCountrySetup from "./AddCountry";
 
 const Country = () => {
-  const {
-    isOpen: isCountryAddModalOpen,
-    onOpen: onOpenCountryAddModal,
-    onClose: onCloseCountryAddModal
-  } = useDisclosure();
+  // const {
+  //   isOpen: isCountryAddModalOpen,
+  //   onOpen: onOpenCountryAddModal,
+  //   onClose: onCloseCountryAddModal
+  // } = useDisclosure();
   const {
     isOpen: isOpenCountryDeleteModal,
     onOpen: onOpenCountryDeleteModal,
@@ -54,7 +52,7 @@ const Country = () => {
   const [filterCount, setFilterCount] = useState(0);
   const [tableData, setTableData] = useState<CountriesList[] | undefined>();
   const [searchText, setSearchText] = useState<string>("" as string);
-  const [editId, setEditId] = useState(null as number | null);
+  // const [editId, setEditId] = useState(null as number | null);
   const [changeId, setChangeId] = useState(null as number | null);
   const [active, setActive] = useState(false);
   const [pageParams, setPageParams] = useState<PaginationState>({
@@ -68,7 +66,6 @@ const Country = () => {
     data: countryData,
     isLoading
   } = useGetAllCountries();
-  const { isLoading: isSingleFetching } = useGetCountryById(changeId);
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
     useDeleteCountry();
 
@@ -177,22 +174,16 @@ const Country = () => {
         return (
           <HStack>
             <TableActionButton
-              isDisabled={!cell?.row?.original?.hasState}
               onClickAction={() => {
-                navigate(NAVIGATION_ROUTES.MASTER_DATA.STATE_SETUP, {
+                navigate(NAVIGATION_ROUTES.COUNTRY, {
                   state: {
                     countryData: countryData?.data?.data?.countriesList,
                     countryId: cell?.row?.original?.id
                   }
                 });
-              }}
-              icon={<svgAssets.StateAddIcon />}
-              label="Add State"
-            />
-            <TableActionButton
-              onClickAction={() => {
-                setEditId(cell?.row?.original?.id);
-                onOpenCountryAddModal();
+
+                // setEditId(cell?.row?.original?.id);
+                // onOpenCountryAddModal();
               }}
               icon={<svgAssets.EditButton />}
               label="Edit"
@@ -263,7 +254,7 @@ const Country = () => {
             <Button
               minW={"max-content"}
               leftIcon={<svgAssets.AddButton />}
-              onClick={onOpenCountryAddModal}
+              onClick={() => navigate(NAVIGATION_ROUTES.COUNTRY)}
             >
               Add Country
             </Button>
@@ -286,21 +277,21 @@ const Country = () => {
         </CardBody>
       </Card>
 
-      <AddCountrySetup
+      {/* <AddCountrySetup
         refetchData={refetchData}
         data={countryData?.data?.data?.countriesList}
         editId={editId}
         setEditId={setEditId}
         isOpen={isCountryAddModalOpen}
         onClose={onCloseCountryAddModal}
-      />
+      /> */}
       <ConfirmationModal
         variant={"delete"}
         buttonText={"Delete"}
         title={"Are You Sure?"}
-        isLoading={isDeleteLoading || isSingleFetching}
+        isLoading={isDeleteLoading}
         onApprove={handleDelete}
-        message="Deleting will permanently remove this file from the system. This cannot be Undone."
+        message="Deleting will permanently remove this data from the system. This cannot be Undone."
         isOpen={isOpenCountryDeleteModal}
         onClose={onCloseCountryDeleteModal}
       />

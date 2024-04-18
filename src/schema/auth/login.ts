@@ -5,7 +5,8 @@ const loginSchema = yup.object().shape({
   email: yup
     .string()
     .email("Please enter a valid email")
-    .required("Please enter email"),
+    .required("Please enter email")
+    .nullable(),
   remember: yup.boolean()
 });
 
