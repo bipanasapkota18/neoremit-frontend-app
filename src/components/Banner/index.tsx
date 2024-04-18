@@ -1,5 +1,4 @@
 import { VStack } from "@chakra-ui/react";
-
 import { svgAssets } from "@neo/assets/images/svgs";
 
 const Banner = () => {

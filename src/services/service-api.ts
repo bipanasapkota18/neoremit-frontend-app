@@ -58,7 +58,7 @@ export const api = {
       statusChange: `${service}/relationship/status/{id}`
     },
     role: {
-      getAll: `${service}/roles/getAllRoles`,
+      getAll: `${service}/api/role-module/roles`,
       getSingle: `${service}/roles/get-role/{id}`,
       create: `${service}/roles/create-role`,
       update: `${service}/roles/update-role/{id}`,
@@ -116,6 +116,12 @@ export const api = {
     delete: `${service}/master/automatic-discount/delete/{id}`,
     statusChange: `${service}/master/automatic-discount/toggle/status/{id}`,
     getById: `${service}/master/automatic-discount/get/{id}`
+  },
+
+  internalUser: {
+    getAll: `${service}/users/getAllInternalUsers`,
+    create: `${service}/users/create-user`,
+    toggleStatus: `${service}/users/blockUnblockUser/{UserId}`
   },
   role: {
     getAllRoles: `${service}/roles/getAllRoles`,

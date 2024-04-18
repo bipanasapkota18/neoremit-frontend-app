@@ -166,6 +166,7 @@ export default function NavItem({
               }
         }
         pos="relative"
+        borderRadius={"12px"}
         px={5}
         py={4}
         w="100%"
@@ -176,7 +177,7 @@ export default function NavItem({
         <Box
           visibility="hidden"
           pos="absolute"
-          h="100%"
+          // h="100%"
           w={1}
           top={0}
           right={0}
@@ -240,7 +241,6 @@ export default function NavItem({
         style={{
           width: "inherit",
           overflow: "visible",
-
           margin: "0px"
         }}
       >

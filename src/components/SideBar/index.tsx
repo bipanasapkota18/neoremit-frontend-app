@@ -11,7 +11,6 @@ import {
 } from "@chakra-ui/react";
 import { imageAssets } from "@neo/assets/images";
 import { svgAssets } from "@neo/assets/images/svgs";
-
 import { useLogoutMutation } from "@neo/services/service-auth";
 import { colorScheme } from "@neo/theme/colorScheme";
 import { useEffect, useState } from "react";
@@ -117,6 +116,7 @@ export default function Sidebar({
           cursor={"pointer"}
           onClick={() => navigate("/")}
         />
+
         <HStack
           padding="16px 20px"
           borderRadius={"16px"}
@@ -148,6 +148,8 @@ export default function Sidebar({
 
         <VStack
           w="100%"
+          paddingLeft={"1rem"}
+          paddingRight={"10px"}
           height={"full"}
           flex={1}
           py={4}

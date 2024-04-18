@@ -2,7 +2,7 @@ import {
   Button,
   Modal as ChakraModal,
   ModalProps as ChakraModalProps,
-  Divider,
+  // Divider,
   HStack,
   ModalBody,
   ModalCloseButton,
@@ -45,7 +45,7 @@ const Modal = ({
       <ModalContent
         display={"flex"}
         justifyContent={"center"}
-        gap={"32px"}
+        gap={"12px"}
         width={"552px"}
         padding={"32px"}
         borderRadius={"32px"}
@@ -64,23 +64,25 @@ const Modal = ({
             borderRadius={"full"}
           />
         </HStack>
-        <Divider color={"#EDF2F7"} />
+        {/* <Divider color={"#EDF2F7"} /> */}
 
         <ModalBody py={4} px={0}>
           {children}
         </ModalBody>
-        <Divider color={"#EDF2F7"} />
+        {/* <Divider color={"#EDF2F7"} /> */}
 
         <ModalFooter
           display="flex"
           justifyContent={"space-between"}
           align-items="flex-start"
           gap="24px"
+          // margin="10px"
           align-self="stretch"
         >
           <Button
-            width={"100%"}
-            padding={"16px 32px"}
+            marginLeft={"-20px"}
+            padding={"18px 36px"}
+            width={"200%"}
             fontWeight={600}
             color={"#E53E3E"}
             _hover={{ bg: "#FFF5F5" }}
@@ -92,8 +94,9 @@ const Modal = ({
             {cancelButtonText}
           </Button>
           <Button
-            width={"100%"}
-            padding={"16px 32px"}
+            marginEnd={"-30px"}
+            width={"200%"}
+            padding={"18px 36px"}
             fontWeight={600}
             isLoading={isSubmitting}
             onClick={isSubmitting ? undefined : onSubmit}

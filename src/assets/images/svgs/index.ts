@@ -24,6 +24,7 @@ import { ReactComponent as SetPasswordBanner } from "@neo/assets/images/svgs/set
 import { ReactComponent as StateAddIcon } from "@neo/assets/images/svgs/state-add.svg";
 import { ReactComponent as TickSquare } from "@neo/assets/images/svgs/tick-square.svg";
 import { ReactComponent as DeleteButton } from "@neo/assets/images/svgs/trash.svg";
+
 export const svgAssets = {
   ImagePlaceHolderDropzone,
   Background,

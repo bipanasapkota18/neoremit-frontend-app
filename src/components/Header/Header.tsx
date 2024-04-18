@@ -3,7 +3,7 @@ import { HStack } from "@chakra-ui/react";
 import * as React from "react";
 
 import { colorScheme } from "@neo/theme/colorScheme";
-import SearchInput from "../Form/SearchInput";
+// import SearchInput from "../Form/SearchInput";
 import { LeftHeader } from "./Header.Left";
 import { RightHeader } from "./Header.Right";
 
@@ -37,9 +37,7 @@ const Header = ({ handleDrawerToggle, width, isDrawerOpen }: HeaderProps) => {
       alignItems={"center"}
     >
       <LeftHeader handleDrawerToggle={handleDrawerToggle} width={width} />
-      <HStack marginLeft={"auto"}>
-        <SearchInput type="text" name="search" label="Search" width={"700px"} />
-      </HStack>
+      <HStack marginLeft={"auto"}></HStack>
       <RightHeader
         mobileMoreAnchorEl={mobileMoreAnchorEl}
         isMobileMenuOpen={isMobileMenuOpen}

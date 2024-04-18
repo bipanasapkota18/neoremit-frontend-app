@@ -1,3 +1,4 @@
+// import { NAVIGATION_ROUTES } from './../../pages/App/navigationRoutes';
 import { sidebarAssets } from "@neo/assets/images/svgs/Sidebar";
 import { NAVIGATION_ROUTES } from "@neo/pages/App/navigationRoutes";
 import { ComponentProps } from "react";
@@ -116,15 +117,19 @@ export const navLinks = [
     label: "Automatic Discount"
   },
   {
-    icon: sidebarAssets.MasterData,
-    // href: NAVIGATION_ROUTES.COLLAPSE,
+    icon: sidebarAssets.ProfileCircle,
     label: "User Management",
     isNotLink: true,
     childNav: [
       {
-        icon: sidebarAssets.MasterData,
+        icon: sidebarAssets.Ellipse,
         href: NAVIGATION_ROUTES.INTERNAL_USER.ROLE_SETUP,
         label: "Role Setup"
+      },
+      {
+        icon: sidebarAssets.Ellipse,
+        href: NAVIGATION_ROUTES.USER_MANAGEMENT.USER,
+        label: "User"
       }
     ]
   }
