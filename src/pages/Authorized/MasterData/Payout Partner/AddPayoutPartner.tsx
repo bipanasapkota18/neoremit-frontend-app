@@ -119,6 +119,7 @@ const AddPayoutPartner = ({
   return (
     <>
       <Modal
+        size={"xl"}
         isOpen={isOpen}
         onClose={handleCloseModal}
         submitButtonText="Save"

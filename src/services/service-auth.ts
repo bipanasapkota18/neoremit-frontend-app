@@ -96,8 +96,8 @@ const initRefreshToken = async () => {
       }
     );
     const tokens = {
-      accessToken: response.data.data?.accessToken,
-      refreshToken: response.data.data?.refreshToken
+      accessToken: response?.data?.data?.accessToken,
+      refreshToken: response?.data?.data?.refreshToken
     };
     TokenService.setToken(tokens);
     return true;
