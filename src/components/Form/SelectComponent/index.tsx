@@ -22,12 +22,11 @@ import { useCustomStyles } from "./customStyles";
 
 const { ValueContainer, Placeholder } = components;
 
-const CustomValueContainer = ({ children, required, ...props }: any) => {
+const CustomValueContainer = ({ children, ...props }: any) => {
   return (
     <ValueContainer {...props}>
       <Placeholder {...props} isFocused={props.selectProps.isFocused}>
         {props.selectProps.placeholder}
-        {required && <span style={{ color: "red", marginLeft: 4 }}>*</span>}
       </Placeholder>
       {React.Children.map(children, (child: any) =>
         child && child.key !== "placeholder" ? child : null
@@ -71,7 +70,6 @@ type SelectProps = Props & {
     hasSelectAll: boolean;
     returnOne?: boolean;
   };
-  required?: boolean;
 };
 
 export const selectAllOption = { label: "Select all", value: "*" };
@@ -88,7 +86,6 @@ function Select({
     hasSelectAll: false,
     returnOne: false
   },
-  required,
   customOnChange,
   ...args
 }: SelectProps) {
@@ -104,9 +101,7 @@ function Select({
       <FormControl variant="floating" id={name}>
         <ReactSelect
           components={{
-            ValueContainer: props => (
-              <CustomValueContainer {...props} required={required} />
-            )
+            ValueContainer: CustomValueContainer
           }}
           closeMenuOnSelect={!isMulti}
           styles={{
@@ -183,9 +178,7 @@ function Select({
               <FormControl variant="floating" id={name} isInvalid={!!error}>
                 <ReactSelect
                   components={{
-                    ValueContainer: props => (
-                      <CustomValueContainer {...props} required={required} />
-                    )
+                    ValueContainer: CustomValueContainer
                   }}
                   closeMenuOnSelect={!isMulti}
                   {...field}
@@ -204,7 +197,7 @@ function Select({
                   onBlur={() => setFocused(false)}
                 />
 
-                <FormErrorMessage marginLeft={2}>
+                <FormErrorMessage>
                   {error ? error?.message : ""}
                 </FormErrorMessage>
                 {helperText ? (
