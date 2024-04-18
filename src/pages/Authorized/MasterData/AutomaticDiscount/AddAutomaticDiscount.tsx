@@ -100,7 +100,8 @@ const AddAutomaticDiscount = ({
   const { data: countryData } = useGetCountryList();
 
   const countryOptions = formatSelectOptions({
-    data: countryData,
+    data: countryData?.data?.data,
+
     valueKey: "id",
     labelKey: "name"
   });
