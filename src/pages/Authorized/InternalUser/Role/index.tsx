@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   Card,
   CardBody,
@@ -16,11 +17,11 @@ import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
 import ConfirmationModal from "@neo/components/Modal/DeleteModal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
+import { useDeletePayoutMethod } from "@neo/services/MasterData/service-payout-method";
 import {
-  IPayoutMethodResponse,
-  useDeletePayoutMethod
-} from "@neo/services/MasterData/service-payout-method";
-import { useGetAllRoles } from "@neo/services/MasterData/service-role";
+  IRoleResponse,
+  useGetAllRoles
+} from "@neo/services/MasterData/service-role";
 import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -44,10 +45,10 @@ const PayoutMethod = () => {
     pageSize: 10
   });
   const { data: roleData, isLoading: isPayoutMethodLoading } = useGetAllRoles();
-
+  console.log(roleData);
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
     useDeletePayoutMethod();
-  console.log(roleData);
+
   const columns = [
     {
       header: "S.N",
@@ -59,12 +60,21 @@ const PayoutMethod = () => {
 
     {
       header: "Role Name",
-      accessorKey: "name",
-      size: 100
+      accessorKey: "roleName",
+      size: 20
     },
     {
       header: "Permissions",
-      accessorKey: "permission",
+      accessorKey: "moduleList",
+      cell: (cell: CellContext<IRoleResponse, any>) => {
+        return cell.row.original.moduleList.map((item, index) => {
+          return (
+            <Badge key={index} padding="8px 24px" mx={2} borderRadius={"16px"}>
+              {item?.moduleName}
+            </Badge>
+          );
+        });
+      },
       size: 100
     },
     {
@@ -75,12 +85,12 @@ const PayoutMethod = () => {
     {
       header: "Action",
       accessorKey: "action",
-      cell: (cell: CellContext<IPayoutMethodResponse, any>) => {
+      cell: (cell: CellContext<IRoleResponse, any>) => {
         return (
           <HStack>
             <TableActionButton
               onClickAction={() => {
-                setEditId(cell?.row?.original?.id || null);
+                setEditId(cell?.row?.original?.roleId || null);
                 setFlag.on();
               }}
               icon={<svgAssets.EditButton />}
@@ -88,7 +98,7 @@ const PayoutMethod = () => {
             />
             <TableActionButton
               onClickAction={() => {
-                setChangeId(cell?.row?.original?.id || null);
+                setChangeId(cell?.row?.original?.roleId || null);
                 onOpenPayoutMethodDeleteModal();
               }}
               icon={<svgAssets.DeleteButton />}

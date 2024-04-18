@@ -63,13 +63,7 @@ export const api = {
       getById: `${service}/relationship/{id}`,
       statusChange: `${service}/relationship/status/{id}`
     },
-    role: {
-      getAll: `${service}/roles/getAllRoles`,
-      getSingle: `${service}/roles/get-role/{id}`,
-      create: `${service}/roles/create-role`,
-      update: `${service}/roles/update-role/{id}`,
-      delete: `${service}/roles/delete-role/{id}`
-    },
+
     source_of_fund: {
       getAll: `${service}/source-of-fund/list`,
       create: `${service}/source-of-fund`,
@@ -124,10 +118,11 @@ export const api = {
     getById: `${service}/master/automatic-discount/get/{id}`
   },
   role: {
-    getAllRoles: `${service}/roles/getAllRoles`,
-    createRole: `${service}/roles/create-role`,
-    updateRole: `${service}/roles/update-role/{id}`,
-    deleteRole: `${service}/roles/delete-role/{id}`
+    getAll: `${service}/api/role-module`,
+    create: `${service}/api/role-module`,
+    allModules: `${service}/api/role-module/modules`,
+    toggleStatus: `${service}/api/role-module/toggle-status/{roleId}`,
+    activeRoles: `${service}/api/role-module/roles`
   },
 
   init: "/init"
