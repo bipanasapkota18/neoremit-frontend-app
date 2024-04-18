@@ -172,7 +172,7 @@ const AddPromoCode = ({
     { value: "TRANSACTION_FEE", label: "TRANSACTION_FEE" }
   ];
   const country_options = formatSelectOptions<number>({
-    data: countryData,
+    data: countryData?.data?.data,
     valueKey: "id",
     labelKey: "name"
   });
