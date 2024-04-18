@@ -1,37 +1,31 @@
 import {
-  Box,
   Button,
   Card,
   CardBody,
   Flex,
-  GridItem,
   HStack,
   Heading,
-  SimpleGrid,
   Text,
-  VStack,
   useDisclosure,
   useMediaQuery
 } from "@chakra-ui/react";
 import { svgAssets } from "@neo/assets/images/svgs";
-import BreadCrumb from "@neo/components/BreadCrumb";
 import { DataTable } from "@neo/components/DataTable";
 import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
 import ConfirmationModal from "@neo/components/Modal/DeleteModal";
-import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import {
   StatesList,
   useDeleteState,
   useGetAllState
 } from "@neo/services/MasterData/service-state";
-import { colorScheme } from "@neo/theme/colorScheme";
 import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
+import { IStepProps } from "../CountryDetails/AddCountry";
 import AddState from "./AddState";
 
-const State = () => {
+const State = ({ stepProps }: IStepProps) => {
   const {
     isOpen: isOpenAddStateModal,
     onOpen: onOpenAddStateModal,
@@ -49,37 +43,50 @@ const State = () => {
   const [editId, setEditId] = useState(null as number | null);
   const [changeId, setChangeId] = useState(null as number | null);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [pageParams, setPageParams] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10
   });
-  const { pathname, state } = useLocation();
+
+  const { state } = useLocation();
   const selectedCountry = state?.countryData?.find(
     (country: any) => country.id === state?.countryId
   );
+
   const {
     mutateAsync,
     isLoading: isGetStateLoading,
     data: stateData
   } = useGetAllState();
+
   useEffect(() => {
     setTableData(stateData?.data?.data?.statesList ?? []);
     setFilterCount(stateData?.data?.data?.totalItems ?? 0);
   }, [stateData]);
+
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
     useDeleteState();
+
   useEffect(() => {
     mutateAsync({
       pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
-      filterParams: { countryId: selectedCountry?.id }
+      filterParams: {
+        countryId: searchParams.get("countryId") ?? selectedCountry?.id
+      }
     });
   }, [pageParams.pageIndex, pageParams.pageSize, selectedCountry]);
+
   const refetchData = () => {
     mutateAsync({
       pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
-      filterParams: { countryId: selectedCountry?.id }
+      filterParams: {
+        countryId: searchParams.get("countryId") ?? selectedCountry?.id
+      }
     });
   };
+
   const handleDelete = async () => {
     await mutateDelete(changeId);
     setChangeId(null);
@@ -133,180 +140,15 @@ const State = () => {
       }
     }
   ];
-  const activePath = breadcrumbTitle(pathname);
 
   return (
     <Flex direction={"column"} gap={"16px"}>
-      <BreadCrumb currentPage="State Setup" options={activePath} />
+      {/* <BreadCrumb currentPage="State Setup" options={activePath} /> */}
       <Card
-        borderRadius={"16px"}
+        borderRadius={"32px"}
         boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"
       >
         <CardBody>
-          <HStack
-            display={"flex"}
-            flexDirection={"column"}
-            alignItems={"flex-start"}
-          >
-            <Heading
-              fontSize="17px"
-              fontStyle="normal"
-              fontWeight={700}
-              lineHeight="normal"
-              color={"#2D3748"}
-            >
-              Country Details
-            </Heading>
-            <Box
-              padding={"24px"}
-              gap={"20px"}
-              bgColor={colorScheme.gray_50}
-              width={"100%"}
-            >
-              <SimpleGrid columns={{ base: 1, sm: 1, md: 3 }} spacing={10}>
-                <GridItem colSpan={1}>
-                  <VStack alignItems={"flex-start"} gap={"24px"}>
-                    <HStack width={"100%"} spacing={3}>
-                      <Text
-                        color={colorScheme.search_icon}
-                        fontSize="14px"
-                        fontWeight={400}
-                        display={"flex"}
-                        w={"38%"}
-                      >
-                        Country Name
-                        <Text marginLeft={"auto"} as={"span"}>
-                          :
-                        </Text>
-                      </Text>
-                      <Text
-                        fontSize="14px"
-                        color={colorScheme.gray_700}
-                        fontWeight={600}
-                      >
-                        {selectedCountry?.name}
-                      </Text>
-                    </HStack>
-                    <HStack width={"100%"} spacing={3}>
-                      <Text
-                        color={colorScheme.search_icon}
-                        fontSize="14px"
-                        fontWeight={400}
-                        display={"flex"}
-                        w={"38%"}
-                      >
-                        Country Short Name
-                        <Text marginLeft={"auto"} as={"span"}>
-                          :
-                        </Text>
-                      </Text>
-                      <Text
-                        marginRight={"auto"}
-                        fontSize="14px"
-                        color={colorScheme.gray_700}
-                        fontWeight={600}
-                      >
-                        {selectedCountry?.shortName}
-                      </Text>
-                    </HStack>
-                  </VStack>
-                </GridItem>
-                <GridItem colSpan={1}>
-                  <VStack alignItems={"flex-start"} gap={"24px"}>
-                    <HStack width={"100%"} spacing={3}>
-                      <Text
-                        color={colorScheme.search_icon}
-                        fontSize="14px"
-                        fontWeight={400}
-                        display={"flex"}
-                        w={"38%"}
-                      >
-                        ISO Number
-                        <Text marginLeft={"auto"} as={"span"}>
-                          :
-                        </Text>
-                      </Text>
-                      <Text
-                        fontSize="14px"
-                        color={colorScheme.gray_700}
-                        fontWeight={600}
-                      >
-                        {selectedCountry?.isoNumber}
-                      </Text>
-                    </HStack>
-                    <HStack width={"100%"} spacing={3}>
-                      <Text
-                        color={colorScheme.search_icon}
-                        fontSize="14px"
-                        fontWeight={400}
-                        display={"flex"}
-                        w={"38%"}
-                      >
-                        Country Code
-                        <Text marginLeft={"auto"} as={"span"}>
-                          :
-                        </Text>
-                      </Text>
-                      <Text
-                        fontSize="14px"
-                        color={colorScheme.gray_700}
-                        fontWeight={600}
-                      >
-                        {selectedCountry?.code}
-                      </Text>
-                    </HStack>
-                  </VStack>
-                </GridItem>
-                <GridItem colSpan={1}>
-                  <VStack alignItems={"flex-start"} gap={"24px"}>
-                    <HStack width={"100%"} spacing={3}>
-                      <Text
-                        color={colorScheme.search_icon}
-                        fontSize="14px"
-                        fontWeight={400}
-                        display={"flex"}
-                        w={"38%"}
-                      >
-                        Phone Code
-                        <Text marginLeft={"auto"} as={"span"}>
-                          :
-                        </Text>
-                      </Text>
-                      <Text
-                        fontSize="14px"
-                        color={colorScheme.gray_700}
-                        fontWeight={600}
-                      >
-                        {selectedCountry?.phoneCode}
-                      </Text>
-                    </HStack>
-                    <HStack width={"100%"} spacing={3}>
-                      <Text
-                        color={colorScheme.search_icon}
-                        fontSize="14px"
-                        fontWeight={400}
-                        display={"flex"}
-                        w={"38%"}
-                      >
-                        Currency
-                        <Text marginLeft={"auto"} as={"span"}>
-                          :
-                        </Text>
-                      </Text>
-                      <Text
-                        fontSize="14px"
-                        color={colorScheme.gray_700}
-                        fontWeight={600}
-                      >
-                        {selectedCountry?.currency?.name}
-                      </Text>
-                    </HStack>
-                  </VStack>
-                </GridItem>
-              </SimpleGrid>
-            </Box>
-          </HStack>
-
           <Heading
             fontSize="17px"
             fontStyle="normal"
@@ -315,7 +157,7 @@ const State = () => {
             color={"#2D3748"}
             p={4}
           >
-            State Details
+            State Setup
           </Heading>
           <Card borderRadius={"16px"} borderTop={"1px solid #EDF2F7"}>
             <CardBody>
@@ -363,6 +205,28 @@ const State = () => {
                 data={tableData ?? []}
                 columns={columns}
               />
+              <HStack justifyContent={"space-between"}>
+                <Button
+                  variant="filter"
+                  mr={1}
+                  onClick={() => stepProps.prevStep()}
+                >
+                  Previous
+                </Button>
+                <Button
+                  onClick={() => {
+                    searchParams.get("countryId")
+                      ? setSearchParams({
+                          countryId:
+                            searchParams.get("countryId") ?? selectedCountry?.id
+                        })
+                      : null;
+                    stepProps.nextStep();
+                  }}
+                >
+                  Save and Proceed
+                </Button>
+              </HStack>
             </CardBody>
           </Card>
         </CardBody>
@@ -370,7 +234,7 @@ const State = () => {
 
       <AddState
         refetchData={refetchData}
-        countryId={selectedCountry?.id ?? null}
+        countryId={searchParams.get("countryId") ?? selectedCountry?.id}
         editId={editId}
         setEditId={setEditId}
         data={tableData}
