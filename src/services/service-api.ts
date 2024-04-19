@@ -123,6 +123,14 @@ export const api = {
     statusChange: `${service}/master/automatic-discount/toggle/status/{id}`,
     getById: `${service}/master/automatic-discount/get/{id}`
   },
+  partner_setup: {
+    getAll: `${service}/master/partnerSetup/getAllPartnerSetup`,
+    create: `${service}/master/partnerSetup/createPartnerSetup`,
+    update: `${service}/master/partnerSetup/updatePartnerSetup/{partnerId}`,
+    delete: `${service}/master/partnerSetup/deletePartnerSetup/{partnerId}`,
+    statusChange: `${service}/master/partnerSetup/toggle/status/{id}`,
+    getById: `${service}/master/partnerSetup/getPartnerSetup/{partnerId}`
+  },
 
   init: "/init"
 };

@@ -114,6 +114,11 @@ export const navLinks = [
     icon: sidebarAssets.MasterData,
     href: NAVIGATION_ROUTES.AUTOMATIC_DISCOUNT,
     label: "Automatic Discount"
+  },
+  {
+    icon: sidebarAssets.Partners,
+    href: NAVIGATION_ROUTES.PARTNERS,
+    label: "Partner Setup"
   }
   // {
   //   icon: FaIcons,

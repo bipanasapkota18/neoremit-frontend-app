@@ -4,6 +4,8 @@ import { lazy } from "react";
 import { CounrtyDetails } from "../Authorized/MasterData/Country/CountryDetails";
 import { NAVIGATION_ROUTES } from "./navigationRoutes";
 
+const PartnerSetup = lazy(() => import("@neo/pages/Authorized/PartnerSetup"));
+
 const AutomaticDiscount = lazy(
   () => import("@neo/pages/Authorized/MasterData/AutomaticDiscount")
 );
@@ -115,6 +117,10 @@ export const appRoutes = [
       {
         path: NAVIGATION_ROUTES.COUNTRY,
         element: <CounrtyDetails />
+      },
+      {
+        path: NAVIGATION_ROUTES.PARTNERS,
+        element: <PartnerSetup />
       }
     ]
   }
