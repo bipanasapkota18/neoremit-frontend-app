@@ -18,7 +18,14 @@ import { useForm } from "react-hook-form";
 
 const defaultValues = {
   roleName: null as string | null,
-  roleDescription: null as string | null
+  roleDescription: null as string | null,
+  moduleList: null as
+    | {
+        moduleId: number;
+        scopeList: string[];
+        moduleName: string;
+      }[]
+    | null
 };
 interface AddRoleProps {
   editId: number | null;
@@ -106,7 +113,7 @@ const AddRole = ({
           </GridItem>
         </SimpleGrid>
         <SimpleGrid padding={"16px"} columns={5} gap={"40px"}>
-          {moduleList?.map(module => (
+          {moduleList?.map((module, moduleIndex) => (
             <GridItem key={module.id} colSpan={1}>
               <Flex gap={"24px"} flexDir={"column"}>
                 <Text fontWeight={400} fontSize={"17px"} color={"#2D3748"}>
@@ -122,7 +129,11 @@ const AddRole = ({
                       }}
                       color={"#2D3748"}
                     >
-                      <CheckBox width={"10%"} name={scope} control={control} />
+                      <CheckBox
+                        width={"10%"}
+                        name={`moduleList[${moduleIndex}].scopeList[${scope}]`}
+                        control={control}
+                      />
                       <Box>{scope}</Box>
                     </Box>
                   ))}
