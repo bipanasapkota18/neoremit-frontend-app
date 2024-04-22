@@ -3,7 +3,6 @@ import { HStack } from "@chakra-ui/react";
 import * as React from "react";
 
 import { colorScheme } from "@neo/theme/colorScheme";
-// import SearchInput from "../Form/SearchInput";
 import { LeftHeader } from "./Header.Left";
 import { RightHeader } from "./Header.Right";
 

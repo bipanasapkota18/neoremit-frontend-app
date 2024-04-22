@@ -118,7 +118,7 @@ export default function Sidebar({
         />
 
         <HStack
-          padding="16px 20px"
+          padding={" 1rem 1.25rem"}
           borderRadius={"16px"}
           width={isCollapsed && !isHovered ? "auto" : "260px"}
           gap={"16px"}
@@ -148,7 +148,7 @@ export default function Sidebar({
 
         <VStack
           w="100%"
-          paddingLeft={"1rem"}
+          pl={1}
           paddingRight={"10px"}
           height={"full"}
           flex={1}

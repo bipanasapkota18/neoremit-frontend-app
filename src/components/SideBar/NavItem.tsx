@@ -177,7 +177,6 @@ export default function NavItem({
         <Box
           visibility="hidden"
           pos="absolute"
-          // h="100%"
           w={1}
           top={0}
           right={0}

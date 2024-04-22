@@ -11,6 +11,7 @@ import TextInput from "@neo/components/Form/TextInput";
 import { useResetPassword } from "@neo/services/service-forgot-password";
 import { useStore } from "@neo/store/store";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { svgAssets } from "../../../../assets/images/svgs/index";
 import PasswordStrength from "./PasswordStrength";
@@ -25,6 +26,7 @@ const SetPassword = () => {
   const { email } = useStore();
   const [flag, setFlag] = useBoolean();
   const [confirmFlag, setConfirmFlag] = useBoolean();
+  const navigate = useNavigate();
   const passwordSchema = yup.object().shape({
     password: yup
       .string()
@@ -41,12 +43,21 @@ const SetPassword = () => {
       .required("Please enter a password ")
       .oneOf([yup.ref("password")], "Passwords don't match")
   });
-  const handlePasswordChange = (data: any) => {
-    mutateAsync({
-      email: email,
-      newPassword: data.password
-    });
+
+  const handlePasswordChange = async (data: any) => {
+    try {
+      await mutateAsync({
+        email: email,
+        newPassword: data.password,
+        changePasswordFor: "FORGOT_PASSWORD"
+      });
+
+      navigate("/LOGIN");
+    } catch (error) {
+      console.error("Error resetting password:", error);
+    }
   };
+
   const {
     control,
     handleSubmit,

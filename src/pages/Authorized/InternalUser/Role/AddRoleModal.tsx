@@ -79,16 +79,6 @@ const AddRole = ({
               isRequired
             />
           </GridItem>
-          {/* <GridItem colSpan={1}>
-            <TextInput
-              size={"lg"}
-              name="code"
-              label="Enter Code"
-              control={control}
-              type="text"
-              isRequired
-            />
-          </GridItem> */}
         </SimpleGrid>
 
         <HStack justifyContent={"flex-end"}>

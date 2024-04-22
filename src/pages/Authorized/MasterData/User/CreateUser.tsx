@@ -19,7 +19,7 @@ interface CreateUserprops {
   onClose: () => void;
 }
 const CreateUserModal = ({ isOpen, onClose }: CreateUserprops) => {
-  const { mutateAsync: mutateCreateUser } = useCreateUser();
+  const { mutateAsync: mutateCreateUser, isLoading } = useCreateUser();
   const { data: rolesData } = useGetAllRoles();
   const { handleSubmit, control, reset } = useForm({
     defaultValues,
@@ -51,6 +51,7 @@ const CreateUserModal = ({ isOpen, onClose }: CreateUserprops) => {
       <Modal
         isOpen={isOpen}
         onClose={handleCloseModal}
+        isSubmitting={isLoading}
         submitButtonText="Add"
         cancelButtonText="Cancel"
         title={"Add User"}

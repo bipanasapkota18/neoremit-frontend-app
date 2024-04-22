@@ -1,16 +1,13 @@
 import { toastFail, toastSuccess } from "@neo/utility/Toast";
 import { AxiosError } from "axios";
+import { BroadcastChannel } from "broadcast-channel";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { NeoResponse, api } from "./service-api";
 import { NeoHttpClient } from "./service-axios";
 import TokenService, { NeoTokenDetails } from "./service-token";
-
-import { BroadcastChannel } from "broadcast-channel";
-
 const logoutChannel = new BroadcastChannel("logout");
 const loginChannel = new BroadcastChannel("login");
-
 export interface LoginDetails {
   username: string | null;
   password: string;

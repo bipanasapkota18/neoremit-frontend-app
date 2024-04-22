@@ -32,11 +32,6 @@ const Modal = ({
   cancelButtonText,
   ...rest
 }: ModalProps) => {
-  // const handleClose = () => {
-  //   if (isSubmitting) return;
-  //   onClose();
-  // };
-
   return (
     <ChakraModal size={size} isOpen={isOpen} onClose={onClose} {...rest}>
       <ModalOverlay />
@@ -62,19 +57,16 @@ const Modal = ({
             borderRadius={"full"}
           />
         </HStack>
-        {/* <Divider color={"#EDF2F7"} /> */}
 
         <ModalBody py={4} px={0}>
           {children}
         </ModalBody>
-        {/* <Divider color={"#EDF2F7"} /> */}
 
         <ModalFooter
           display="flex"
           justifyContent={"space-between"}
           align-items={size === "xl" ? "flex-end" : "flex-start"}
           gap="24px"
-          // margin="10px"
           align-self="stretch"
         >
           <Button

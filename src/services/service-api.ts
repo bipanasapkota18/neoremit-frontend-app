@@ -113,8 +113,10 @@ export const api = {
     email: `${service}/users/forgot-password`,
     otp: `${service}/users/verify/otp`,
     resendOtp: `${service}/users/otp/resend`,
-    changePassword: `${service}/users/otp/change-password`
+    changePassword: `${service}/users/otp/change-password`,
+    setPasssword: `${service}/users/internal/set-password`
   },
+
   automatic_discount: {
     getAll: `${service}/master/automatic-discount/getAll`,
     create: `${service}/master/automatic-discount/create`,

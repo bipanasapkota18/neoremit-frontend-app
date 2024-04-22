@@ -1,8 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import { toastSuccess, toastFail } from "@neo/utility/Toast";
+import { toastFail, toastSuccess } from "@neo/utility/Toast";
 import { AxiosError } from "axios";
-import { NeoHttpClient } from "../service-axios";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "../service-api";
+import { NeoHttpClient } from "../service-axios";
 export interface IUserManagementResponse {
   name: string;
   email: string;
@@ -73,4 +73,4 @@ const useBlockUnblocktoggle = () => {
   });
 };
 
-export { useGetAllUsers, useCreateUser, useBlockUnblocktoggle };
+export { useBlockUnblocktoggle, useCreateUser, useGetAllUsers };

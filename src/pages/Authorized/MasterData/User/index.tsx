@@ -26,7 +26,6 @@ import CreateUserModal from "./CreateUser";
 
 const CreateUser = () => {
   const { data: userData } = useGetAllUsers();
-  console.log(userData);
 
   const {
     isOpen: isOpenUserAddModal,
@@ -39,10 +38,8 @@ const CreateUser = () => {
     onClose: onCloseUserEditModal
   } = useDisclosure();
 
-  const {
-    mutateAsync: mutateStatusUpdateBlockUnblock
-    // isLoading: isStatusUPdateLoading
-  } = useBlockUnblocktoggle();
+  const { mutateAsync: mutateStatusUpdateBlockUnblock } =
+    useBlockUnblocktoggle();
   const [active, setActive] = useState(false);
   const [changeId, setChangeId] = useState(null as number | null);
   const [isDekstop] = useMediaQuery("(min-width:1000px)");
