@@ -10,7 +10,8 @@ export const NAVIGATION_ROUTES = {
 
   USER_MANAGEMENT: {
     ROLES: "/roles",
-    USER: "/user"
+    USER: "/user",
+    SET_PASSWORD: "/set_password"
   },
   //masterdata
   MASTER_DATA: {
@@ -30,6 +31,10 @@ export const NAVIGATION_ROUTES = {
   PAYOUT_CONFIG: {
     BANK_WALLET_LIST: "/bank-wallet-list",
     PAYOUT_METHOD: "/payout-method"
+  },
+  INTERNAL_USER: {
+    ROLE_SETUP: "/role-setup",
+    USER_SETUP: "/user-setup"
   },
   FEES_AND_CHARGES: "/fees-and-charges",
   PROMO_CODE: "/promo-code",

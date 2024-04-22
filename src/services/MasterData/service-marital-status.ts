@@ -3,7 +3,6 @@ import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "../service-api";
 import { NeoHttpClient } from "../service-axios";
-
 export interface IMaritalStatusResponse {
   id: number;
   name: string;

@@ -29,6 +29,7 @@ import { ReactComponent as StateAddIcon } from "@neo/assets/images/svgs/state-ad
 import { ReactComponent as StateSetup } from "@neo/assets/images/svgs/state-setup.svg";
 import { ReactComponent as TickSquare } from "@neo/assets/images/svgs/tick-square.svg";
 import { ReactComponent as DeleteButton } from "@neo/assets/images/svgs/trash.svg";
+
 export const svgAssets = {
   ImagePlaceHolderDropzone,
   Background,
