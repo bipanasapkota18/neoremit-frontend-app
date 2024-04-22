@@ -7,7 +7,7 @@ import userSchema from "@neo/schema/InternalUser/user";
 import { useGetAllRoles } from "@neo/services/MasterData/service-role";
 import { useCreateUser } from "@neo/services/MasterData/service-user-management";
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
-import { useForm } from "react-hook-form"; // Import useForm hook
+import { useForm } from "react-hook-form";
 const defaultValues = {
   name: "",
   email: "",
@@ -39,7 +39,6 @@ const CreateUserModal = ({ isOpen, onClose }: CreateUserprops) => {
       mobileNumber: String(data.mobileNumber)
     });
     handleCloseModal();
-    reset();
   };
   const handleCloseModal = () => {
     onClose();

@@ -1,4 +1,3 @@
-// import { NAVIGATION_ROUTES } from './../../pages/App/navigationRoutes';
 import { sidebarAssets } from "@neo/assets/images/svgs/Sidebar";
 import { NAVIGATION_ROUTES } from "@neo/pages/App/navigationRoutes";
 import { ComponentProps } from "react";

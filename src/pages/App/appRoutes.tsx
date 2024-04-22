@@ -51,8 +51,6 @@ const PromoCode = lazy(
   () => import("@neo/pages/Authorized/MasterData/PromoCode")
 );
 
-// const SetPassword=lazy()=>import("@neo/pages/Authorized/InternalUser/set")
-// const SetPassword
 const RoleSetup = lazy(
   () => import("@neo/pages/Authorized/InternalUser/Role/")
 );

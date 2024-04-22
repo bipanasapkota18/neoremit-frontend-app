@@ -92,7 +92,6 @@ const SetPassword = () => {
             placeholder={"Password"}
             control={control}
             size={"lg"}
-            // helperText="Password must be at least 8 characters long"
             endIcons={
               <IconButton
                 tabIndex={-1}

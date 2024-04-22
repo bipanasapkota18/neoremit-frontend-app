@@ -21,7 +21,6 @@ import PasswordStrength from "./PasswordStrength";
 const SetPasswordPage = () => {
   const { mutateAsync, isLoading } = useSetPassword();
   const [flag, setFlag] = useBoolean();
-
   const [confirmFlag, setConfirmFlag] = useBoolean();
   const navigate = useNavigate();
   const defaultValues = {
@@ -99,7 +98,6 @@ const SetPasswordPage = () => {
               placeholder={"Password"}
               control={control}
               size={"lg"}
-              // helperText="Password must be at least 8 characters long"
               endIcons={
                 <IconButton
                   tabIndex={-1}
