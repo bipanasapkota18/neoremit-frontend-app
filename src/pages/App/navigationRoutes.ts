@@ -10,7 +10,8 @@ export const NAVIGATION_ROUTES = {
 
   USER_MANAGEMENT: {
     ROLES: "/roles",
-    USER: "/user"
+    USER: "/user",
+    SET_PASSWORD: "/set_password"
   },
   //masterdata
   MASTER_DATA: {

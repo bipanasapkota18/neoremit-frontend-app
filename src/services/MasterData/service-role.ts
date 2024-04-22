@@ -8,10 +8,10 @@ import { NeoHttpClient } from "../service-axios";
 export interface IRoleResponse {
   roleId: number | null;
   roleName: string | null;
-  roleDescription?: string;
-  roleHierarchy: number;
-  moduleList: ModuleList[];
-  active: boolean;
+  roleDescription?: string | null;
+  roleHierarchy: number | null;
+  moduleList: ModuleList[] | null | undefined;
+  active?: boolean;
 }
 
 export interface ModuleList {
@@ -70,4 +70,24 @@ const useGetAllModules = () => {
     }
   });
 };
-export { useAddRole, useGetAllModules, useGetAllRoles };
+
+const toggleRoleStatus = (roleId: number | null) => () => {
+  return NeoHttpClient.get<NeoResponse>(
+    api.role.toggleStatus.replace("{roleId}", roleId + "")
+  );
+};
+const useToggleRoleStatus = (roleId: number | null) => {
+  const queryClient = useQueryClient();
+  return useQuery([api.role.toggleStatus, roleId], toggleRoleStatus(roleId), {
+    enabled: false,
+    onSuccess: success => {
+      queryClient.invalidateQueries(api.role.getAll);
+      toastSuccess(success?.data?.message);
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message ?? "Error");
+    }
+  });
+};
+
+export { useAddRole, useGetAllModules, useGetAllRoles, useToggleRoleStatus };

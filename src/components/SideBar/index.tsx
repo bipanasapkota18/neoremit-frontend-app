@@ -11,7 +11,6 @@ import {
 } from "@chakra-ui/react";
 import { imageAssets } from "@neo/assets/images";
 import { svgAssets } from "@neo/assets/images/svgs";
-
 import { useLogoutMutation } from "@neo/services/service-auth";
 import { colorScheme } from "@neo/theme/colorScheme";
 import { useEffect, useState } from "react";
@@ -117,8 +116,9 @@ export default function Sidebar({
           cursor={"pointer"}
           onClick={() => navigate("/")}
         />
+
         <HStack
-          padding="16px 20px"
+          padding={" 1rem 1.25rem"}
           borderRadius={"16px"}
           width={isCollapsed && !isHovered ? "auto" : "260px"}
           gap={"16px"}
@@ -148,6 +148,8 @@ export default function Sidebar({
 
         <VStack
           w="100%"
+          pl={1}
+          paddingRight={"10px"}
           height={"full"}
           flex={1}
           py={4}
@@ -190,7 +192,7 @@ export default function Sidebar({
         </VStack>
         <Box>
           <Button
-            width={"240px"}
+            width={isCollapsed && !isHovered ? "" : "240px"}
             onClick={handleLogout}
             background={colorScheme.logout_button}
             _hover={{ background: colorScheme.logout_button }}

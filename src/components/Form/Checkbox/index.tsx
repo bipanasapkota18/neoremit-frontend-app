@@ -14,6 +14,7 @@ interface CheckBoxProps {
   helperText?: string;
   isRequired?: boolean;
   width?: string;
+  isChecked?: boolean;
 }
 
 const CheckBox = ({
@@ -22,7 +23,8 @@ const CheckBox = ({
   control,
   helperText,
   isRequired,
-  width
+  width,
+  isChecked
 }: CheckBoxProps) => {
   return (
     <Controller
@@ -39,6 +41,7 @@ const CheckBox = ({
               maxW={"350px !important"}
             >
               <ChakraCheckBox
+                isChecked={isChecked}
                 fontWeight={400}
                 fontSize={"14px"}
                 checked={value}

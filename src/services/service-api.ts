@@ -63,7 +63,13 @@ export const api = {
       getById: `${service}/relationship/{id}`,
       statusChange: `${service}/relationship/status/{id}`
     },
-
+    role: {
+      getAll: `${service}/api/role-module/roles`,
+      getSingle: `${service}/roles/get-role/{id}`,
+      create: `${service}/roles/create-role`,
+      update: `${service}/roles/update-role/{id}`,
+      delete: `${service}/roles/delete-role/{id}`
+    },
     source_of_fund: {
       getAll: `${service}/source-of-fund/list`,
       create: `${service}/source-of-fund`,
@@ -107,8 +113,10 @@ export const api = {
     email: `${service}/users/forgot-password`,
     otp: `${service}/users/verify/otp`,
     resendOtp: `${service}/users/otp/resend`,
-    changePassword: `${service}/users/otp/change-password`
+    changePassword: `${service}/users/otp/change-password`,
+    setPasssword: `${service}/users/internal/set-password`
   },
+
   automatic_discount: {
     getAll: `${service}/master/automatic-discount/getAll`,
     create: `${service}/master/automatic-discount/create`,
@@ -116,6 +124,12 @@ export const api = {
     delete: `${service}/master/automatic-discount/delete/{id}`,
     statusChange: `${service}/master/automatic-discount/toggle/status/{id}`,
     getById: `${service}/master/automatic-discount/get/{id}`
+  },
+
+  internalUser: {
+    getAll: `${service}/users/getAllInternalUsers`,
+    create: `${service}/users/create-user`,
+    toggleStatus: `${service}/users/blockUnblockUser/{UserId}`
   },
   role: {
     getAll: `${service}/api/role-module`,

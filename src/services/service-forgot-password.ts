@@ -20,7 +20,15 @@ interface IResendOTP {
 export interface ISetPassword {
   email: string;
   newPassword: string;
+  changePasswordFor: string;
 }
+
+export interface ISetPasswordFirst {
+  email: string | null;
+  newPassword: string;
+  confirmPassword: string;
+}
+
 const emailVerification = (data: IEmailVerification) => {
   return NeoHttpClient.post<NeoResponse>(api.users.email, data);
 };
@@ -66,4 +74,23 @@ const useResetPassword = () => {
     }
   });
 };
-export { useEmailVerification, useResendOTP, useResetPassword, useVerifyOTP };
+
+const setPassword = (data: ISetPasswordFirst) => {
+  return NeoHttpClient.post<NeoResponse>(api.users.setPasssword, data);
+};
+
+const useSetPassword = () => {
+  return useMutation(setPassword, {
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data?.message || error?.message);
+    }
+  });
+};
+
+export {
+  useEmailVerification,
+  useResendOTP,
+  useResetPassword,
+  useSetPassword,
+  useVerifyOTP
+};
