@@ -64,7 +64,7 @@ export const api = {
       statusChange: `${service}/relationship/status/{id}`
     },
     role: {
-      getAll: `${service}/roles/getAllRoles`,
+      getAll: `${service}/api/role-module/roles`,
       getSingle: `${service}/roles/get-role/{id}`,
       create: `${service}/roles/create-role`,
       update: `${service}/roles/update-role/{id}`,
@@ -113,8 +113,10 @@ export const api = {
     email: `${service}/users/forgot-password`,
     otp: `${service}/users/verify/otp`,
     resendOtp: `${service}/users/otp/resend`,
-    changePassword: `${service}/users/otp/change-password`
+    changePassword: `${service}/users/otp/change-password`,
+    setPasssword: `${service}/users/internal/set-password`
   },
+
   automatic_discount: {
     getAll: `${service}/master/automatic-discount/getAll`,
     create: `${service}/master/automatic-discount/create`,
@@ -130,6 +132,18 @@ export const api = {
     delete: `${service}/master/partnerSetup/deletePartnerSetup/{partnerId}`,
     statusChange: `${service}/master/partnerSetup/toggle/status/{id}`,
     getById: `${service}/master/partnerSetup/getPartnerSetup/{partnerId}`
+  },
+
+  internalUser: {
+    getAll: `${service}/users/getAllInternalUsers`,
+    create: `${service}/users/create-user`,
+    toggleStatus: `${service}/users/blockUnblockUser/{UserId}`
+  },
+  role: {
+    getAllRoles: `${service}/roles/getAllRoles`,
+    createRole: `${service}/roles/create-role`,
+    updateRole: `${service}/roles/update-role/{id}`,
+    deleteRole: `${service}/roles/delete-role/{id}`
   },
 
   init: "/init"

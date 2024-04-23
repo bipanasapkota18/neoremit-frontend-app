@@ -9,6 +9,11 @@ const PartnerSetup = lazy(() => import("@neo/pages/Authorized/PartnerSetup"));
 const AutomaticDiscount = lazy(
   () => import("@neo/pages/Authorized/MasterData/AutomaticDiscount")
 );
+
+// const SetPassword = lazy(
+//   () => import("@neo/pages/Authorized/InternalUser/SetPassword")
+// );
+
 const Document = lazy(
   () => import("@neo/pages/Authorized/MasterData/DocumentSetup")
 );
@@ -47,6 +52,11 @@ const MaritalStatus = lazy(
 const PromoCode = lazy(
   () => import("@neo/pages/Authorized/MasterData/PromoCode")
 );
+
+const RoleSetup = lazy(
+  () => import("@neo/pages/Authorized/InternalUser/Role/")
+);
+const User = lazy(() => import("@neo/pages/Authorized/MasterData/User"));
 
 export const appRoutes = [
   {
@@ -113,6 +123,14 @@ export const appRoutes = [
       {
         path: NAVIGATION_ROUTES.AUTOMATIC_DISCOUNT,
         element: <AutomaticDiscount />
+      },
+      {
+        path: NAVIGATION_ROUTES.INTERNAL_USER.ROLE_SETUP,
+        element: <RoleSetup />
+      },
+      {
+        path: NAVIGATION_ROUTES.USER_MANAGEMENT.USER,
+        element: <User />
       },
       {
         path: NAVIGATION_ROUTES.COUNTRY,
