@@ -140,10 +140,11 @@ export const api = {
     toggleStatus: `${service}/users/blockUnblockUser/{UserId}`
   },
   role: {
-    getAllRoles: `${service}/roles/getAllRoles`,
-    createRole: `${service}/roles/create-role`,
-    updateRole: `${service}/roles/update-role/{id}`,
-    deleteRole: `${service}/roles/delete-role/{id}`
+    getAll: `${service}/api/role-module`,
+    create: `${service}/api/role-module`,
+    allModules: `${service}/api/role-module/modules`,
+    toggleStatus: `${service}/api/role-module/toggle-status/{roleId}`,
+    activeRoles: `${service}/api/role-module/roles`
   },
 
   init: "/init"

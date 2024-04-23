@@ -14,6 +14,7 @@ interface CheckBoxProps extends CheckboxProps {
   label?: string;
   helperText?: string;
   isRequired?: boolean;
+  width?: string;
 }
 
 const CheckBox = ({
@@ -22,6 +23,7 @@ const CheckBox = ({
   control,
   helperText,
   isRequired,
+  width,
   ...rest
 }: CheckBoxProps) => {
   return (
@@ -35,6 +37,7 @@ const CheckBox = ({
               isRequired={!!isRequired}
               isInvalid={!!error}
               id={name}
+              width={width}
               maxW={"350px !important"}
             >
               <ChakraCheckBox

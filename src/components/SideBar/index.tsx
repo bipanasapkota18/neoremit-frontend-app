@@ -192,7 +192,7 @@ export default function Sidebar({
         </VStack>
         <Box>
           <Button
-            width={"240px"}
+            width={isCollapsed && !isHovered ? "" : "240px"}
             onClick={handleLogout}
             background={colorScheme.logout_button}
             _hover={{ background: colorScheme.logout_button }}
