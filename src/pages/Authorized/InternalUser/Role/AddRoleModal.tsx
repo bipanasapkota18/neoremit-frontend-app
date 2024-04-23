@@ -13,10 +13,11 @@ import TextInput from "@neo/components/Form/TextInput";
 import {
   IRoleResponse,
   useAddRole,
-  useGetAllModules
+  useGetAllModules,
+  useGetRoleById
 } from "@neo/services/MasterData/service-role";
 import { colorScheme } from "@neo/theme/colorScheme";
-import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 
@@ -43,6 +44,8 @@ const AddRole = ({
   data: editData,
   setEditId
 }: AddRoleProps) => {
+  const { data: roleData } = useGetRoleById(editId);
+
   const schema = yup.object().shape({
     roleName: yup.string().required("Role Name is required").nullable(),
     roleDescription: yup
@@ -54,14 +57,6 @@ const AddRole = ({
       .required("Role Hierarchy is required")
       .nullable()
   });
-
-  const selectedRole = useMemo(
-    () =>
-      editData?.find(role => {
-        return role.roleId === editId;
-      }),
-    [editData, editId]
-  );
 
   const { mutateAsync: useMutateAddRole, isLoading: isAddLoading } =
     useAddRole();
@@ -88,14 +83,13 @@ const AddRole = ({
 
   useEffect(() => {
     if (editId) {
-      console.log(selectedRole?.moduleList);
       reset({
-        roleName: selectedRole?.roleName,
-        roleDescription: selectedRole?.roleDescription,
-        roleHierarchy: selectedRole?.roleHierarchy,
+        roleName: roleData?.roleName,
+        roleDescription: roleData?.roleDescription,
+        roleHierarchy: roleData?.roleHierarchy,
         moduleList: getValues("moduleList")?.map(item => {
-          const currentModule = selectedRole?.moduleList?.find(
-            module => module.moduleId == item.moduleId
+          const currentModule = roleData?.moduleList?.find(
+            (module: any) => module.moduleId == item.moduleId
           );
           return {
             moduleId: currentModule?.moduleId,

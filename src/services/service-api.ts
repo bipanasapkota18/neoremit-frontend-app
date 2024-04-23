@@ -144,7 +144,8 @@ export const api = {
     create: `${service}/api/role-module`,
     allModules: `${service}/api/role-module/modules`,
     toggleStatus: `${service}/api/role-module/toggle-status/{roleId}`,
-    activeRoles: `${service}/api/role-module/roles`
+    activeRoles: `${service}/api/role-module/roles`,
+    getById: `${service}/api/role-module/{roleId}`
   },
 
   init: "/init"

@@ -4,26 +4,6 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "./service-api";
 import { NeoHttpClient } from "./service-axios";
 
-// const defaultValues = {
-//   partnerType: null as ISelectOptions<string> | null,
-//   companyName: null,
-//   address: null,
-//   phoneNumber: null,
-//   emailAddress: null,
-//   timeZone: null as ISelectOptions<string> | null,
-//   operatingCountryIds: null as ISelectOptions<number>[] | null,
-//   partnerSettlementInfo: {
-//     partnerType: null as ISelectOptions<string> | null,
-//     companyName: null,
-//     operatingCountryIds: null as ISelectOptions<number>[] | null,
-//     acceptPinNo: false
-//   },
-//   partnerContactInfo: {
-//     contactName: null,
-//     designation: null,
-//     email: null
-//   }
-// };
 export interface IPartnerRequest {
   countryHeadQuarterId: number | null;
   partnerType: string | undefined;
