@@ -61,10 +61,10 @@ export const useCustomStyles = (error?: any) => {
     ) => ({
       ...provided,
       borderWidth: "2px",
-      borderColor: error ? colorScheme.danger_50 : "inherit",
+      borderColor: error ? colorScheme.danger_500 : "inherit",
       ...(isDisabled && inheritControlBG ? { backgroundColor: "inherit" } : {}),
       "&:hover": {
-        borderColor: error ? colorScheme.danger_100 : "inherit",
+        borderColor: error ? colorScheme.danger_500 : "inherit",
         backgroundColor: isSingleTimeDropdown
           ? `${colorScheme.gray_100}`
           : "inherit",
