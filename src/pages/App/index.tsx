@@ -5,6 +5,7 @@ import {
 } from "@neo/services/service-auth";
 import { Suspense, lazy, useEffect } from "react";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import GoogleRedirect from "../MobileRedirect/google";
 import SetPasswordPage from "../NoAuth/Components/SetPassword/SetPassword";
 import ForgotPassword from "../NoAuth/ForgotPassword";
 import { appRoutes } from "./appRoutes";
@@ -98,6 +99,10 @@ export default function App() {
                 <Route
                   path={NAVIGATION_ROUTES.USER_MANAGEMENT.SET_PASSWORD}
                   element={<SetPasswordPage />}
+                />
+                <Route
+                  path={NAVIGATION_ROUTES.MOBILE_REDIRECT}
+                  element={<GoogleRedirect />}
                 />
               </Route>
               <Route
