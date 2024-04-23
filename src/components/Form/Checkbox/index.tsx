@@ -1,13 +1,14 @@
 import {
+  Checkbox as ChakraCheckBox,
+  CheckboxProps,
   FormControl,
   FormErrorMessage,
-  FormHelperText,
-  Checkbox as ChakraCheckBox
+  FormHelperText
 } from "@chakra-ui/react";
 
 import { Control, Controller } from "react-hook-form";
 
-interface CheckBoxProps {
+interface CheckBoxProps extends CheckboxProps {
   name: string;
   control: Control<any>;
   label?: string;
@@ -20,7 +21,8 @@ const CheckBox = ({
   label,
   control,
   helperText,
-  isRequired
+  isRequired,
+  ...rest
 }: CheckBoxProps) => {
   return (
     <Controller
@@ -38,8 +40,9 @@ const CheckBox = ({
               <ChakraCheckBox
                 fontWeight={400}
                 fontSize={"14px"}
-                checked={value}
+                isChecked={value}
                 onChange={onChange}
+                {...rest}
               >
                 {label}
               </ChakraCheckBox>

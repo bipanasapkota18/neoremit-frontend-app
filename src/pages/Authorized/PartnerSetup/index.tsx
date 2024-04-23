@@ -53,7 +53,7 @@ const PartnerSetup = () => {
     pageSize: 10
   });
   const { data: PartnerData, isLoading } = useGetAllPartners();
-  console.log(PartnerData);
+
   const { isLoading: isToggling, mutateAsync: mutateToggle } =
     useTogglePartnerStatus();
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
@@ -81,15 +81,24 @@ const PartnerSetup = () => {
     },
     {
       header: "Country(HQ)",
-      accessorKey: "country"
+      accessorKey: "countryHeadQuarter",
+      cell: (cell: CellContext<any, any>) => {
+        return <Text>{cell?.row?.original?.countryHeadQuarter?.name}</Text>;
+      }
     },
     {
       header: "Funding Currency",
-      accessorKey: "fundingCurrency"
+      accessorKey: "fundingCurrency",
+      cell: (cell: CellContext<any, any>) => {
+        return <Text>{cell?.row?.original?.fundingCurrency?.name}</Text>;
+      }
     },
     {
       header: "Settlement Currency",
-      accessorKey: "settlementCurrency"
+      accessorKey: "localCurrency",
+      cell: (cell: CellContext<any, any>) => {
+        return <Text>{cell?.row?.original?.localCurrency?.name}</Text>;
+      }
     },
     {
       header: "Status",
@@ -98,10 +107,10 @@ const PartnerSetup = () => {
         return (
           <Switch
             size="lg"
-            isChecked={cell?.row?.original?.isActive}
+            isChecked={cell?.row?.original?.status}
             onChange={() => {
               setChangeId(cell?.row?.original?.id);
-              setActive(cell?.row?.original?.isActive);
+              setActive(cell?.row?.original?.status);
               onOpenPartnerStatusUpdateModal();
             }}
           />
@@ -156,7 +165,6 @@ const PartnerSetup = () => {
         <AddPartner
           editId={editId}
           setEditId={setEditId}
-          data={PartnerData ?? []}
           onClose={() => {
             setFlag.off();
           }}

@@ -25,6 +25,7 @@ import { NeoHttpClient } from "./service-axios";
 //   }
 // };
 export interface IPartnerRequest {
+  countryHeadQuarterId: number | null;
   partnerType: string | undefined;
   companyName: string | null;
   address: string | null;
@@ -33,19 +34,19 @@ export interface IPartnerRequest {
   timeZone: string | undefined;
   operatingCountryIds: number[] | undefined;
   partnerSettlementInfo: PartnerSettlementInfo;
-  partnerContactInfo: PartnerContactInfo;
+  partnerContactInfo: PartnerContactInfo[] | undefined;
 }
 
 export interface PartnerContactInfo {
-  contactName: string | null;
-  designation: string | null;
-  email: string | null;
+  contactName?: string | null;
+  designation?: string | null;
+  email?: string | null;
 }
 
 export interface PartnerSettlementInfo {
-  partnerType: string | undefined;
-  companyName: string | null;
-  operatingCountryIds: number[] | undefined;
+  fundingCurrencyId: number | null | undefined;
+  localCurrencyId: number | null | undefined;
+  transactionLimit: number | null;
   acceptPinNo: boolean;
 }
 
@@ -137,10 +138,26 @@ const useTogglePartnerStatus = () => {
     }
   });
 };
+
+const getPartnerById = (id: number | null) => {
+  return NeoHttpClient.get<NeoResponse>(
+    api.partner_setup.getById.replace("{partnerId}", id + "")
+  );
+};
+const useGetPartnerById = (id: number | null) => {
+  return useQuery([api.partner_setup.getById, id], () => getPartnerById(id), {
+    enabled: !!id,
+    select: data => data?.data?.data,
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data.message ?? error?.message);
+    }
+  });
+};
 export {
   useAddPartner,
   useDeletePartner,
   useGetAllPartners,
+  useGetPartnerById,
   useTogglePartnerStatus,
   useUpdatePartner
 };

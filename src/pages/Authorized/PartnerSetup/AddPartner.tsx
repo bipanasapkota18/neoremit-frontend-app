@@ -15,16 +15,23 @@ import Select from "@neo/components/Form/SelectComponent";
 import TextInput from "@neo/components/Form/TextInput";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import { useGetCountryList } from "@neo/services/MasterData/service-country";
-import { PromoCodeList } from "@neo/services/MasterData/service-promo-code";
-import { useAddPartner } from "@neo/services/service-partner-setup";
+import { useGetCurrencyList } from "@neo/services/MasterData/service-currency";
+import {
+  IPartnerRequest,
+  PartnerContactInfo,
+  useAddPartner,
+  useGetPartnerById,
+  useUpdatePartner
+} from "@neo/services/service-partner-setup";
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation } from "react-router-dom";
 import * as yup from "yup";
 
 const defaultValues = {
   partnerType: null as ISelectOptions<string> | null,
+  countryHeadQuarterId: null as ISelectOptions<number> | null,
   companyName: null,
   address: null,
   phoneNumber: null,
@@ -32,22 +39,17 @@ const defaultValues = {
   timeZone: null as ISelectOptions<string> | null,
   operatingCountryIds: null as ISelectOptions<number>[] | null,
   partnerSettlementInfo: {
-    partnerType: null as ISelectOptions<string> | null,
-    companyName: null,
-    operatingCountryIds: null as ISelectOptions<number>[] | null,
+    fundingCurrencyId: null as ISelectOptions<number> | null,
+    localCurrencyId: null as ISelectOptions<number> | null,
+    transactionLimit: null,
     acceptPinNo: false
   },
-  partnerContactInfo: {
-    contactName: null,
-    designation: null,
-    email: null
-  }
+  partnerContactInfo: null as PartnerContactInfo[] | null
 };
 interface AddPartnerProps {
   editId: number | null;
   setEditId: Dispatch<SetStateAction<number | null>>;
   onClose: () => void;
-  data: PromoCodeList[] | undefined;
 }
 
 const AddPartner = ({
@@ -56,23 +58,79 @@ const AddPartner = ({
   // data: editData,
   setEditId
 }: AddPartnerProps) => {
-  // const selectedPromoCode = useMemo(
-  //   () =>
-  //     editData?.find(promoCode => {
-  //       return promoCode.id === editId;
-  //     }),
-  //   [editData, editId]
-  // );
+  const { data: currencyData } = useGetCurrencyList();
+
+  const currency_options = formatSelectOptions<number>({
+    data: currencyData,
+    valueKey: "id",
+    labelKey: "name"
+  });
+
+  const { data: selectedPartner } = useGetPartnerById(editId);
+
+  useEffect(() => {
+    if (editId) {
+      reset({
+        companyName: selectedPartner?.companyName,
+        address: selectedPartner?.address,
+        phoneNumber: selectedPartner?.phoneNumber,
+        emailAddress: selectedPartner?.emailAddress,
+        operatingCountryIds: selectedPartner?.operatingCountries?.map(
+          (country: any) => ({
+            value: country.id,
+            label: country.name
+          })
+        ),
+        countryHeadQuarterId: {
+          value: selectedPartner?.countryHeadQuarter.id,
+          label: selectedPartner?.countryHeadQuarter.name
+        },
+        partnerType: {
+          value: selectedPartner?.partnerType,
+          label: selectedPartner?.partnerType
+        },
+        timeZone: {
+          value: selectedPartner?.timeZone,
+          label: selectedPartner?.timeZone
+        },
+        partnerSettlementInfo: {
+          ...selectedPartner?.partnerSettlementInfo,
+          fundingCurrencyId: {
+            value: selectedPartner?.partnerSettlementInfo.fundingCurrency?.id,
+            label: selectedPartner?.partnerSettlementInfo.fundingCurrency?.name
+          },
+          localCurrencyId: {
+            value: selectedPartner?.partnerSettlementInfo.localCurrency?.id,
+            label: selectedPartner?.partnerSettlementInfo.localCurrency?.name
+          },
+          transactionLimit:
+            selectedPartner?.partnerSettlementInfo.transactionLimit,
+          acceptPinNo: selectedPartner?.partnerSettlementInfo.acceptPinNo
+        },
+        partnerContactInfo: selectedPartner?.partnerContactInfo.map(
+          (contact: PartnerContactInfo) => ({
+            contactName: contact.contactName,
+            designation: contact.designation,
+            email: contact.email
+          })
+        )
+      });
+    }
+  }, [editId, selectedPartner]);
 
   const { data: countryData } = useGetCountryList();
 
-  const { mutateAsync: mutateAddPartner } = useAddPartner();
+  const { mutateAsync: mutateAddPartner, isLoading: isAddLoading } =
+    useAddPartner();
 
-  // const { mutateAsync: useMutateUpdatePromoCode, isLoading: isUpdateLoading } =
-  //   useUpdatePromoCode();
+  const { mutateAsync: mutateUpdatePartner, isLoading: isUpdateLoading } =
+    useUpdatePartner();
 
   const partnerSchema = yup.object().shape({
-    partnerName: yup.string().required("Partner Name is required"),
+    countryHeadQuarterId: yup
+      .object()
+      .required("Country HQ is required")
+      .nullable(),
     partnerType: yup.object().required("Partner Type is required").nullable(),
     companyName: yup.string().required("Company Name is required").nullable(),
     address: yup.string().required("Address is required").nullable(),
@@ -86,26 +144,47 @@ const AddPartner = ({
     operatingCountryIds: yup
       .array()
       .min(1, "Enter at least one country")
-      .required("Operating Country is required"),
+      .required("Operating Country is required")
+      .nullable(),
     partnerSettlementInfo: yup.object().shape({
-      partnerType: yup.object().required("Partner Type is required").nullable(),
-      companyName: yup.string().required("Company Name is required").nullable(),
-      operatingCountryIds: yup
-        .array()
-        .required("Operating Country is required")
-        .min(1, "Enter at least one country")
+      fundingCurrencyId: yup
+        .object()
+        .required("Funding Currency is required")
+        .nullable(),
+      localCurrencyId: yup
+        .object()
+        .required("Local Currency is required")
+        .nullable(),
+      transactionLimit: yup
+        .number()
+        .required("Transaction Limit is required")
+        .min(1, "Transaction Limit must be greater than 0")
         .nullable(),
       acceptPinNo: yup.boolean().required("Accept Pin No is required")
     }),
-    partnerContactInfo: yup.object().shape({
-      contactName: yup.string().required("Contact Name is required").nullable(),
-      designation: yup.string().required("Designation is required").nullable(),
-      email: yup
-        .string()
-        .email("Enter a valid email address")
-        .required("Email Address is required")
-        .nullable()
-    })
+    partnerContactInfo: yup.array().of(
+      yup.object().shape({
+        contactName: yup.string().when("$index", {
+          is: 0, // Only apply validation when the index is 0 (first element)
+          then: yup.string().required("Contact Name is required").nullable(),
+          otherwise: yup.string().nullable() // Optional for other elements
+        }),
+        designation: yup.string().when("$index", {
+          is: 0, // Only apply validation when the index is 0 (first element)
+          then: yup.string().required("Designation is required").nullable(),
+          otherwise: yup.string().nullable() // Optional for other elements
+        }),
+        email: yup.string().when("$index", {
+          is: 0, // Only apply validation when the index is 0 (first element)
+          then: yup
+            .string()
+            .email("Enter a valid email address")
+            .required("Email Address is required")
+            .nullable(),
+          otherwise: yup.string().nullable() // Optional for other elements
+        })
+      })
+    )
   });
 
   const { control, handleSubmit, reset } = useForm({
@@ -119,6 +198,7 @@ const AddPartner = ({
     { value: "AGGREGATOR", label: "Aggregator" },
     { value: "WHITE_LABELED_PARTNER", label: "White Labeled Partner" }
   ];
+
   const country_options = formatSelectOptions<number>({
     data: countryData?.data?.data,
     valueKey: "id",
@@ -132,66 +212,70 @@ const AddPartner = ({
   });
 
   const { pathname } = useLocation();
-
   const activePath = breadcrumbTitle(pathname);
 
-  // useEffect(() => {
-  //   if (editId) {
-  //     reset({
-  //       name: selectedPromoCode?.name,
-  //       code: selectedPromoCode?.code,
-  //       validFrom: moment(selectedPromoCode?.validFrom).format("YYYY-MM-DD"),
-  //       validTo: moment(selectedPromoCode?.validTo).format("YYYY-MM-DD"),
-  //       doesExpire: selectedPromoCode?.doesExpire ? "Yes" : "No",
-  //       hasUsageLimit: selectedPromoCode?.hasUsageLimit ? "Yes" : "No",
-  //       countryIds: selectedPromoCode?.countryList?.map(country => {
-  //         return { label: country.name, value: country.id };
-  //       }),
-  //       payoutMethodIds: selectedPromoCode?.payoutMethodList?.map(payout => {
-  //         return { label: payout.name, value: payout.id };
-  //       }),
-  //       usageLimit: selectedPromoCode?.usageLimit,
-  //       capAmount: selectedPromoCode?.capAmount,
-  //       deductionFrom: {
-  //         label: selectedPromoCode?.deductionFrom,
-  //         value: selectedPromoCode?.deductionFrom
-  //       },
-  //       marginDiscountType: {
-  //         label: selectedPromoCode?.marginDiscountType,
-  //         value: selectedPromoCode?.marginDiscountType
-  //       },
-  //       marginDiscountValue: selectedPromoCode?.marginDiscountValue,
-  //       transactionFeeDiscountType: {
-  //         label: selectedPromoCode?.transactionFeeDiscountType,
-  //         value: selectedPromoCode?.transactionFeeDiscountType
-  //       },
-  //       transactionFeeDiscountValue:
-  //         selectedPromoCode?.transactionFeeDiscountValue,
-
-  //       description: selectedPromoCode?.description
-  //     });
-  //   }
-  // }, [editData, editId]);
-
   const onAddPartner = async (data: typeof defaultValues) => {
-    const preparedData = {
+    // const filteredPartnerContactInfo = data?.partnerContactInfo
+    //   ?.map((contact: PartnerContactInfo) => {
+    //     // Check if all fields are undefined
+    //     if (
+    //       contact.contactName === undefined &&
+    //       contact.designation === undefined &&
+    //       contact.email === undefined
+    //     ) {
+    //       return null; // Return null for elements with all fields undefined
+    //     } else if (
+    //       contact.contactName === null &&
+    //       contact.designation === null &&
+    //       contact.email === null
+    //     ) {
+    //       return null;
+    //     } else if (
+    //       contact.contactName === "" &&
+    //       contact.designation === "" &&
+    //       contact.email === ""
+    //     ) {
+    //       return null;
+    //     } else {
+    //       return contact; // Return the contact object for other cases
+    //     }
+    //   })
+    //   .filter((contact: PartnerContactInfo | null) => contact !== null); // Filter out null elements
+    const preparedData: IPartnerRequest = {
       ...data,
       operatingCountryIds: data.operatingCountryIds?.map(
         country => country.value
       ),
+      countryHeadQuarterId: data.countryHeadQuarterId?.value ?? null,
       timeZone: data.timeZone?.label,
       partnerType: data.partnerType?.value,
       partnerSettlementInfo: {
         ...data.partnerSettlementInfo,
-        partnerType: data.partnerSettlementInfo.partnerType?.value,
-        operatingCountryIds:
-          data.partnerSettlementInfo.operatingCountryIds?.map(
-            country => country.value
-          )
-      }
+        fundingCurrencyId: data.partnerSettlementInfo.fundingCurrencyId?.value,
+        localCurrencyId: data.partnerSettlementInfo.localCurrencyId?.value
+      },
+      partnerContactInfo: data.partnerContactInfo
+        ?.map((contact: PartnerContactInfo) => ({
+          contactName: contact.contactName,
+          designation: contact.designation,
+          email: contact.email
+        }))
+        .filter(
+          (contact: PartnerContactInfo) =>
+            contact.contactName !== null ||
+            contact.designation !== null ||
+            contact.email !== null
+        )
     };
-    // console.log(preparedData);
-    await mutateAddPartner(preparedData);
+    if (editId) {
+      await mutateUpdatePartner({
+        id: editId,
+        data: preparedData
+      });
+    } else {
+      await mutateAddPartner(preparedData);
+    }
+    handleCloseModal();
   };
 
   const handleCloseModal = () => {
@@ -218,6 +302,7 @@ const AddPartner = ({
                 placeholder="-Select Partner Type-"
                 name="partnerType"
                 options={partner_type_options}
+                required
               />
             </GridItem>
             <GridItem colSpan={1}>
@@ -226,6 +311,16 @@ const AddPartner = ({
                 type="text"
                 label="Enter Company Name"
                 name="companyName"
+                required
+              />
+            </GridItem>
+            <GridItem colSpan={1}>
+              <Select
+                control={control}
+                placeholder="Country HQ"
+                name="countryHeadQuarterId"
+                options={country_options}
+                required
               />
             </GridItem>
             <GridItem colSpan={1}>
@@ -235,6 +330,7 @@ const AddPartner = ({
                 name="operatingCountryIds"
                 options={country_options}
                 isMulti
+                required
               />
             </GridItem>
             <GridItem colSpan={1}>
@@ -243,6 +339,7 @@ const AddPartner = ({
                 type="text"
                 label="Enter Address"
                 name="address"
+                required
               />
             </GridItem>
             <GridItem colSpan={1}>
@@ -251,6 +348,7 @@ const AddPartner = ({
                 type="text"
                 label="Enter Phone Number"
                 name="phoneNumber"
+                required
               />
             </GridItem>
             <GridItem colSpan={1}>
@@ -259,6 +357,7 @@ const AddPartner = ({
                 type="text"
                 label="Enter Email Address"
                 name="emailAddress"
+                required
               />
             </GridItem>
             <GridItem colSpan={1}>
@@ -267,6 +366,7 @@ const AddPartner = ({
                 placeholder="-Time Zone-"
                 name="timeZone"
                 options={country_options}
+                required
               />
             </GridItem>
           </SimpleGrid>
@@ -279,26 +379,28 @@ const AddPartner = ({
             <GridItem colSpan={1}>
               <Select
                 control={control}
-                placeholder="-Select Partner Type-"
-                name="partnerSettlementInfo.partnerType"
-                options={partner_type_options}
-              />
-            </GridItem>
-            <GridItem colSpan={1}>
-              <TextInput
-                control={control}
-                type="text"
-                label="Enter Company Name"
-                name="partnerSettlementInfo.companyName"
+                placeholder="-Funding Currency-"
+                name="partnerSettlementInfo.fundingCurrencyId"
+                options={currency_options}
+                required
               />
             </GridItem>
             <GridItem colSpan={1}>
               <Select
                 control={control}
-                placeholder="-Operating Countries-"
-                name="partnerSettlementInfo.operatingCountryIds"
-                options={country_options}
-                isMulti
+                placeholder="-Local Currency-"
+                name="partnerSettlementInfo.localCurrencyId"
+                options={currency_options}
+                required
+              />
+            </GridItem>
+            <GridItem colSpan={1}>
+              <TextInput
+                control={control}
+                type="number"
+                label="Enter Transaction Limit"
+                name="partnerSettlementInfo.transactionLimit"
+                required
               />
             </GridItem>
             <GridItem colSpan={1}>
@@ -320,7 +422,8 @@ const AddPartner = ({
                 control={control}
                 type="text"
                 label="Enter Contact Name"
-                name="partnerContactInfo.contactName"
+                name={`partnerContactInfo[${0}].contactName`}
+                required
               />
             </GridItem>
             <GridItem colSpan={1}>
@@ -328,7 +431,8 @@ const AddPartner = ({
                 control={control}
                 type="text"
                 label="Enter Designation"
-                name="partnerContactInfo.designation"
+                name={`partnerContactInfo[${0}].designation`}
+                required
               />
             </GridItem>
             <GridItem colSpan={1}>
@@ -336,7 +440,32 @@ const AddPartner = ({
                 control={control}
                 type="text"
                 label="Enter Email Address"
-                name="partnerContactInfo.email"
+                name={`partnerContactInfo[${0}].email`}
+                required
+              />
+            </GridItem>
+            <GridItem colSpan={1}>
+              <TextInput
+                control={control}
+                type="text"
+                label="Enter Contact Name"
+                name={`partnerContactInfo[${1}].contactName`}
+              />
+            </GridItem>
+            <GridItem colSpan={1}>
+              <TextInput
+                control={control}
+                type="text"
+                label="Enter Designation"
+                name={`partnerContactInfo[${1}].designation`}
+              />
+            </GridItem>
+            <GridItem colSpan={1}>
+              <TextInput
+                control={control}
+                type="text"
+                label="Enter Email Address"
+                name={`partnerContactInfo[${1}].email`}
               />
             </GridItem>
           </SimpleGrid>
@@ -355,7 +484,12 @@ const AddPartner = ({
             >
               Cancel
             </Button>
-            <Button padding={"10px 40px"} fontWeight={700} type="submit">
+            <Button
+              padding={"10px 40px"}
+              isLoading={isAddLoading || isUpdateLoading}
+              fontWeight={700}
+              type="submit"
+            >
               Save
             </Button>
           </HStack>
