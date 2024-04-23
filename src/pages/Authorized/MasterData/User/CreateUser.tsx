@@ -64,6 +64,7 @@ const CreateUserModal = ({ isOpen, onClose }: CreateUserprops) => {
               label="Full Name"
               control={control}
               type="text"
+              isRequired
             />
           </GridItem>
 
@@ -74,6 +75,7 @@ const CreateUserModal = ({ isOpen, onClose }: CreateUserprops) => {
               label="Email"
               control={control}
               type="text"
+              isRequired
             />
           </GridItem>
 
@@ -84,6 +86,7 @@ const CreateUserModal = ({ isOpen, onClose }: CreateUserprops) => {
               label="Phone Number"
               control={control}
               type="number"
+              isRequired
             />
           </GridItem>
           <GridItem colSpan={2}>

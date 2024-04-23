@@ -10,13 +10,10 @@ const userSchema = yup.object().shape({
 
   mobileNumber: yup
     .string()
-    .min(10, "Phone number must be at least 10 digits")
+    .required("Phone number is required.")
+    .min(10, "Mobile number must be at least 10 digits.")
+    .max(10, "Mobile number cannot exceed 10 digits."),
 
-    .required("Phone number is required")
-    .matches(
-      /^\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}$/,
-      "Invalid phone number format"
-    ),
   roles: yup
     .array()
     .min(1, "Select at least one Role")

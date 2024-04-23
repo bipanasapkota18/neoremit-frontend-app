@@ -7,7 +7,8 @@ export interface IUserManagementResponse {
   name: string;
   email: string;
   mobileNumber: string;
-  roles: number[];
+  // roles: number[];
+  role: [number];
 }
 export interface IUserManagementRequest {
   name: string;

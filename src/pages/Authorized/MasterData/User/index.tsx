@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   Card,
   CardBody,
@@ -16,10 +17,11 @@ import SearchInput from "@neo/components/Form/SearchInput";
 import ConfirmationModal from "@neo/components/Modal/DeleteModal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import {
+  IUserManagementResponse,
   useBlockUnblocktoggle,
   useGetAllUsers
 } from "@neo/services/MasterData/service-user-management";
-import { PaginationState } from "@tanstack/react-table";
+import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import CreateUserModal from "./CreateUser";
@@ -73,7 +75,22 @@ const CreateUser = () => {
 
     {
       header: "Role",
-      accessorKey: "role"
+      accessorKey: "role",
+      cell: (cell: CellContext<IUserManagementResponse, any>) => {
+        return cell.row.original.role.map((item, index) => {
+          return (
+            <Badge
+              key={index}
+              padding="8px 24px"
+              bgColor={"#EDFDFD"}
+              mx={2}
+              borderRadius={"16px"}
+            >
+              {item}
+            </Badge>
+          );
+        });
+      }
     },
 
     {

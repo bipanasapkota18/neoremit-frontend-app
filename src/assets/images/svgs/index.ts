@@ -1,4 +1,5 @@
 import { ReactComponent as Background } from "@neo/assets/images/svgs/AuthPageWrapper.svg";
+import { ReactComponent as Frame } from "@neo/assets/images/svgs/Frame.svg";
 import { ReactComponent as AddButton } from "@neo/assets/images/svgs/add-square.svg";
 import { ReactComponent as ArrowLeftIcon } from "@neo/assets/images/svgs/arrow_back.svg";
 import { ReactComponent as BaseRate } from "@neo/assets/images/svgs/base-rate.svg";
@@ -47,6 +48,7 @@ export const svgAssets = {
   DeleteButton,
   EmailIcon,
   EyeIcon,
+  Frame,
   EyeSlashIcon,
   SelectDropdown,
   NotificationIcon,

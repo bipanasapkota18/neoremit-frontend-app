@@ -39,6 +39,7 @@ const Modal = ({
         display={"flex"}
         justifyContent={"center"}
         gap={"12px"}
+        m={"6rem"}
         width={"552px"}
         padding={"32px"}
         borderRadius={"32px"}
