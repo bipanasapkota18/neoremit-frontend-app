@@ -126,7 +126,6 @@ const AddRole = ({
       ...formData,
       moduleList: preparedModuleList
     };
-
     await useMutateAddRole({
       ...preparedData,
       roleId: editId ?? null
