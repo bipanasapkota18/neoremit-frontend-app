@@ -68,7 +68,7 @@ const AddRole = ({
 
   const { data: moduleList } = useGetAllModules();
 
-  const { control, handleSubmit, reset, setValue } = useForm({
+  const { control, handleSubmit, reset, setValue, getValues } = useForm({
     defaultValues: defaultValues,
     resolver: yupResolver(schema)
   });
@@ -88,10 +88,27 @@ const AddRole = ({
 
   useEffect(() => {
     if (editId) {
+      console.log(selectedRole?.moduleList);
       reset({
         roleName: selectedRole?.roleName,
         roleDescription: selectedRole?.roleDescription,
-        roleHierarchy: selectedRole?.roleHierarchy
+        roleHierarchy: selectedRole?.roleHierarchy,
+        moduleList: getValues("moduleList")?.map(item => {
+          const currentModule = selectedRole?.moduleList?.find(
+            module => module.moduleId == item.moduleId
+          );
+          return {
+            moduleId: currentModule?.moduleId,
+            moduleName: currentModule?.moduleName,
+            scopeList: currentModule?.scopeList.reduce(
+              (acc: any, curr: any) => {
+                acc[curr] = true;
+                return acc;
+              },
+              {}
+            )
+          };
+        })
       });
     }
   }, [editData, editId]);

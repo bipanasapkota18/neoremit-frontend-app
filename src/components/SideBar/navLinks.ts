@@ -131,6 +131,11 @@ export const navLinks = [
         label: "User"
       }
     ]
+  },
+  {
+    icon: sidebarAssets.Partners,
+    href: NAVIGATION_ROUTES.PARTNERS,
+    label: "Partner Setup"
   }
 
   // {
