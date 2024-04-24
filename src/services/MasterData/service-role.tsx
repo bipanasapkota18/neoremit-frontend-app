@@ -41,7 +41,7 @@ const useAddRole = () => {
 
 const updateRole = ({ id, data }: { id: number; data: any }) => {
   return NeoHttpClient.put<NeoResponse>(
-    api.masterData.role.update.replace("{id}", id + ""),
+    api.masterData.role.updateRole.replace("{id}", id + ""),
     data
   );
 };
@@ -58,21 +58,21 @@ const useUpdateRole = () => {
   });
 };
 
-const deleteRole = (id: number | null) => {
-  return NeoHttpClient.delete<NeoResponse>(
-    api.masterData.role.delete.replace("{id}", id + "")
-  );
-};
-const useDeleteRole = () => {
-  const queryClient = useQueryClient();
-  return useMutation(deleteRole, {
-    onSuccess: success => {
-      queryClient.invalidateQueries(api.masterData.role.getAll);
-      toastSuccess(success?.data?.message);
-    },
-    onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
-    }
-  });
-};
-export { useAddRole, useDeleteRole, useGetAllRoles, useUpdateRole };
+// const deleteRole = (id: number | null) => {
+//   return NeoHttpClient.delete<NeoResponse>(
+//     api.masterData.role.delete.replace("{id}", id + "")
+//   );
+// };
+// const useDeleteRole = () => {
+//   const queryClient = useQueryClient();
+//   return useMutation(deleteRole, {
+//     onSuccess: success => {
+//       queryClient.invalidateQueries(api.masterData.role.getAll);
+//       toastSuccess(success?.data?.message);
+//     },
+//     onError: (error: AxiosError<{ message: string }>) => {
+//       toastFail(error?.response?.data?.message ?? error?.message);
+//     }
+//   });
+// };
+export { useAddRole, useGetAllRoles, useUpdateRole };

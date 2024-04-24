@@ -28,10 +28,10 @@ const CreateUserModal = ({ isOpen, onClose }: CreateUserprops) => {
 
   const rolesOptions = formatSelectOptions<number>({
     data: rolesData,
-    labelKey: "name",
-    valueKey: "id"
+    labelKey: "roleName",
+    valueKey: "roleId"
   });
-
+  console.log(rolesData);
   const onCreateUser = async (data: typeof defaultValues) => {
     await mutateCreateUser({
       ...data,
@@ -48,12 +48,13 @@ const CreateUserModal = ({ isOpen, onClose }: CreateUserprops) => {
   return (
     <>
       <Modal
+        width="719px"
         isOpen={isOpen}
         onClose={handleCloseModal}
         isSubmitting={isLoading}
         submitButtonText="Add"
         cancelButtonText="Cancel"
-        title={"Add User"}
+        title={" Create User"}
         onSubmit={handleSubmit(onCreateUser)}
       >
         <SimpleGrid columns={2} gap={"30px"}>
