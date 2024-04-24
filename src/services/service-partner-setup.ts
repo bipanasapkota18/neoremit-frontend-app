@@ -95,6 +95,8 @@ const useUpdatePartner = () => {
   return useMutation(updatePartner, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.partner_setup.getAll);
+      queryClient.invalidateQueries(api.partner_setup.getById);
+
       toastSuccess(success?.data?.message);
     },
     onError: (error: AxiosError<{ message: string }>) => {
@@ -148,6 +150,19 @@ const useGetPartnerById = (id: number | null) => {
   return useQuery([api.partner_setup.getById, id], () => getPartnerById(id), {
     enabled: !!id,
     select: data => data?.data?.data,
+
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data.message ?? error?.message);
+    }
+  });
+};
+
+const getAllTimezones = () => {
+  return NeoHttpClient.get<NeoResponse>(api.partner_setup.timezone);
+};
+const useGetAllTimezones = () => {
+  return useQuery([api.partner_setup.timezone], getAllTimezones, {
+    select: data => data?.data?.data,
     onError: (error: AxiosError<{ message: string }>) => {
       toastFail(error?.response?.data.message ?? error?.message);
     }
@@ -157,6 +172,7 @@ export {
   useAddPartner,
   useDeletePartner,
   useGetAllPartners,
+  useGetAllTimezones,
   useGetPartnerById,
   useTogglePartnerStatus,
   useUpdatePartner

@@ -43,8 +43,7 @@ const AddPayoutPartner = ({
     defaultValues: defaultValues
   });
   const { data: countryData } = useGetCountryList();
-  // const { data, isLoading: isSingleFetching } =
-  //   useGetPayoutPartnerById(countryId);
+
   const { data: payoutMethod } = useGetAllPayoutMethod();
   const selectedPayoutPartner = useMemo(
     () =>
@@ -53,7 +52,6 @@ const AddPayoutPartner = ({
       }),
     [editId]
   );
-  console.log(countryData);
   const countryOptions = formatSelectOptions({
     data: countryData?.data?.data,
     valueKey: "id",
