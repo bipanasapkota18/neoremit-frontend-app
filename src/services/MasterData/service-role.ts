@@ -90,4 +90,24 @@ const useToggleRoleStatus = (roleId: number | null) => {
   });
 };
 
-export { useAddRole, useGetAllModules, useGetAllRoles, useToggleRoleStatus };
+const getRoleById = (id: number | null) => {
+  return NeoHttpClient.get<NeoResponse>(
+    api.role.getById.replace("{roleId}", id + "")
+  );
+};
+const useGetRoleById = (id: number | null) => {
+  return useQuery([api.role.getById, id], () => getRoleById(id), {
+    enabled: !!id,
+    select: data => data?.data?.data,
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data.message ?? error?.message);
+    }
+  });
+};
+export {
+  useAddRole,
+  useGetAllModules,
+  useGetAllRoles,
+  useGetRoleById,
+  useToggleRoleStatus
+};
