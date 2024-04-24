@@ -7,6 +7,7 @@ import {
   FormHelperText
 } from "@chakra-ui/react";
 
+import { ISelectOptions } from "@neo/utility/format";
 import React, { useState } from "react";
 import { Control, Controller } from "react-hook-form";
 import {
@@ -19,7 +20,6 @@ import {
   components
 } from "react-select";
 import { useCustomStyles } from "./customStyles";
-import { ISelectOptions } from "@neo/utility/format";
 
 const { ValueContainer, Placeholder } = components;
 
@@ -71,6 +71,7 @@ type SelectProps = Props & {
     hasSelectAll: boolean;
     returnOne?: boolean;
   };
+  required?: boolean;
 };
 
 export const selectAllOption = { label: "Select all", value: "*" };
@@ -87,6 +88,7 @@ function Select({
     hasSelectAll: false,
     returnOne: false
   },
+
   customOnChange,
   ...args
 }: SelectProps) {
@@ -102,7 +104,8 @@ function Select({
       <FormControl variant="floating" id={name}>
         <ReactSelect
           components={{
-            ValueContainer: CustomValueContainer
+            ValueContainer: (props: any) =>
+              CustomValueContainer({ props: props, required: args.required })
           }}
           closeMenuOnSelect={!isMulti}
           styles={{
@@ -196,6 +199,17 @@ function Select({
                   isFocused={focused}
                   onFocus={() => setFocused(true)}
                   onBlur={() => setFocused(false)}
+                  placeholder={
+                    args.required ? (
+                      <>
+                        {" "}
+                        {args.placeholder}{" "}
+                        <span style={{ color: "red", marginLeft: 4 }}>*</span>
+                      </>
+                    ) : (
+                      args.placeholder
+                    )
+                  }
                 />
 
                 <FormErrorMessage>
