@@ -8,6 +8,7 @@ import {
   Text
 } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { LoadingIllustration } from "@neo/components/Common/Illustrations/LoadingIllustration";
 import CheckBox from "@neo/components/Form/Checkbox";
 import TextInput from "@neo/components/Form/TextInput";
 import {
@@ -18,6 +19,7 @@ import {
 } from "@neo/services/MasterData/service-role";
 import { colorScheme } from "@neo/theme/colorScheme";
 import { Dispatch, SetStateAction, useEffect } from "react";
+
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 
@@ -61,7 +63,7 @@ const AddRole = ({
   const { mutateAsync: useMutateAddRole, isLoading: isAddLoading } =
     useAddRole();
 
-  const { data: moduleList } = useGetAllModules();
+  const { data: moduleList, isLoading } = useGetAllModules();
 
   const { control, handleSubmit, reset, setValue, getValues } = useForm({
     defaultValues: defaultValues,
@@ -168,74 +170,80 @@ const AddRole = ({
             />
           </GridItem>
         </SimpleGrid>
-        <SimpleGrid
-          padding={"16px"}
-          columns={{ base: 1, sm: 1, md: 2, lg: 5 }}
-          gap={"40px"}
-        >
-          {moduleList?.map((module, moduleIndex) => (
-            <GridItem key={module.id} colSpan={1}>
-              <Flex
-                borderRadius={"16px"}
-                padding={"16px"}
-                backgroundColor={colorScheme.gray_50}
-                gap={"24px"}
-                flexDir={"column"}
-              >
-                <Text fontWeight={400} fontSize={"17px"} color={"#2D3748"}>
-                  {module.name}
-                </Text>
-                <Flex
-                  gap={"16px"}
-                  direction={"column"}
-                  alignContent={"center"}
-                  justifyContent={"space-between"}
-                >
-                  {module.scopeList.map(scope => (
-                    <Box
-                      key={scope}
-                      sx={{
-                        display: "flex",
-                        alignItems: "center"
-                      }}
-                      color={"#2D3748"}
+        {isLoading ? (
+          <LoadingIllustration />
+        ) : (
+          <>
+            <SimpleGrid
+              padding={"16px"}
+              columns={{ base: 1, sm: 1, md: 2, lg: 5 }}
+              gap={"40px"}
+            >
+              {moduleList?.map((module, moduleIndex) => (
+                <GridItem key={module.id} colSpan={1}>
+                  <Flex
+                    borderRadius={"16px"}
+                    padding={"16px"}
+                    backgroundColor={colorScheme.gray_50}
+                    gap={"24px"}
+                    flexDir={"column"}
+                  >
+                    <Text fontWeight={400} fontSize={"17px"} color={"#2D3748"}>
+                      {module.name}
+                    </Text>
+                    <Flex
+                      gap={"16px"}
+                      direction={"column"}
+                      alignContent={"center"}
+                      justifyContent={"space-between"}
                     >
-                      <CheckBox
-                        width={"10%"}
-                        name={`moduleList[${moduleIndex}].scopeList[${scope}]`}
-                        control={control}
-                        label={scope}
-                      />
-                    </Box>
-                  ))}
-                </Flex>
-              </Flex>
-            </GridItem>
-          ))}
-        </SimpleGrid>
+                      {module.scopeList.map(scope => (
+                        <Box
+                          key={scope}
+                          sx={{
+                            display: "flex",
+                            alignItems: "center"
+                          }}
+                          color={"#2D3748"}
+                        >
+                          <CheckBox
+                            width={"10%"}
+                            name={`moduleList[${moduleIndex}].scopeList[${scope}]`}
+                            control={control}
+                            label={scope}
+                          />
+                        </Box>
+                      ))}
+                    </Flex>
+                  </Flex>
+                </GridItem>
+              ))}
+            </SimpleGrid>
 
-        <HStack justifyContent={"flex-end"}>
-          <Button
-            padding={"16px 32px"}
-            fontWeight={600}
-            color={"#E53E3E"}
-            _hover={{ bg: "#FFF5F5" }}
-            bg={"#FFF5F5"}
-            _active={{ bg: "#FFF5F5" }}
-            fontSize={"17px"}
-            onClick={handleCloseModal}
-          >
-            Cancel
-          </Button>
-          <Button
-            isLoading={isAddLoading}
-            padding={"10px 40px"}
-            fontWeight={700}
-            type="submit"
-          >
-            Save
-          </Button>
-        </HStack>
+            <HStack justifyContent={"flex-end"}>
+              <Button
+                padding={"16px 32px"}
+                fontWeight={600}
+                color={"#E53E3E"}
+                _hover={{ bg: "#FFF5F5" }}
+                bg={"#FFF5F5"}
+                _active={{ bg: "#FFF5F5" }}
+                fontSize={"17px"}
+                onClick={handleCloseModal}
+              >
+                Cancel
+              </Button>
+              <Button
+                isLoading={isAddLoading}
+                padding={"10px 40px"}
+                fontWeight={700}
+                type="submit"
+              >
+                Save
+              </Button>
+            </HStack>
+          </>
+        )}
       </Box>
     </form>
   );

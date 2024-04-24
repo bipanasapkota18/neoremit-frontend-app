@@ -3,7 +3,8 @@ import {
   CheckboxProps,
   FormControl,
   FormErrorMessage,
-  FormHelperText
+  FormHelperText,
+  Text
 } from "@chakra-ui/react";
 
 import { Control, Controller } from "react-hook-form";
@@ -47,7 +48,9 @@ const CheckBox = ({
                 onChange={onChange}
                 {...rest}
               >
-                {label}
+                <Text color={"#2D3748"} fontSize={"14px"}>
+                  {label}
+                </Text>
               </ChakraCheckBox>
               <FormErrorMessage>{error ? error?.message : ""}</FormErrorMessage>
               {helperText ? <FormHelperText>{helperText}</FormHelperText> : ""}

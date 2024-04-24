@@ -126,6 +126,7 @@ export const api = {
     getById: `${service}/master/automatic-discount/get/{id}`
   },
   partner_setup: {
+    timezone: `${service}/util/timezones`,
     getAll: `${service}/master/partnerSetup/getAllPartnerSetup`,
     create: `${service}/master/partnerSetup/createPartnerSetup`,
     update: `${service}/master/partnerSetup/updatePartnerSetup/{partnerId}`,
