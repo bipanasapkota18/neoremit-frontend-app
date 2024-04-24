@@ -1,9 +1,11 @@
 import {
+  Badge,
   Button,
   Card,
   CardBody,
   Flex,
   HStack,
+  Switch,
   useBoolean,
   useDisclosure,
   useMediaQuery
@@ -17,10 +19,10 @@ import SearchInput from "@neo/components/Form/SearchInput";
 import ConfirmationModal from "@neo/components/Modal/DeleteModal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import {
-  IPayoutMethodResponse,
-  useDeletePayoutMethod
-} from "@neo/services/MasterData/service-payout-method";
-import { useGetAllRoles } from "@neo/services/MasterData/service-role";
+  IRoleResponse,
+  useGetAllRoles,
+  useToggleRoleStatus
+} from "@neo/services/MasterData/service-role";
 import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -29,14 +31,21 @@ import AddRole from "./AddRoleModal";
 const PayoutMethod = () => {
   const [flag, setFlag] = useBoolean();
   const { pathname } = useLocation();
+  // const {
+  //   isOpen: isOpenPayoutMethodDeleteModal,
+  //   onOpen: onOpenPayoutMethodDeleteModal,
+  //   onClose: onClosePayoutMethodDeleteModal
+  // } = useDisclosure();
+
   const {
-    isOpen: isOpenPayoutMethodDeleteModal,
-    onOpen: onOpenPayoutMethodDeleteModal,
-    onClose: onClosePayoutMethodDeleteModal
+    isOpen: isOpenRoleStatusToggleModal,
+    onOpen: onOpenRoleStatusToggleModal,
+    onClose: onCloseRoleStatusToggleModal
   } = useDisclosure();
 
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
   const [editId, setEditId] = useState(null as number | null);
+  const [active, setActive] = useState(false);
   const [changeId, setChangeId] = useState(null as number | null);
   const [searchText, setSearchText] = useState<string>("" as string);
   const [pageParams, setPageParams] = useState<PaginationState>({
@@ -44,10 +53,8 @@ const PayoutMethod = () => {
     pageSize: 10
   });
   const { data: roleData, isLoading: isPayoutMethodLoading } = useGetAllRoles();
+  const { refetch, isLoading: isToggling } = useToggleRoleStatus(changeId);
 
-  const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
-    useDeletePayoutMethod();
-  console.log(roleData);
   const columns = [
     {
       header: "S.N",
@@ -59,51 +66,86 @@ const PayoutMethod = () => {
 
     {
       header: "Role Name",
-      accessorKey: "name",
-      size: 100
+      accessorKey: "roleName",
+      size: 20
     },
     {
       header: "Permissions",
-      accessorKey: "permission",
+      accessorKey: "moduleList",
+      cell: (cell: CellContext<IRoleResponse, any>) => {
+        return cell?.row?.original?.moduleList?.map((item, index) => {
+          return (
+            <Badge key={index} padding="8px 24px" mx={2} borderRadius={"16px"}>
+              {item?.moduleName}
+            </Badge>
+          );
+        });
+      },
       size: 100
     },
     {
       header: "Status",
       accessorKey: "status",
-      size: 20
+      size: 20,
+      cell: (data: any) => {
+        return (
+          <Switch
+            name="status"
+            size="lg"
+            colorScheme="facebook"
+            isChecked={data?.row?.original?.active}
+            onChange={() => {
+              setActive(data?.row?.original?.active);
+              setChangeId(data?.row?.original?.roleId);
+              onOpenRoleStatusToggleModal();
+            }}
+          />
+        );
+      }
     },
     {
       header: "Action",
       accessorKey: "action",
-      cell: (cell: CellContext<IPayoutMethodResponse, any>) => {
+      cell: (cell: CellContext<IRoleResponse, any>) => {
         return (
           <HStack>
             <TableActionButton
               onClickAction={() => {
-                setEditId(cell?.row?.original?.id || null);
+                setEditId(cell?.row?.original?.roleId || null);
                 setFlag.on();
               }}
               icon={<svgAssets.EditButton />}
               label="Edit"
             />
-            <TableActionButton
+            {/* <TableActionButton
               onClickAction={() => {
-                setChangeId(cell?.row?.original?.id || null);
+                setChangeId(cell?.row?.original?.roleId || null);
                 onOpenPayoutMethodDeleteModal();
               }}
               icon={<svgAssets.DeleteButton />}
               label="Delete"
-            />
+            /> */}
           </HStack>
         );
       }
     }
   ];
   const activePath = breadcrumbTitle(pathname);
-  const handleDelete = async () => {
-    await mutateDelete(changeId);
-    setChangeId(null);
-    onClosePayoutMethodDeleteModal();
+
+  // const handleDelete = async () => {
+  //   await mutateDelete(changeId);
+  //   setChangeId(null);
+  //   onClosePayoutMethodDeleteModal();
+  // };
+
+  const handleStatusChange = async () => {
+    try {
+      await refetch();
+      setChangeId(null);
+      onCloseRoleStatusToggleModal();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -177,7 +219,7 @@ const PayoutMethod = () => {
           )}
         </CardBody>
       </Card>
-      <ConfirmationModal
+      {/* <ConfirmationModal
         variant={"delete"}
         buttonText={"Delete"}
         title={"Are You Sure?"}
@@ -188,6 +230,19 @@ const PayoutMethod = () => {
         onClose={() => {
           setChangeId(null);
           onClosePayoutMethodDeleteModal();
+        }}
+      /> */}
+      <ConfirmationModal
+        variant={"edit"}
+        buttonText={`${active ? "Disable" : "Enable"}`}
+        title={"Are You Sure?"}
+        isLoading={isToggling}
+        onApprove={handleStatusChange}
+        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this role?`}
+        isOpen={isOpenRoleStatusToggleModal}
+        onClose={() => {
+          setChangeId(null);
+          onCloseRoleStatusToggleModal();
         }}
       />
     </Flex>

@@ -111,8 +111,6 @@ const checkAuthentication = async () => {
       return initRefreshToken();
     }
     return Promise.resolve(true);
-  } else if (TokenService.getToken()?.refreshToken) {
-    return initRefreshToken();
   }
   return Promise.resolve(null);
 };

@@ -53,8 +53,9 @@ const AddPayoutPartner = ({
       }),
     [editId]
   );
+  console.log(countryData);
   const countryOptions = formatSelectOptions({
-    data: countryData,
+    data: countryData?.data?.data,
     valueKey: "id",
     labelKey: "name"
   });

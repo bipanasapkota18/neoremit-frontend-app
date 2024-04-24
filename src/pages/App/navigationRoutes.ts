@@ -40,5 +40,6 @@ export const NAVIGATION_ROUTES = {
   PROMO_CODE: "/promo-code",
   AUTOMATIC_DISCOUNT: "/automatic-discount",
   PARTNERS: "/partners",
-  COUNTRY: "/country"
+  COUNTRY: "/country",
+  MOBILE_REDIRECT: "/google-signup-success"
 };

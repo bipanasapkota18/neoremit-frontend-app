@@ -128,11 +128,26 @@ export const api = {
     statusChange: `${service}/master/automatic-discount/toggle/status/{id}`,
     getById: `${service}/master/automatic-discount/get/{id}`
   },
+  partner_setup: {
+    getAll: `${service}/master/partnerSetup/getAllPartnerSetup`,
+    create: `${service}/master/partnerSetup/createPartnerSetup`,
+    update: `${service}/master/partnerSetup/updatePartnerSetup/{partnerId}`,
+    delete: `${service}/master/partnerSetup/deletePartnerSetup/{partnerId}`,
+    statusChange: `${service}/master/partnerSetup/toggle/status/{id}`,
+    getById: `${service}/master/partnerSetup/getPartnerSetup/{partnerId}`
+  },
 
   internalUser: {
     getAll: `${service}/users/getAllInternalUsers`,
     create: `${service}/users/create-user`,
     toggleStatus: `${service}/users/blockUnblockUser/{UserId}`
+  },
+  role: {
+    getAll: `${service}/api/role-module`,
+    create: `${service}/api/role-module`,
+    allModules: `${service}/api/role-module/modules`,
+    toggleStatus: `${service}/api/role-module/toggle-status/{roleId}`,
+    activeRoles: `${service}/api/role-module/roles`
   },
 
   init: "/init"
