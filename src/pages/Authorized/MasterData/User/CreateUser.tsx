@@ -12,7 +12,7 @@ const defaultValues = {
   name: "",
   email: "",
   mobileNumber: "" as never as number,
-  roles: null as ISelectOptions<number>[] | null
+  roles: null as ISelectOptions<number> | null
 };
 interface CreateUserprops {
   isOpen: boolean;
@@ -28,18 +28,23 @@ const CreateUserModal = ({ isOpen, onClose }: CreateUserprops) => {
 
   const rolesOptions = formatSelectOptions<number>({
     data: rolesData,
-    labelKey: "name",
-    valueKey: "id"
+    labelKey: "roleName",
+    valueKey: "roleId"
   });
 
   const onCreateUser = async (data: typeof defaultValues) => {
+    const rolesArray: (number | undefined)[] = [];
+    rolesArray.push(data?.roles?.value);
+
     await mutateCreateUser({
       ...data,
-      roles: data?.roles?.map(item => item.value) ?? [],
+      roles: rolesArray,
+
       mobileNumber: String(data.mobileNumber)
     });
     handleCloseModal();
   };
+
   const handleCloseModal = () => {
     onClose();
     reset();
@@ -48,22 +53,24 @@ const CreateUserModal = ({ isOpen, onClose }: CreateUserprops) => {
   return (
     <>
       <Modal
+        width="719px"
         isOpen={isOpen}
         onClose={handleCloseModal}
         isSubmitting={isLoading}
         submitButtonText="Add"
         cancelButtonText="Cancel"
-        title={"Add User"}
+        title={" Create User"}
         onSubmit={handleSubmit(onCreateUser)}
       >
         <SimpleGrid columns={2} gap={"30px"}>
           <GridItem colSpan={2}>
             <TextInput
-              size={"lg"}
+              size="lg"
               name="name"
               label="Full Name"
               control={control}
               type="text"
+              isRequired
             />
           </GridItem>
 
@@ -74,6 +81,7 @@ const CreateUserModal = ({ isOpen, onClose }: CreateUserprops) => {
               label="Email"
               control={control}
               type="text"
+              isRequired
             />
           </GridItem>
 
@@ -84,6 +92,7 @@ const CreateUserModal = ({ isOpen, onClose }: CreateUserprops) => {
               label="Phone Number"
               control={control}
               type="number"
+              isRequired
             />
           </GridItem>
           <GridItem colSpan={2}>
@@ -92,7 +101,6 @@ const CreateUserModal = ({ isOpen, onClose }: CreateUserprops) => {
               placeholder="Roles"
               options={rolesOptions ?? []}
               control={control}
-              isMulti
             />
           </GridItem>
         </SimpleGrid>

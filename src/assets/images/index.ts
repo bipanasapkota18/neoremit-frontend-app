@@ -1,4 +1,5 @@
 import noImage from "@neo/assets/images/Image-not-found.png";
+import Image from "@neo/assets/images/Image.svg";
 import LoginBackground from "@neo/assets/images/Login.png";
 import LoginBanner from "@neo/assets/images/LoginBanner.png";
 import UkFlag from "@neo/assets/images/englishLang.png";
@@ -22,6 +23,7 @@ export const imageAssets = {
   OTPBanner,
   SetPasswordBanner,
   noImage,
+  Image,
   LoginBackground,
   CalendarIcon,
   TickSquare

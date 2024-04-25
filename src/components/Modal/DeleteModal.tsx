@@ -12,7 +12,6 @@ import {
 import { svgAssets } from "@neo/assets/images/svgs";
 import { colorScheme } from "@neo/theme/colorScheme";
 import { ReactElement, useRef } from "react";
-
 export interface IConfirmationModalProps {
   variant?: string;
   isOpen: boolean;
@@ -59,7 +58,8 @@ function ConfirmationModal({
               {customIcon ? (
                 customIcon
               ) : variant == "edit" ? (
-                <svgAssets.EditButton height={"64px"} width={"64px"} />
+                // <svgAssets.EditButton height={"64px"} width={"64px"} />
+                <svgAssets.Frame height={"64px"} width={"64px"} />
               ) : variant == "delete" ? (
                 <svgAssets.DeleteButton height={"64px"} width={"64px"} />
               ) : null}

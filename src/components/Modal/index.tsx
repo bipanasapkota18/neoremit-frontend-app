@@ -10,7 +10,6 @@ import {
   ModalHeader,
   ModalOverlay
 } from "@chakra-ui/react";
-
 //to use other provided props of chakra modal
 type ModalProps = {
   title?: string;
@@ -30,16 +29,18 @@ const Modal = ({
   onSubmit,
   submitButtonText,
   cancelButtonText,
+  width,
   ...rest
 }: ModalProps) => {
   return (
     <ChakraModal size={size} isOpen={isOpen} onClose={onClose} {...rest}>
       <ModalOverlay />
       <ModalContent
+        width={width ? width : "552px"}
+        maxW={"720px"}
         display={"flex"}
         justifyContent={"center"}
         gap={"12px"}
-        width={"552px"}
         padding={"32px"}
         borderRadius={"32px"}
         background="#FEFEFE"
@@ -57,11 +58,9 @@ const Modal = ({
             borderRadius={"full"}
           />
         </HStack>
-
         <ModalBody py={4} px={0}>
           {children}
         </ModalBody>
-
         <ModalFooter
           display="flex"
           justifyContent={"space-between"}
@@ -99,5 +98,4 @@ const Modal = ({
     </ChakraModal>
   );
 };
-
 export default Modal;

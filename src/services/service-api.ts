@@ -64,12 +64,15 @@ export const api = {
       statusChange: `${service}/relationship/status/{id}`
     },
     role: {
-      getAll: `${service}/api/role-module/roles`,
-      getSingle: `${service}/roles/get-role/{id}`,
-      create: `${service}/roles/create-role`,
-      update: `${service}/roles/update-role/{id}`,
-      delete: `${service}/roles/delete-role/{id}`
+      getAll: `${service}/api/role-module`,
+      create: `${service}/api/role-module`,
+      allModules: `${service}/api/role-module/modules`,
+      toggleStatus: `${service}/api/role-module/toggle-status/{roleId}`,
+      activeRoles: `${service}/api/role-module/roles`,
+      updateRole: `${service}/api/role-module`
+      // deleteRole: `${service}/roles/delete-role/{id}`
     },
+
     source_of_fund: {
       getAll: `${service}/source-of-fund/list`,
       create: `${service}/source-of-fund`,

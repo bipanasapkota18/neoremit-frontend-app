@@ -10,10 +10,6 @@ const AutomaticDiscount = lazy(
   () => import("@neo/pages/Authorized/MasterData/AutomaticDiscount")
 );
 
-// const SetPassword = lazy(
-//   () => import("@neo/pages/Authorized/InternalUser/SetPassword")
-// );
-
 const Document = lazy(
   () => import("@neo/pages/Authorized/MasterData/DocumentSetup")
 );

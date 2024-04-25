@@ -1,11 +1,11 @@
-import { colorScheme } from "@neo/theme/colorScheme";
 import { PinInputField } from "@chakra-ui/react";
+import { colorScheme } from "@neo/theme/colorScheme";
 
 const OTPInput = () => {
   return (
     <PinInputField
       textAlign={"center"}
-      width="48px"
+      width="44px"
       height="48px"
       borderRadius="8px"
       border={`1px solid ${colorScheme.primary_400}`}
