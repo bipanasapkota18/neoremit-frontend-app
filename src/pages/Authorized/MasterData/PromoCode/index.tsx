@@ -113,7 +113,7 @@ const PromoCode = () => {
               <Badge
                 key={index}
                 padding="8px 24px"
-                mx={2}
+                mr={2}
                 borderRadius={"16px"}
               >
                 {item?.name}
@@ -134,7 +134,7 @@ const PromoCode = () => {
               <Badge
                 key={index}
                 padding="8px 24px"
-                mx={2}
+                mr={2}
                 borderRadius={"16px"}
               >
                 {item?.name}
@@ -226,9 +226,16 @@ const PromoCode = () => {
       console.error(e);
     }
   };
+  console.log(flag);
 
   return (
     <Flex direction={"column"} gap={"16px"}>
+      <BreadCrumb
+        flag={flag}
+        setFlag={setFlag}
+        currentPage={`Promo Code ${flag ? "Setup" : ""}`}
+        options={activePath}
+      />
       {flag ? (
         <AddPromoCode
           refetchData={refetchData}
@@ -241,7 +248,6 @@ const PromoCode = () => {
         />
       ) : (
         <>
-          <BreadCrumb currentPage="Promo Code" options={activePath} />
           <Card
             borderRadius={"16px"}
             boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"

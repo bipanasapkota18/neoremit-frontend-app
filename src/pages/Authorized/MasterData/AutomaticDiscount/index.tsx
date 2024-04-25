@@ -115,7 +115,7 @@ const AutomaticDiscount = () => {
               <Badge
                 key={index}
                 padding="8px 24px"
-                mx={2}
+                mr={2}
                 borderRadius={"16px"}
               >
                 {item?.name}
@@ -124,14 +124,6 @@ const AutomaticDiscount = () => {
           }
         );
       }
-    },
-    {
-      header: "Valid From",
-      accessorKey: "validFrom"
-    },
-    {
-      header: "Valid Till",
-      accessorKey: "validTill"
     },
     {
       header: "Status",
@@ -202,6 +194,12 @@ const AutomaticDiscount = () => {
 
   return (
     <Flex direction={"column"} gap={"16px"}>
+      <BreadCrumb
+        flag={flag}
+        setFlag={setFlag}
+        currentPage={`Automatic Discount ${flag ? "Setup" : ""}`}
+        options={activePath}
+      />
       {flag ? (
         <AddAutomaticDiscount
           refetchData={refetchData}
@@ -214,7 +212,6 @@ const AutomaticDiscount = () => {
         />
       ) : (
         <>
-          <BreadCrumb currentPage="Automatic Discount" options={activePath} />
           <Card
             borderRadius={"16px"}
             boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"

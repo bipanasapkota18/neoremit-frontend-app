@@ -75,7 +75,7 @@ const PayoutMethod = () => {
               <Badge
                 key={index}
                 padding="8px 24px"
-                mx={2}
+                mr={2}
                 borderRadius={"16px"}
               >
                 {item?.moduleName}
@@ -152,7 +152,12 @@ const PayoutMethod = () => {
 
   return (
     <Flex direction={"column"} gap={"16px"}>
-      <BreadCrumb currentPage="Roles" options={activePath} />
+      <BreadCrumb
+        currentPage="Roles"
+        options={activePath}
+        flag={flag}
+        setFlag={setFlag}
+      />
       <Card
         borderRadius={"16px"}
         boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"

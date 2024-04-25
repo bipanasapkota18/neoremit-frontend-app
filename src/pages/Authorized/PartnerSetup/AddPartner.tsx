@@ -9,11 +9,9 @@ import {
   SimpleGrid
 } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import BreadCrumb from "@neo/components/BreadCrumb";
 import CheckBox from "@neo/components/Form/Checkbox";
 import Select from "@neo/components/Form/SelectComponent";
 import TextInput from "@neo/components/Form/TextInput";
-import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import { useGetCountryList } from "@neo/services/MasterData/service-country";
 import { useGetCurrencyList } from "@neo/services/MasterData/service-currency";
 import {
@@ -27,7 +25,6 @@ import {
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation } from "react-router-dom";
 import * as yup from "yup";
 
 const defaultValues = {
@@ -217,9 +214,6 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
     labelKey: "label"
   });
 
-  const { pathname } = useLocation();
-  const activePath = breadcrumbTitle(pathname);
-
   const onAddPartner = async (data: typeof defaultValues) => {
     const preparedData: IPartnerRequest = {
       ...data,
@@ -266,10 +260,6 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
 
   return (
     <Flex direction={"column"} gap={"16px"}>
-      <BreadCrumb
-        currentPage={editId ? "Edit Partner" : "Add Partner"}
-        options={activePath}
-      />
       <Card gap={"24px"} padding={"24px"}>
         <Box display={"flex"} gap={"20px"} flexDir={"column"}>
           <Heading fontWeight={700} fontSize={"17px"}>

@@ -64,6 +64,7 @@ const FeeAndCharges = () => {
       console.error(e);
     }
   };
+
   const handleStatusChange = async () => {
     try {
       await mutateStatusUpdateFeeAndCharges(changeId);
@@ -153,6 +154,8 @@ const FeeAndCharges = () => {
   return (
     <Flex direction={"column"} gap={"16px"}>
       <BreadCrumb
+        flag={flag}
+        setFlag={setFlag}
         currentPage={flag ? "Fee and Charges Setup" : "Fee and Charges"}
         options={activePath}
       />

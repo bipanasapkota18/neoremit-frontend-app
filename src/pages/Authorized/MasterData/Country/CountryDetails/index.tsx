@@ -1,6 +1,8 @@
 import { Box } from "@chakra-ui/layout";
 import { Flex, Heading } from "@chakra-ui/react";
 import { svgAssets } from "@neo/assets/images/svgs";
+import BreadCrumb from "@neo/components/BreadCrumb";
+import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import { Step, Steps, useSteps } from "chakra-ui-steps";
 import { useLocation } from "react-router-dom";
 import BaseRate from "../BaseRate";
@@ -34,8 +36,13 @@ export const CounrtyDetails = () => {
   const hasCompletedAllSteps = activeStep === steps.length;
   const bg = "white";
 
+  const { pathname } = useLocation();
+  const activePath = breadcrumbTitle(pathname);
+
   return (
-    <Flex flexDir="column" width="100%" userSelect={"none"}>
+    <Flex flexDir="column" gap={"16px"} width="100%" userSelect={"none"}>
+      <BreadCrumb currentPage="Country Setup" options={activePath} />
+
       <Steps
         onClickStep={i => {
           location?.state?.countryId

@@ -88,6 +88,7 @@ function Select({
     hasSelectAll: false,
     returnOne: false
   },
+  required,
 
   customOnChange,
   ...args
@@ -105,7 +106,7 @@ function Select({
         <ReactSelect
           components={{
             ValueContainer: (props: any) =>
-              CustomValueContainer({ props: props, required: args.required })
+              CustomValueContainer({ props: props, required: required })
           }}
           closeMenuOnSelect={!isMulti}
           styles={{
@@ -200,9 +201,8 @@ function Select({
                   onFocus={() => setFocused(true)}
                   onBlur={() => setFocused(false)}
                   placeholder={
-                    args.required ? (
+                    required ? (
                       <>
-                        {" "}
                         {args.placeholder}{" "}
                         <span style={{ color: "red", marginLeft: 4 }}>*</span>
                       </>
