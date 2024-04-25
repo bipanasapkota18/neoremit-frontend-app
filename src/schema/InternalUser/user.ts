@@ -14,11 +14,6 @@ const userSchema = yup.object().shape({
     .min(10, "Mobile number must be at least 10 digits.")
     .max(10, "Mobile number cannot exceed 10 digits."),
 
-  roles: yup
-    .array()
-    .min(1, "Select at least one Role")
-    .required("Select at least one Role")
-    .of(yup.object())
-    .nullable()
+  roles: yup.object().required("Select at least one Role").nullable()
 });
 export default userSchema;

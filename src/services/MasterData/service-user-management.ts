@@ -7,13 +7,13 @@ export interface IUserManagementResponse {
   name: string;
   email: string;
   mobileNumber: string;
-  role: [number];
+  role: number[];
 }
 export interface IUserManagementRequest {
   name: string;
   email: string;
   mobileNumber: string;
-  roles: number[];
+  roles: (number | undefined)[];
 }
 
 export interface ToogleBlockUnblockRequest {

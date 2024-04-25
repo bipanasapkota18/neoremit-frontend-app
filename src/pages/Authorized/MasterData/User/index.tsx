@@ -72,20 +72,13 @@ const CreateUser = () => {
       header: "Phone Number",
       accessorKey: "phoneNumber"
     },
-
     {
       header: "Role",
       accessorKey: "role",
       cell: (cell: CellContext<IUserManagementResponse, any>) => {
         return cell.row.original.role.map((item, index) => {
           return (
-            <Badge
-              key={index}
-              padding="8px 24px"
-              bgColor={"#EDFDFD"}
-              mx={2}
-              borderRadius={"16px"}
-            >
+            <Badge key={index} padding="8px 24px" mx={2} borderRadius={"16px"}>
               {item}
             </Badge>
           );
