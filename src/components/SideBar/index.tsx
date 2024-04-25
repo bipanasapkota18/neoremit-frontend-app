@@ -12,6 +12,7 @@ import {
 import { imageAssets } from "@neo/assets/images";
 import { svgAssets } from "@neo/assets/images/svgs";
 import { useLogoutMutation } from "@neo/services/service-auth";
+import { useStoreInitData } from "@neo/store/initData";
 import { colorScheme } from "@neo/theme/colorScheme";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -71,6 +72,8 @@ export default function Sidebar({
     }
   }, []);
 
+  const { initData } = useStoreInitData();
+
   const labelData = [{ navName: "Example", value: 10 }];
 
   const pendingSidebarLabels = (barName: string) => {
@@ -79,9 +82,11 @@ export default function Sidebar({
       return navLabelValue.value ?? null;
     }
   };
+
   const handleLogout = () => {
     logout();
   };
+
   return (
     <Flex
       pos="fixed"
@@ -137,10 +142,10 @@ export default function Sidebar({
           ) : (
             <HStack flexDir={"column"} gap={"2px"} alignItems={"flex-start"}>
               <Text fontWeight={700} color={colorScheme.sideBar_text}>
-                Name
+                {initData?.name}
               </Text>
               <Text fontWeight={400} color={colorScheme.search_icon}>
-                Role
+                {initData?.role}
               </Text>
             </HStack>
           )}

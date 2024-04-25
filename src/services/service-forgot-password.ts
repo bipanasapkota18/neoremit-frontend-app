@@ -9,7 +9,7 @@ interface IEmailVerification {
 }
 interface IOTPVerification {
   email: string;
-  otpCode: number;
+  otpCode: string;
   otpFor: string;
 }
 
