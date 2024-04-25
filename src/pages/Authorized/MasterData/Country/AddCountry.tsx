@@ -180,6 +180,7 @@ const AddCountrySetup = ({
                 isRequired
                 endIcons={
                   <Tooltip
+                    borderRadius={"4px"}
                     closeDelay={700}
                     hasArrow
                     placement="top"

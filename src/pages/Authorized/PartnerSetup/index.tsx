@@ -161,6 +161,12 @@ const PartnerSetup = () => {
   };
   return (
     <Flex direction={"column"} gap={"16px"}>
+      <BreadCrumb
+        flag={flag}
+        setFlag={setFlag}
+        currentPage="Partner Setup"
+        options={activePath}
+      />
       {flag ? (
         <AddPartner
           editId={editId}
@@ -171,7 +177,6 @@ const PartnerSetup = () => {
         />
       ) : (
         <>
-          <BreadCrumb currentPage="Partner Setup" options={activePath} />
           <Card
             borderRadius={"16px"}
             boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"

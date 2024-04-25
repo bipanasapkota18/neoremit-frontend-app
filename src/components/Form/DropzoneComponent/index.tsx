@@ -193,7 +193,12 @@ export function DropzoneComponentControlled({
           />
         )}
         {singleUploadPreview && (
-          <Tooltip label="Preview" placement="top">
+          <Tooltip
+            borderRadius={"4px"}
+            hasArrow
+            label="Preview"
+            placement="top"
+          >
             <IconButton
               variant="solid"
               colorScheme={"purple"}

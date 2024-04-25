@@ -15,6 +15,9 @@ import { ReactComponent as EnglishFlag } from "@neo/assets/images/svgs/flag-engl
 import { ReactComponent as FranceFlag } from "@neo/assets/images/svgs/flag-france.svg";
 import { ReactComponent as GermanFlag } from "@neo/assets/images/svgs/flag-germany.svg";
 import { ReactComponent as ForgotPasswordBanner } from "@neo/assets/images/svgs/forgot_banner.svg";
+import { ReactComponent as SuccessIccon } from "@neo/assets/images/svgs/ic_check.svg";
+import { ReactComponent as ErrorIcon } from "@neo/assets/images/svgs/ic_error.svg";
+import { ReactComponent as InfoIcon } from "@neo/assets/images/svgs/ic_info.svg";
 import { ReactComponent as ImagePlaceHolderDropzone } from "@neo/assets/images/svgs/image_placeholder.svg";
 import { ReactComponent as Line } from "@neo/assets/images/svgs/line.svg";
 import { ReactComponent as LoginBanner } from "@neo/assets/images/svgs/loginBanner.svg";
@@ -61,5 +64,8 @@ export const svgAssets = {
   BaseRate,
   MarginSetup,
   StateSetup,
-  BaseRateConfig
+  BaseRateConfig,
+  SuccessIccon,
+  ErrorIcon,
+  InfoIcon
 };

@@ -1,11 +1,20 @@
 import toast, { Toaster } from "react-hot-toast";
 
 const toastSuccess = (message: string) => {
+  // toast.success(message, {
+  //   id: message,
+  //   style: {
+  //     border: "1px solid green",
+  //     padding: "12px"
+  //   }
+  // });
   toast.success(message, {
-    id: message,
     style: {
-      border: "1px solid green",
-      padding: "12px"
+      padding: "16px"
+    },
+    iconTheme: {
+      primary: "#38A169",
+      secondary: "#C6F6D5"
     }
   });
 };
@@ -14,8 +23,7 @@ const toastFail = (message: string) => {
   toast.error(message, {
     id: message,
     style: {
-      border: "1px solid red",
-      padding: "12px"
+      padding: "16px"
     }
   });
 };

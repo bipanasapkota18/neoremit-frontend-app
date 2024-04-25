@@ -175,6 +175,7 @@ const AddCountry = ({ stepProps }: IStepProps) => {
               required
               endIcons={
                 <Tooltip
+                  borderRadius={"4px"}
                   closeDelay={700}
                   hasArrow
                   placement="top"

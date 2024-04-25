@@ -13,14 +13,24 @@ import { Link, useNavigate } from "react-router-dom";
 import { sidebarAssets } from "../../assets/images/svgs/Sidebar/index";
 import GoBack from "../Button/GoBack";
 
-const BreadCrumb = ({ options, currentPage }: BreadCrumbProps) => {
+const BreadCrumb = ({
+  options,
+  currentPage,
+  flag,
+  setFlag
+}: BreadCrumbProps) => {
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
   const navigate = useNavigate();
 
   return (
     <Flex justifyContent="space-between" alignItems={"center"}>
       <HStack>
-        <GoBack isIcon onClick={() => navigate(-1)} />
+        <GoBack
+          isIcon
+          onClick={() => {
+            flag ? setFlag.off() : navigate(-1);
+          }}
+        />
         <Text
           fontSize={isDesktop ? "24px" : "20px"}
           fontStyle="normal"
@@ -71,6 +81,7 @@ type BreadCrumbProps = {
     icon?: React.ComponentType<{ width: string; height: string }>;
     options?: unknown[];
   }>;
-
+  flag?: any;
+  setFlag?: any;
   currentPage: string;
 };

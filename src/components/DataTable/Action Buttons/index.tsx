@@ -14,7 +14,7 @@ const TableActionButton = ({
   isDisabled
 }: TableActionButtonProps) => {
   return (
-    <Tooltip label={label} placement={"top"}>
+    <Tooltip borderRadius={"4px"} hasArrow label={label} placement={"top"}>
       <IconButton
         isDisabled={isDisabled}
         variant={"search"}

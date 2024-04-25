@@ -38,7 +38,7 @@ export const useCustomStyles = (error?: any) => {
       color: "inherit",
       lineHeight: "inherit",
       fontSize: fontSizes[size ?? "sm"],
-      height: "50px"
+      height: "49px"
     }),
     menu: (provided, { selectProps: { isSingleTimeDropdown } }) => ({
       ...provided,
@@ -154,22 +154,21 @@ export const useCustomStyles = (error?: any) => {
           }
         : {})
     }),
-    multiValue: (
-      provided,
-      {
-        selectProps: { hasInputAddon, hideSelectedValues, inheritMultiValueBG }
-      }
-    ) =>
-      hasInputAddon
-        ? {
-            ...provided,
-            borderRadius: "6px",
-            backgroundColor: inheritMultiValueBG ? "inherit" : "#EFEAF4",
-            padding: "4px 8px"
-          }
-        : hideSelectedValues
-          ? { ...provided, display: "none" }
-          : { ...provided },
+    singleValue: styles => {
+      return {
+        ...styles,
+        marginTop: 12
+      };
+    },
+    multiValue: styles => {
+      return {
+        ...styles,
+        backgroundColor: colorScheme.gray_100,
+        marginTop: 12,
+        padding: 3,
+        borderRadius: 8
+      };
+    },
     indicatorSeparator: () => ({
       display: "none"
     }),
