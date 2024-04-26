@@ -12,7 +12,6 @@ import { LoadingIllustration } from "@neo/components/Common/Illustrations/Loadin
 import CheckBox from "@neo/components/Form/Checkbox";
 import TextInput from "@neo/components/Form/TextInput";
 import {
-  IRoleResponse,
   useAddRole,
   useGetAllModules,
   useGetRoleById
@@ -38,14 +37,8 @@ interface AddRoleProps {
   editId: number | null;
   setEditId: Dispatch<SetStateAction<number | null>>;
   onClose: () => void;
-  data: IRoleResponse[] | undefined;
 }
-const AddRole = ({
-  onClose,
-  editId,
-  data: editData,
-  setEditId
-}: AddRoleProps) => {
+const AddRole = ({ onClose, editId, setEditId }: AddRoleProps) => {
   const { data: roleData } = useGetRoleById(editId);
 
   const schema = yup.object().shape({
@@ -71,20 +64,8 @@ const AddRole = ({
   });
 
   useEffect(() => {
-    setValue(
-      "moduleList",
-      moduleList?.map(item => {
-        return {
-          moduleId: item?.id,
-          moduleName: item?.name,
-          scopeList: []
-        };
-      })
-    );
-  }, [moduleList]);
-
-  useEffect(() => {
-    if (editId) {
+    if (editId && moduleList) {
+      console.log(getValues("moduleList"));
       reset({
         roleName: roleData?.roleName,
         roleDescription: roleData?.roleDescription,
@@ -107,7 +88,20 @@ const AddRole = ({
         })
       });
     }
-  }, [editData, editId]);
+  }, [roleData]);
+
+  useEffect(() => {
+    setValue(
+      "moduleList",
+      moduleList?.map(item => {
+        return {
+          moduleId: item?.id,
+          moduleName: item?.name,
+          scopeList: []
+        };
+      })
+    );
+  }, [moduleList, roleData]);
 
   const onAddRole = async (formData: typeof defaultValues) => {
     const preparedModuleList = formData?.moduleList?.map(moduleData => ({

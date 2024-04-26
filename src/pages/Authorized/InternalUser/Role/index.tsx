@@ -165,7 +165,6 @@ const PayoutMethod = () => {
         <CardBody>
           {flag ? (
             <AddRole
-              data={roleData}
               editId={editId ?? null}
               setEditId={setEditId}
               onClose={() => {

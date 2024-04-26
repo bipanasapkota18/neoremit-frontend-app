@@ -5,8 +5,8 @@ const OTPInput = () => {
   return (
     <PinInputField
       textAlign={"center"}
-      width="44px"
-      height="48px"
+      width="38px"
+      height="38px"
       borderRadius="8px"
       border={`1px solid ${colorScheme.primary_400}`}
       _focus={{

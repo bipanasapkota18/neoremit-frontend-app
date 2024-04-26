@@ -40,7 +40,7 @@ const OTPComponent = ({
               id={name}
               maxW={"350px !important"}
             >
-              <Flex gap={{ base: "30px", sm: "40px", md: "40px" }}>
+              <Flex gap={{ base: "30px", sm: "35px", md: "35px" }}>
                 <PinInput
                   placeholder=""
                   otp

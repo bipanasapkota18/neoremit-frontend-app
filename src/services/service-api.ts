@@ -152,7 +152,7 @@ export const api = {
     getById: `${service}/api/role-module/{roleId}`
   },
 
-  init: "/init"
+  init: `${service}/users/init-admin`
 };
 
 export interface NeoResponse<T = any> {

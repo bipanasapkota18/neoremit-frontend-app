@@ -51,6 +51,7 @@ const useAddRole = () => {
   return useMutation(addRole, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.role.getAll);
+      queryClient.invalidateQueries(api.role.create);
       toastSuccess(success?.data?.message);
     },
     onError: (error: AxiosError<{ message: string }>) => {
