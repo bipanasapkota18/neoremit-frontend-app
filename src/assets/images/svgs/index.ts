@@ -17,6 +17,7 @@ import { ReactComponent as FranceFlag } from "@neo/assets/images/svgs/flag-franc
 import { ReactComponent as GermanFlag } from "@neo/assets/images/svgs/flag-germany.svg";
 import { ReactComponent as ForgotPasswordBanner } from "@neo/assets/images/svgs/forgot_banner.svg";
 import { ReactComponent as ImagePlaceHolderDropzone } from "@neo/assets/images/svgs/image_placeholder.svg";
+import { ReactComponent as KycSetup } from "@neo/assets/images/svgs/kyc-setup.svg";
 import { ReactComponent as Line } from "@neo/assets/images/svgs/line.svg";
 import { ReactComponent as LoginBanner } from "@neo/assets/images/svgs/loginBanner.svg";
 import { ReactComponent as Logout } from "@neo/assets/images/svgs/logout.svg";
@@ -30,7 +31,6 @@ import { ReactComponent as StateAddIcon } from "@neo/assets/images/svgs/state-ad
 import { ReactComponent as StateSetup } from "@neo/assets/images/svgs/state-setup.svg";
 import { ReactComponent as TickSquare } from "@neo/assets/images/svgs/tick-square.svg";
 import { ReactComponent as DeleteButton } from "@neo/assets/images/svgs/trash.svg";
-
 export const svgAssets = {
   ImagePlaceHolderDropzone,
   Background,
@@ -63,5 +63,6 @@ export const svgAssets = {
   BaseRate,
   MarginSetup,
   StateSetup,
-  BaseRateConfig
+  BaseRateConfig,
+  KycSetup
 };
