@@ -26,8 +26,11 @@ export const api = {
     },
     kyc: {
       getAll: `${service}/country/kyc-form/fields`,
-      // countryField: `${service}/country/kyc-form/{countryId}`
-      countryField: `${service}/country/kyc-form/2`
+      countryField: `${service}/country/kyc-form/{countryId}`,
+      updateRequired: `${service}/country/kyc-form/fields/update/required/{id}`,
+      displayRequired: `${service}/country/kyc-form/fields/update/display/{id}`,
+      allowupdateRequired: `${service}/country/kyc-form/fields/update/update/{id}`,
+      kycFormField: `${service}/country/kyc-form/fields/create/{id}`
     },
     currency: {
       getAll: `${service}/currency-master/list`,

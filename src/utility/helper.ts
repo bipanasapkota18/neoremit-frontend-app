@@ -1,3 +1,8 @@
+import {
+  ICountryFields,
+  KeyField,
+  KycFormField
+} from "@neo/services/MasterData/service-kyc";
 import { debounce } from "lodash";
 import {
   ChangeEvent,
@@ -74,4 +79,62 @@ export function trimObjectValues(
   }
 
   return result;
+}
+
+export function categorizeKeyFields(
+  data?: ICountryFields
+): { header: string; fields: KycFormField[] }[] {
+  const categorizedKeyFields: Record<string, KycFormField[]> = {};
+
+  for (const field of data?.kycFormField ?? []) {
+    const category = field?.keyField?.category;
+    if (!categorizedKeyFields[category]) {
+      categorizedKeyFields[category] = [];
+    }
+    categorizedKeyFields[category]?.push(field);
+  }
+
+  const categorizedArray = Object.entries(categorizedKeyFields).map(
+    ([header, fields]) => ({
+      header,
+      fields
+    })
+  );
+
+  return categorizedArray;
+}
+
+export function categorizeAllKeyFields(data?: KeyField[]): {
+  header: string;
+  fields: (KeyField & {
+    isRequired: boolean;
+    display: boolean;
+    allowUpdate: boolean;
+  })[];
+}[] {
+  const categorizedKeyFields: Record<string, KeyField[]> = {};
+
+  for (const field of data ?? []) {
+    const category = field?.category;
+    if (!categorizedKeyFields[category]) {
+      categorizedKeyFields[category] = [];
+    }
+    categorizedKeyFields[category]?.push(field);
+  }
+
+  const categorizedArray = Object.entries(categorizedKeyFields).map(
+    ([header, fields]) => {
+      return {
+        header,
+        fields: fields.map(item => ({
+          ...item,
+          isRequired: false,
+          display: false,
+          allowUpdate: false
+        }))
+      };
+    }
+  );
+
+  return categorizedArray;
 }

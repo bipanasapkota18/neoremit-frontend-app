@@ -369,6 +369,24 @@ const AddPartner = ({
                 required
               />
             </GridItem>
+            <GridItem colSpan={1}>
+              <TextInput
+                control={control}
+                type="text"
+                label="Enter Partner Code"
+                name="partnercode"
+                required
+              />
+            </GridItem>
+            <GridItem colSpan={1}>
+              <TextInput
+                control={control}
+                type="text"
+                label="Enter Chain Id"
+                name="chainid"
+                required
+              />
+            </GridItem>
           </SimpleGrid>
         </Box>
         <Box display={"flex"} gap={"20px"} flexDir={"column"}>
