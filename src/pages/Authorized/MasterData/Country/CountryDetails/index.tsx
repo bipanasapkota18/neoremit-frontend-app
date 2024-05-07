@@ -3,6 +3,7 @@ import { Flex, Heading } from "@chakra-ui/react";
 import { svgAssets } from "@neo/assets/images/svgs";
 import BreadCrumb from "@neo/components/BreadCrumb";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
+import { colorScheme } from "@neo/theme/colorScheme";
 import { Step, Steps, useSteps } from "chakra-ui-steps";
 import { useLocation } from "react-router-dom";
 import BaseRate from "../BaseRate";
@@ -58,15 +59,52 @@ export const CounrtyDetails = () => {
               : null;
         }}
         variant={"circles-alt"}
-        colorScheme="purple"
-        style={{
-          padding: 4,
-          boxShadow: "md"
+        colorScheme="none"
+        sx={{
+          backgroundColor: "#FFF",
+          padding: "24px",
+          borderRadius: "32px",
+          border: "1px solid  #E2E8F0",
+          boxShadow: "md",
+
+          "& .cui-steps__horizontal-step-container": {
+            display: "flex",
+            width: "100%",
+            justifyContent: "flex-start",
+            columnGap: 3,
+            position: "relative"
+          },
+          "& .cui-steps__horizontal-step": {
+            "&::after": {
+              backgroundColor: "#CBD5E0 !important",
+              borderRadius: "4px !important"
+            },
+            display: "flex",
+            justifyContent: "space-between",
+            padding: "0 1%",
+            minWidth: "230px",
+            "& .cui-steps__step-icon-container": {
+              backgroundColor: `${colorScheme.primary_100}`,
+              _activeStep: {
+                backgroundColor: `${colorScheme.primary_500}`,
+                svg: {
+                  path: {
+                    fill: "#EFEAF4"
+                  }
+                }
+              }
+            },
+            _active: {
+              span: {
+                color: "#2D3748"
+              }
+            }
+          }
         }}
         activeStep={activeStep}
       >
         {steps.map(({ label, icon, component }) => (
-          <Step label={label} key={label} icon={icon}>
+          <Step checkIcon={icon} label={label} key={label} icon={icon}>
             <Box sx={{ bg, my: 8, rounded: "md" }}>{component}</Box>
           </Step>
         ))}
@@ -78,27 +116,6 @@ export const CounrtyDetails = () => {
           </Heading>
         </Box>
       )}
-      {/* <Flex width="100%" justify="flex-end" gap={4}>
-        {hasCompletedAllSteps ? (
-          <Button size="sm" onClick={reset}>
-            Reset
-          </Button>
-        ) : (
-          <>
-            <Button
-              isDisabled={activeStep === 0}
-              onClick={prevStep}
-              size="sm"
-              variant="ghost"
-            >
-              Prev
-            </Button>
-            <Button size="lg" onClick={nextStep}>
-              {isLastStep ? "Finish" : "Next"}
-            </Button>
-          </>
-        )}
-      </Flex> */}
     </Flex>
   );
 };
