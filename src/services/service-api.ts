@@ -24,6 +24,14 @@ export const api = {
       create: `${service}/state`,
       update: `${service}/state/{id}`
     },
+    kyc: {
+      getAll: `${service}/country/kyc-form/fields`,
+      countryField: `${service}/country/kyc-form/{countryId}`,
+      updateRequired: `${service}/country/kyc-form/fields/update/required/{id}`,
+      displayRequired: `${service}/country/kyc-form/fields/update/display/{id}`,
+      allowupdateRequired: `${service}/country/kyc-form/fields/update/update/{id}`,
+      kycFormField: `${service}/country/kyc-form/fields/create/{id}`
+    },
     currency: {
       getAll: `${service}/currency-master/list`,
       create: `${service}/currency-master`,
@@ -70,7 +78,6 @@ export const api = {
       toggleStatus: `${service}/api/role-module/toggle-status/{roleId}`,
       activeRoles: `${service}/api/role-module/roles`,
       updateRole: `${service}/api/role-module`
-      // deleteRole: `${service}/roles/delete-role/{id}`
     },
 
     source_of_fund: {

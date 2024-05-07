@@ -7,6 +7,7 @@ import { Step, Steps, useSteps } from "chakra-ui-steps";
 import { useLocation } from "react-router-dom";
 import BaseRate from "../BaseRate";
 import State from "../State";
+import KycSetup from "../kycSetup";
 import AddCountry from "./AddCountry";
 
 export const CounrtyDetails = () => {
@@ -30,6 +31,11 @@ export const CounrtyDetails = () => {
       label: "Base Rate Setup",
       icon: svgAssets.BaseRate,
       component: <BaseRate stepProps={{ nextStep, prevStep }} />
+    },
+    {
+      label: "KYC Setup",
+      icon: svgAssets.KycSetup,
+      component: <KycSetup stepProps={{ nextStep, prevStep }} />
     }
   ];
   // const isLastStep = activeStep === steps.length - 1;

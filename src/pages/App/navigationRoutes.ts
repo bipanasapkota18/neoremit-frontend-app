@@ -23,6 +23,7 @@ export const NAVIGATION_ROUTES = {
 
     COUNTRY_SETUP: "/country-setup",
     STATE_SETUP: "/state-setup",
+    kYC_SETUP: "/kyc-setup",
 
     OCCUPATION: "/occupation",
     MARITAL_STATUS: "/marital-status"
