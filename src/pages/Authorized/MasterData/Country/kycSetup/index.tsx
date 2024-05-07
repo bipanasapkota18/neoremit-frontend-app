@@ -111,7 +111,6 @@ const KycSetup = ({ stepProps }: IStepProps) => {
           allowUpdate: item.allowUpdate
         };
       });
-    console.log(formFields);
     try {
       await mutateFormFieldCreate({
         data: formFields,
