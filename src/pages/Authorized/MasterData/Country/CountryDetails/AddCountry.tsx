@@ -4,6 +4,7 @@ import {
   GridItem,
   HStack,
   SimpleGrid,
+  Stack,
   Tooltip
 } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -130,8 +131,13 @@ const AddCountry = ({ stepProps }: IStepProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onAddCountrySetup)}>
-      <SimpleGrid columns={3} spacing={"30px"}>
+    <Stack
+      as={"form"}
+      padding={"24px"}
+      gap={"24px"}
+      onSubmit={handleSubmit(onAddCountrySetup)}
+    >
+      <SimpleGrid columns={3} gap={"24px"}>
         <GridItem colSpan={3}>
           <DropzoneComponentControlled
             name="flagIcon"
@@ -247,7 +253,7 @@ const AddCountry = ({ stepProps }: IStepProps) => {
           />
         </GridItem>
       </SimpleGrid>
-      <HStack mt={2} justifyContent={"space-between"}>
+      <HStack justifyContent={"space-between"}>
         <Button
           minW={"max-content"}
           variant={"filter"}
@@ -264,7 +270,7 @@ const AddCountry = ({ stepProps }: IStepProps) => {
           Save and Proceed
         </Button>
       </HStack>
-    </form>
+    </Stack>
   );
 };
 
