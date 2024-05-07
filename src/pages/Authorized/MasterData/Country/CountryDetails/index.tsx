@@ -83,7 +83,6 @@ export const CounrtyDetails = () => {
             justifyContent: "space-between",
             padding: "0 1%",
             minWidth: "230px",
-            // "&:nth-last-of-type(-n+3)": {
             "& .cui-steps__step-icon-container": {
               backgroundColor: `${colorScheme.primary_100}`,
               _activeStep: {
@@ -95,7 +94,6 @@ export const CounrtyDetails = () => {
                 }
               }
             },
-            // },
             _active: {
               span: {
                 color: "#2D3748"
