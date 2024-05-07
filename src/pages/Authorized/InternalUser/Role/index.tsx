@@ -31,11 +31,6 @@ import AddRole from "./AddRoleModal";
 const PayoutMethod = () => {
   const [flag, setFlag] = useBoolean();
   const { pathname } = useLocation();
-  // const {
-  //   isOpen: isOpenPayoutMethodDeleteModal,
-  //   onOpen: onOpenPayoutMethodDeleteModal,
-  //   onClose: onClosePayoutMethodDeleteModal
-  // } = useDisclosure();
 
   const {
     isOpen: isOpenRoleStatusToggleModal,
@@ -73,13 +68,34 @@ const PayoutMethod = () => {
       header: "Permissions",
       accessorKey: "moduleList",
       cell: (cell: CellContext<IRoleResponse, any>) => {
-        return cell?.row?.original?.moduleList?.map((item, index) => {
-          return (
-            <Badge key={index} padding="8px 24px" mx={2} borderRadius={"16px"}>
-              {item?.moduleName}
-            </Badge>
+        return cell?.row?.original?.moduleList
+          ?.slice(0, 5)
+          .map((item, index) => {
+            return (
+              <Badge
+                key={index}
+                padding="8px 24px"
+                mr={2}
+                borderRadius={"16px"}
+              >
+                {item?.moduleName}
+              </Badge>
+            );
+          })
+          .concat(
+            cell?.row?.original?.moduleList?.length > 5 ? (
+              <Badge
+                key="ellipsis"
+                padding="8px 24px"
+                mx={2}
+                borderRadius={"16px"}
+              >
+                + {cell?.row?.original?.moduleList?.length - 5} more
+              </Badge>
+            ) : (
+              []
+            )
           );
-        });
       },
       size: 100
     },
@@ -117,26 +133,12 @@ const PayoutMethod = () => {
               icon={<svgAssets.EditButton />}
               label="Edit"
             />
-            {/* <TableActionButton
-              onClickAction={() => {
-                setChangeId(cell?.row?.original?.roleId || null);
-                onOpenPayoutMethodDeleteModal();
-              }}
-              icon={<svgAssets.DeleteButton />}
-              label="Delete"
-            /> */}
           </HStack>
         );
       }
     }
   ];
   const activePath = breadcrumbTitle(pathname);
-
-  // const handleDelete = async () => {
-  //   await mutateDelete(changeId);
-  //   setChangeId(null);
-  //   onClosePayoutMethodDeleteModal();
-  // };
 
   const handleStatusChange = async () => {
     try {
@@ -150,7 +152,12 @@ const PayoutMethod = () => {
 
   return (
     <Flex direction={"column"} gap={"16px"}>
-      <BreadCrumb currentPage="Roles" options={activePath} />
+      <BreadCrumb
+        currentPage="Roles"
+        options={activePath}
+        flag={flag}
+        setFlag={setFlag}
+      />
       <Card
         borderRadius={"16px"}
         boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"
@@ -158,7 +165,6 @@ const PayoutMethod = () => {
         <CardBody>
           {flag ? (
             <AddRole
-              data={roleData}
               editId={editId ?? null}
               setEditId={setEditId}
               onClose={() => {
@@ -219,19 +225,7 @@ const PayoutMethod = () => {
           )}
         </CardBody>
       </Card>
-      {/* <ConfirmationModal
-        variant={"delete"}
-        buttonText={"Delete"}
-        title={"Are You Sure?"}
-        isLoading={isDeleteLoading}
-        onApprove={handleDelete}
-        message="Deleting will permanently remove this file from the system. This cannot be Undone."
-        isOpen={isOpenPayoutMethodDeleteModal}
-        onClose={() => {
-          setChangeId(null);
-          onClosePayoutMethodDeleteModal();
-        }}
-      /> */}
+
       <ConfirmationModal
         variant={"edit"}
         buttonText={`${active ? "Disable" : "Enable"}`}

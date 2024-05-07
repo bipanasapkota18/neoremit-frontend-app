@@ -4,26 +4,6 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "./service-api";
 import { NeoHttpClient } from "./service-axios";
 
-// const defaultValues = {
-//   partnerType: null as ISelectOptions<string> | null,
-//   companyName: null,
-//   address: null,
-//   phoneNumber: null,
-//   emailAddress: null,
-//   timeZone: null as ISelectOptions<string> | null,
-//   operatingCountryIds: null as ISelectOptions<number>[] | null,
-//   partnerSettlementInfo: {
-//     partnerType: null as ISelectOptions<string> | null,
-//     companyName: null,
-//     operatingCountryIds: null as ISelectOptions<number>[] | null,
-//     acceptPinNo: false
-//   },
-//   partnerContactInfo: {
-//     contactName: null,
-//     designation: null,
-//     email: null
-//   }
-// };
 export interface IPartnerRequest {
   countryHeadQuarterId: number | null;
   partnerType: string | undefined;
@@ -95,6 +75,8 @@ const useUpdatePartner = () => {
   return useMutation(updatePartner, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.partner_setup.getAll);
+      queryClient.invalidateQueries(api.partner_setup.getById);
+
       toastSuccess(success?.data?.message);
     },
     onError: (error: AxiosError<{ message: string }>) => {
@@ -148,6 +130,19 @@ const useGetPartnerById = (id: number | null) => {
   return useQuery([api.partner_setup.getById, id], () => getPartnerById(id), {
     enabled: !!id,
     select: data => data?.data?.data,
+
+    onError: (error: AxiosError<{ message: string }>) => {
+      toastFail(error?.response?.data.message ?? error?.message);
+    }
+  });
+};
+
+const getAllTimezones = () => {
+  return NeoHttpClient.get<NeoResponse>(api.partner_setup.timezone);
+};
+const useGetAllTimezones = () => {
+  return useQuery([api.partner_setup.timezone], getAllTimezones, {
+    select: data => data?.data?.data,
     onError: (error: AxiosError<{ message: string }>) => {
       toastFail(error?.response?.data.message ?? error?.message);
     }
@@ -157,6 +152,7 @@ export {
   useAddPartner,
   useDeletePartner,
   useGetAllPartners,
+  useGetAllTimezones,
   useGetPartnerById,
   useTogglePartnerStatus,
   useUpdatePartner

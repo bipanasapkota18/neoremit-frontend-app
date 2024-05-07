@@ -157,16 +157,19 @@ const KycSetup = ({ stepProps }: IStepProps) => {
                           <CheckBox
                             width="fit-content"
                             control={control}
+                            borderColor="gray.400"
                             name={`[${index}].fields[${fieldIndex}].isRequired`}
                           />
                           <CheckBox
                             width="fit-content"
                             control={control}
+                            borderColor="gray.400"
                             name={`[${index}].fields[${fieldIndex}].display`}
                           />
                           <CheckBox
                             width="fit-content"
                             control={control}
+                            borderColor="gray.400"
                             name={`[${index}].fields[${fieldIndex}].allowUpdate`}
                           />
                         </HStack>

@@ -11,15 +11,15 @@ import * as yup from "yup";
 import { AuthPageProps } from "../../ForgotPassword/ForgotPasswordForm";
 
 const defaultValues = {
-  otpCode: "" as unknown as number
+  otpCode: ""
 };
 
 const OTP = ({ setScreen }: AuthPageProps) => {
   const { email } = useStore();
   const { mutateAsync: emailVerification, isLoading } = useVerifyOTP();
-  9;
+
   const schema = yup.object().shape({
-    otpCode: yup.number().required().min(5)
+    otpCode: yup.string().required("Please Enter OTP").min(6).nullable()
   });
   const { minutes, formattedSeconds } = useTimer(0.5);
 
@@ -33,7 +33,7 @@ const OTP = ({ setScreen }: AuthPageProps) => {
   });
   const handleOtpValidation = async (data: typeof defaultValues) => {
     const response = await emailVerification({
-      otpCode: data.otpCode,
+      otpCode: data?.otpCode ?? null,
       email: email,
       otpFor: "FORGOT_PASSWORD" // replace "someValue" with the actual value
     });

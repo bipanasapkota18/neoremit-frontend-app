@@ -136,6 +136,7 @@ export const api = {
     getById: `${service}/master/automatic-discount/get/{id}`
   },
   partner_setup: {
+    timezone: `${service}/util/timezones`,
     getAll: `${service}/master/partnerSetup/getAllPartnerSetup`,
     create: `${service}/master/partnerSetup/createPartnerSetup`,
     update: `${service}/master/partnerSetup/updatePartnerSetup/{partnerId}`,
@@ -154,10 +155,11 @@ export const api = {
     create: `${service}/api/role-module`,
     allModules: `${service}/api/role-module/modules`,
     toggleStatus: `${service}/api/role-module/toggle-status/{roleId}`,
-    activeRoles: `${service}/api/role-module/roles`
+    activeRoles: `${service}/api/role-module/roles`,
+    getById: `${service}/api/role-module/{roleId}`
   },
 
-  init: "/init"
+  init: `${service}/users/init-admin`
 };
 
 export interface NeoResponse<T = any> {

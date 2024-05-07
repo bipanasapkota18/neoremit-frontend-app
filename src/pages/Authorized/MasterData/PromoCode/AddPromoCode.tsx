@@ -10,12 +10,10 @@ import {
   Text
 } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import BreadCrumb from "@neo/components/BreadCrumb";
 import Editor from "@neo/components/Editor";
 import CustomRadioGroup from "@neo/components/Form/Radio/RadioGroup";
 import Select from "@neo/components/Form/SelectComponent";
 import TextInput from "@neo/components/Form/TextInput";
-import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import { useGetCountryList } from "@neo/services/MasterData/service-country";
 import { useGetAllPayoutMethod } from "@neo/services/MasterData/service-payout-method";
 import {
@@ -28,7 +26,6 @@ import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import moment from "moment";
 import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation } from "react-router-dom";
 import * as yup from "yup";
 
 const defaultValues = {
@@ -88,25 +85,61 @@ const AddPromoCode = ({
   const promocodeSchema = yup.object().shape({
     name: yup.string().required("Please enter promo code name"),
     code: yup.string().required("Please enter promo code code"),
-    validFrom: yup
-      .date()
-      .typeError("Please enter  from date")
-      .min(new Date(), "Please choose future date")
-      .required("Please enter  from date"),
+    validFrom: editId
+      ? yup
+          .date()
+          .typeError("Please enter  from date")
+          .required("Please enter  from date")
+      : yup
+          .date()
+          .nullable()
+          .required("Valid From Date is required")
+          .test(
+            "future-date",
+            "Valid From date must be today or in the future",
+            function (value) {
+              if (!value) return false; // handle null or undefined case
+
+              // Create today's date without the time component
+              const today = new Date();
+              today.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to zero
+
+              // Create the input date without the time component
+              const inputValue = new Date(value);
+              inputValue.setHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to zero
+
+              // Check if the input date is today or in the future
+              return inputValue >= today;
+            }
+          ),
     doesExpire: yup.string(),
     validTo: yup
       .date()
       .typeError("Please enter to date")
       .when("doesExpire", {
-        is: (value: string) => value === "Yes", // Condition for validation
-        then: yup.date().typeError("Please enter to date")
+        is: (value: string) => value === "Yes",
+        then: yup
+          .date()
+          .typeError("Enter expiry date")
+          .when("startDate", (validFrom, promocodeSchema) => {
+            if (validFrom) {
+              const dayAfter = new Date(validFrom.getTime() + 86400000);
+
+              return promocodeSchema.min(
+                dayAfter,
+                "Expiry date has to be after start date"
+              );
+            }
+
+            return promocodeSchema;
+          })
       })
       .nullable(),
     hasUsageLimit: yup.string(),
     usageLimit: yup
       .number()
       .when("hasUsageLimit", {
-        is: (value: string) => value === "Yes", // Condition for validation
+        is: (value: string) => value === "Yes",
         then: yup
           .number()
           .typeError("Please enter usage limit")
@@ -194,10 +227,6 @@ const AddPromoCode = ({
     valueKey: "value",
     labelKey: "label"
   });
-
-  const { pathname } = useLocation();
-
-  const activePath = breadcrumbTitle(pathname);
 
   useEffect(() => {
     if (editId) {
@@ -288,10 +317,8 @@ const AddPromoCode = ({
     reset(defaultValues);
     onClose();
   };
-
   return (
     <Flex direction={"column"} gap={"16px"}>
-      <BreadCrumb currentPage="Promo Code Setup" options={activePath} />
       <Card padding={"24px"}>
         <form onSubmit={handleSubmit(onAddPromoCode)}>
           <Box display="flex" gap={"20px"} flexDir={"column"}>
@@ -418,8 +445,8 @@ const AddPromoCode = ({
                   control={control}
                   name="countryIds"
                   isMulti
-                  required
                   options={country_options ?? []}
+                  required
                 />
               </GridItem>
               <GridItem colSpan={1}>
@@ -436,8 +463,8 @@ const AddPromoCode = ({
                   placeholder="-Deduction From-"
                   control={control}
                   name="deductionFrom"
-                  // label="Deduction From"
                   options={deduction_from_options ?? []}
+                  required
                 />
               </GridItem>
               <GridItem colSpan={1}>
@@ -445,9 +472,9 @@ const AddPromoCode = ({
                   control={control}
                   placeholder="-Select Payout Method-"
                   name="payoutMethodIds"
-                  // label="Deduction From"
                   options={payout_method_options ?? []}
                   isMulti
+                  required
                 />
               </GridItem>
             </SimpleGrid>
@@ -462,7 +489,7 @@ const AddPromoCode = ({
                         control={control}
                         placeholder="-Discount Type-"
                         name="marginDiscountType"
-                        // label="Deduction From"
+                        required
                         options={discount_type_options ?? []}
                       />
                     </GridItem>
@@ -485,7 +512,6 @@ const AddPromoCode = ({
                         control={control}
                         placeholder="-Discount Type-"
                         name="transactionFeeDiscountType"
-                        // label="Deduction From"
                         options={discount_type_options ?? []}
                       />
                     </GridItem>
@@ -511,8 +537,8 @@ const AddPromoCode = ({
                       control={control}
                       placeholder="-Discount Type-"
                       name="marginDiscountType"
-                      // label="Deduction From"
                       options={discount_type_options ?? []}
+                      required
                     />
                   </GridItem>
                   <GridItem colSpan={1}>
@@ -536,7 +562,6 @@ const AddPromoCode = ({
                       control={control}
                       placeholder="-Discount Type-"
                       name="transactionFeeDiscountType"
-                      // label="Deduction From"
                       options={discount_type_options ?? []}
                     />
                   </GridItem>
@@ -552,46 +577,12 @@ const AddPromoCode = ({
                 </SimpleGrid>
               </>
             )}
-            {/* <SimpleGrid
-              gap={"20px"}
-              hidden={
-                watch("deductionFrom")
-                  ?.map((item: any) => item.value)
-                  ?.includes("Margin") &&
-                watch("deductionFrom")
-                  ?.map((item: any) => item.value)
-                  ?.includes("Transaction Fee")
-              }
-              columns={3}
-            >
-              <GridItem colSpan={1}>
-                <Select
-                  control={control}
-                  placeholder="-Discount Type-"
-                  name="discountType"
-                  // label="Deduction From"
-                  options={[
-                    { value: "Margin", label: "Margin" },
-                    { value: "Transaction Fee", label: "Transaction Fee" }
-                  ]}
-                />
-              </GridItem>
-              <GridItem colSpan={1}>
-                <TextInput
-                  type="text"
-                  control={control}
-                  name="discountAmount"
-                  label="Enter Discount Amount"
-                  required
-                />
-              </GridItem>
-            </SimpleGrid> */}
 
             <HStack>
               <Editor control={control} name="description" />
             </HStack>
           </Box>
-          <HStack justifyContent={"flex-end"}>
+          <HStack mt={8} justifyContent={"flex-end"}>
             <Button
               padding={"16px 32px"}
               fontWeight={600}

@@ -69,7 +69,7 @@ const AddFeeandCharges = ({
 }: AddFeeandChargesProps) => {
   const schema = yup.object().shape({
     feeName: yup.string().required("Fee Name is required"),
-    countryId: yup.object().required("Country is required")
+    countryId: yup.object().required("Country is required").nullable()
   });
   const { control, handleSubmit, watch, reset } = useForm({
     defaultValues: defaultValues,

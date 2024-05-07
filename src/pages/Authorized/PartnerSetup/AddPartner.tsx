@@ -9,24 +9,22 @@ import {
   SimpleGrid
 } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import BreadCrumb from "@neo/components/BreadCrumb";
 import CheckBox from "@neo/components/Form/Checkbox";
 import Select from "@neo/components/Form/SelectComponent";
 import TextInput from "@neo/components/Form/TextInput";
-import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import { useGetCountryList } from "@neo/services/MasterData/service-country";
 import { useGetCurrencyList } from "@neo/services/MasterData/service-currency";
 import {
   IPartnerRequest,
   PartnerContactInfo,
   useAddPartner,
+  useGetAllTimezones,
   useGetPartnerById,
   useUpdatePartner
 } from "@neo/services/service-partner-setup";
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation } from "react-router-dom";
 import * as yup from "yup";
 
 const defaultValues = {
@@ -52,13 +50,19 @@ interface AddPartnerProps {
   onClose: () => void;
 }
 
-const AddPartner = ({
-  onClose,
-  editId,
-  // data: editData,
-  setEditId
-}: AddPartnerProps) => {
+const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
   const { data: currencyData } = useGetCurrencyList();
+  const { data: timeZones } = useGetAllTimezones();
+
+  const timeZoneArray = timeZones?.map((str: string) => ({
+    value: str
+  }));
+
+  const timezone_options = formatSelectOptions<number>({
+    data: timeZoneArray,
+    valueKey: "value",
+    labelKey: "value"
+  });
 
   const currency_options = formatSelectOptions<number>({
     data: currencyData,
@@ -67,56 +71,6 @@ const AddPartner = ({
   });
 
   const { data: selectedPartner } = useGetPartnerById(editId);
-
-  useEffect(() => {
-    if (editId) {
-      reset({
-        companyName: selectedPartner?.companyName,
-        address: selectedPartner?.address,
-        phoneNumber: selectedPartner?.phoneNumber,
-        emailAddress: selectedPartner?.emailAddress,
-        operatingCountryIds: selectedPartner?.operatingCountries?.map(
-          (country: any) => ({
-            value: country.id,
-            label: country.name
-          })
-        ),
-        countryHeadQuarterId: {
-          value: selectedPartner?.countryHeadQuarter.id,
-          label: selectedPartner?.countryHeadQuarter.name
-        },
-        partnerType: {
-          value: selectedPartner?.partnerType,
-          label: selectedPartner?.partnerType
-        },
-        timeZone: {
-          value: selectedPartner?.timeZone,
-          label: selectedPartner?.timeZone
-        },
-        partnerSettlementInfo: {
-          ...selectedPartner?.partnerSettlementInfo,
-          fundingCurrencyId: {
-            value: selectedPartner?.partnerSettlementInfo.fundingCurrency?.id,
-            label: selectedPartner?.partnerSettlementInfo.fundingCurrency?.name
-          },
-          localCurrencyId: {
-            value: selectedPartner?.partnerSettlementInfo.localCurrency?.id,
-            label: selectedPartner?.partnerSettlementInfo.localCurrency?.name
-          },
-          transactionLimit:
-            selectedPartner?.partnerSettlementInfo.transactionLimit,
-          acceptPinNo: selectedPartner?.partnerSettlementInfo.acceptPinNo
-        },
-        partnerContactInfo: selectedPartner?.partnerContactInfo.map(
-          (contact: PartnerContactInfo) => ({
-            contactName: contact.contactName,
-            designation: contact.designation,
-            email: contact.email
-          })
-        )
-      });
-    }
-  }, [editId, selectedPartner]);
 
   const { data: countryData } = useGetCountryList();
 
@@ -191,6 +145,55 @@ const AddPartner = ({
     defaultValues: defaultValues,
     resolver: yupResolver(partnerSchema)
   });
+  useEffect(() => {
+    if (editId) {
+      reset({
+        companyName: selectedPartner?.companyName,
+        address: selectedPartner?.address,
+        phoneNumber: selectedPartner?.phoneNumber,
+        emailAddress: selectedPartner?.emailAddress,
+        operatingCountryIds: selectedPartner?.operatingCountries?.map(
+          (country: any) => ({
+            value: country.id,
+            label: country.name
+          })
+        ),
+        countryHeadQuarterId: {
+          value: selectedPartner?.countryHeadQuarter.id,
+          label: selectedPartner?.countryHeadQuarter.name
+        },
+        partnerType: {
+          value: selectedPartner?.partnerType,
+          label: selectedPartner?.partnerType
+        },
+        timeZone: {
+          value: selectedPartner?.timeZone,
+          label: selectedPartner?.timeZone
+        },
+        partnerSettlementInfo: {
+          ...selectedPartner?.partnerSettlementInfo,
+          fundingCurrencyId: {
+            value: selectedPartner?.partnerSettlementInfo.fundingCurrency?.id,
+            label: selectedPartner?.partnerSettlementInfo.fundingCurrency?.name
+          },
+          localCurrencyId: {
+            value: selectedPartner?.partnerSettlementInfo.localCurrency?.id,
+            label: selectedPartner?.partnerSettlementInfo.localCurrency?.name
+          },
+          transactionLimit:
+            selectedPartner?.partnerSettlementInfo.transactionLimit,
+          acceptPinNo: selectedPartner?.partnerSettlementInfo.acceptPinNo
+        },
+        partnerContactInfo: selectedPartner?.partnerContactInfo.map(
+          (contact: PartnerContactInfo) => ({
+            contactName: contact.contactName,
+            designation: contact.designation,
+            email: contact.email
+          })
+        )
+      });
+    }
+  }, [selectedPartner]);
 
   const deductionFromArray = [
     { value: "SENDER", label: "Sender" },
@@ -211,36 +214,7 @@ const AddPartner = ({
     labelKey: "label"
   });
 
-  const { pathname } = useLocation();
-  const activePath = breadcrumbTitle(pathname);
-
   const onAddPartner = async (data: typeof defaultValues) => {
-    // const filteredPartnerContactInfo = data?.partnerContactInfo
-    //   ?.map((contact: PartnerContactInfo) => {
-    //     // Check if all fields are undefined
-    //     if (
-    //       contact.contactName === undefined &&
-    //       contact.designation === undefined &&
-    //       contact.email === undefined
-    //     ) {
-    //       return null; // Return null for elements with all fields undefined
-    //     } else if (
-    //       contact.contactName === null &&
-    //       contact.designation === null &&
-    //       contact.email === null
-    //     ) {
-    //       return null;
-    //     } else if (
-    //       contact.contactName === "" &&
-    //       contact.designation === "" &&
-    //       contact.email === ""
-    //     ) {
-    //       return null;
-    //     } else {
-    //       return contact; // Return the contact object for other cases
-    //     }
-    //   })
-    //   .filter((contact: PartnerContactInfo | null) => contact !== null); // Filter out null elements
     const preparedData: IPartnerRequest = {
       ...data,
       operatingCountryIds: data.operatingCountryIds?.map(
@@ -286,10 +260,6 @@ const AddPartner = ({
 
   return (
     <Flex direction={"column"} gap={"16px"}>
-      <BreadCrumb
-        currentPage={editId ? "Edit Partner" : "Add Partner"}
-        options={activePath}
-      />
       <Card gap={"24px"} padding={"24px"}>
         <Box display={"flex"} gap={"20px"} flexDir={"column"}>
           <Heading fontWeight={700} fontSize={"17px"}>
@@ -365,7 +335,7 @@ const AddPartner = ({
                 control={control}
                 placeholder="-Time Zone-"
                 name="timeZone"
-                options={country_options}
+                options={timezone_options}
                 required
               />
             </GridItem>

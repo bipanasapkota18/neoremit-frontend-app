@@ -9,11 +9,9 @@ import {
   SimpleGrid
 } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import BreadCrumb from "@neo/components/BreadCrumb";
 import Editor from "@neo/components/Editor";
 import Select from "@neo/components/Form/SelectComponent";
 import TextInput from "@neo/components/Form/TextInput";
-import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import {
   IAutomaticDiscountResponse,
   useAddAutomaticDiscount,
@@ -24,13 +22,11 @@ import { useGetAllPayoutMethod } from "@neo/services/MasterData/service-payout-m
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation } from "react-router-dom";
 import * as yup from "yup";
 
 const defaultValues = {
   discountName: "",
   description: "",
-  // discountCode: "",
   countryMasterId: null as ISelectOptions<number> | null,
   payoutMethodIds: null as ISelectOptions<number>[] | null,
   firstNTransactionPerCustomer: {
@@ -40,17 +36,6 @@ const defaultValues = {
     discountType: null as ISelectOptions<string> | null,
     discountAmount: null as number | null
   }
-  // firstNTransaction: {
-  //   noOfTransactions: null as number | null,
-  //   capAmount: null as number | null,
-  //   deductionFrom: null as ISelectOptions<string> | null,
-  //   validFrom: null as string | null,
-  //   validTill: null as string | null,
-  //   discountType: null as ISelectOptions<string> | null,
-  //   discountAmount: null as number | null
-  // }
-
-  // deductionFrom: null as ISelectOptions<string> | null,
 };
 interface AddPromoCodeProps {
   editId: number | null;
@@ -87,7 +72,6 @@ const AddAutomaticDiscount = ({
   editId,
   data: editData,
   setEditId
-  // refetchData
 }: AddPromoCodeProps) => {
   const selectedAutomaticDiscount = useMemo(
     () =>
@@ -119,7 +103,6 @@ const AddAutomaticDiscount = ({
 
   const promocodeSchema = yup.object().shape({
     discountName: yup.string().required("Please enter promo code name"),
-    // discountCode: yup.string().required("Please enter promo code code"),
 
     firstNTransactionPerCustomer: yup.object().shape({
       noOfTransactions: yup
@@ -140,36 +123,6 @@ const AddAutomaticDiscount = ({
         .min(0.1, "Discount Amount cannot be less than 0.1")
         .required("Please enter discount amount")
     }),
-    // firstNTransaction: yup.object().shape({
-    //   noOfTransactions: yup
-    //     .number()
-    //     .typeError("Please enter number of transactions")
-    //     .min(1, "Number of transactions cannot be less than 1")
-    //     .required("Please enter number of transactions"),
-    //   capAmount: yup
-    //     .number()
-    //     .typeError("Please enter cap amount")
-    //     .min(1, "Cap Amount cannot be less than 1")
-    //     .required("Please enter cap amount"),
-    //   deductionFrom: yup.mixed().required("Select Deduction From").nullable(),
-    //   discountType: yup.mixed().required("Select Discount Type").nullable(),
-    //   discountAmount: yup
-    //     .number()
-    //     .typeError("Please enter discount amount")
-    //     .min(1, "Discount Amount cannot be less than 1")
-    //     .required("Please enter discount amount"),
-    //   validFrom: yup
-    //     .date()
-    //     .typeError("Please enter  from date")
-    //     .min(new Date(), "Please choose future date")
-    //     .required("Please enter  from date"),
-    //   validTill: yup
-    //     .date()
-    //     .typeError("Please enter  from date")
-    //     .min(new Date(), "Please choose future date")
-    //     .required("Please enter  from date")
-    // }),
-
     payoutMethodIds: yup
       .array()
       .min(1, "Select at least one Payment Method")
@@ -189,10 +142,6 @@ const AddAutomaticDiscount = ({
     valueKey: "id",
     labelKey: "name"
   });
-
-  const { pathname } = useLocation();
-
-  const activePath = breadcrumbTitle(pathname);
 
   useEffect(() => {
     if (editId) {
@@ -239,23 +188,6 @@ const AddAutomaticDiscount = ({
             selectedAutomaticDiscount?.firstNTransactionPerCustomer
               ?.discountAmount
         }
-        // firstNTransaction: {
-        //   noOfTransactions:
-        //     selectedAutomaticDiscount?.firstNTransaction?.noOfTransactions,
-        //   capAmount: selectedAutomaticDiscount?.firstNTransaction?.capAmount,
-        //   deductionFrom: {
-        //     value: selectedAutomaticDiscount?.firstNTransaction?.deductionFrom,
-        //     label: selectedAutomaticDiscount?.firstNTransaction?.deductionFrom
-        //   },
-        //   discountType: {
-        //     value: selectedAutomaticDiscount?.firstNTransaction?.discountType,
-        //     label: selectedAutomaticDiscount?.firstNTransaction?.discountType
-        //   },
-        //   discountAmount:
-        //     selectedAutomaticDiscount?.firstNTransaction?.discountAmount,
-        //   validFrom: selectedAutomaticDiscount?.firstNTransaction?.validFrom,
-        //   validTill: selectedAutomaticDiscount?.firstNTransaction?.validTill
-        // }
       });
     }
   }, [editData, editId]);
@@ -274,12 +206,6 @@ const AddAutomaticDiscount = ({
         deductionFrom: data?.firstNTransactionPerCustomer?.deductionFrom?.value,
         discountType: data?.firstNTransactionPerCustomer?.discountType?.value
       }
-      // firstNTransaction: {
-      //   ...data.firstNTransaction,
-      //   noOfTransactions: data?.firstNTransaction?.noOfTransactions ?? null,
-      //   deductionFrom: data?.firstNTransaction?.deductionFrom?.value,
-      //   discountType: data?.firstNTransaction?.discountType?.value
-      // }
     };
     if (editId) {
       await useMutateUpdateAutomaticDiscount({
@@ -299,7 +225,6 @@ const AddAutomaticDiscount = ({
 
   return (
     <Flex direction={"column"} gap={"16px"}>
-      <BreadCrumb currentPage="Automatic Discount Setup" options={activePath} />
       <Card padding={"24px"}>
         <form onSubmit={handleSubmit(onAddAutomaticDiscount)}>
           <Box display="flex" gap={"20px"} flexDir={"column"}>
@@ -360,7 +285,6 @@ const AddAutomaticDiscount = ({
                   placeholder="-Deduction From-"
                   control={control}
                   name="firstNTransactionPerCustomer.deductionFrom"
-                  // label="Deduction From"
                   options={deduction_from_options ?? []}
                 />
               </GridItem>
@@ -369,7 +293,6 @@ const AddAutomaticDiscount = ({
                   control={control}
                   placeholder="-Discount Type-"
                   name="firstNTransactionPerCustomer.discountType"
-                  // label="Deduction From"
                   options={discount_type_options ?? []}
                 />
               </GridItem>
@@ -386,18 +309,8 @@ const AddAutomaticDiscount = ({
             <HStack>
               <Editor control={control} name="description" />
             </HStack>
-            {/* <HStack
-              alignItems={"flex-start"}
-              flexDirection={"column"}
-              width={"100%"}
-            >
-              <Heading fontSize={"17px"} fontWeight={700} color={"#2D3748"}>
-                Allow automatic discount on
-              </Heading>
-            </HStack> */}
-            {/* <ADTabbedPanel control={control} /> */}
           </Box>
-          <HStack mt={3} justifyContent={"flex-end"}>
+          <HStack mt={8} justifyContent={"flex-end"}>
             <Button
               padding={"16px 32px"}
               fontWeight={600}

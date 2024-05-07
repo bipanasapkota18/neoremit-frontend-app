@@ -90,7 +90,7 @@ export default function CropPlugin({
 
   return (
     <>
-      <Tooltip label="Edit" placement="top">
+      <Tooltip borderRadius={"4px"} hasArrow label="Edit" placement="top">
         <IconButton
           variant="outline"
           aria-label="Edit"
@@ -134,7 +134,12 @@ export default function CropPlugin({
             </ModalBody>
             <ModalFooter>
               <HStack justifyContent={"flex-start"} mb={2}>
-                <Tooltip label="Rotate left" placement="top">
+                <Tooltip
+                  borderRadius={"4px"}
+                  hasArrow
+                  label="Rotate left"
+                  placement="top"
+                >
                   <IconButton
                     variant="outline"
                     aria-label="Edit"
@@ -145,7 +150,12 @@ export default function CropPlugin({
                     <FiRotateCcw />
                   </IconButton>
                 </Tooltip>
-                <Tooltip label="Rotate right" placement="top">
+                <Tooltip
+                  borderRadius={"4px"}
+                  hasArrow
+                  label="Rotate right"
+                  placement="top"
+                >
                   <IconButton
                     variant="outline"
                     aria-label="Edit"

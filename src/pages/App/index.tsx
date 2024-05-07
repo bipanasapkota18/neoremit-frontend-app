@@ -3,6 +3,7 @@ import {
   useAuthentication,
   useLogoutMutation
 } from "@neo/services/service-auth";
+import { useFetchInitData } from "@neo/services/service-init";
 import { Suspense, lazy, useEffect } from "react";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import GoogleRedirect from "../MobileRedirect/google";
@@ -19,7 +20,11 @@ export default function App() {
     isLoading: isAuthLoading,
     refetch: checkTokenAndRefresh
   } = useAuthentication();
+
   const { mutate: logoutUser } = useLogoutMutation();
+
+  const { isLoading } = useFetchInitData(!!isAuthenticated);
+
   useEffect(() => {
     if (typeof isAuthenticated === "boolean" && !isAuthenticated) {
       localStorage.getItem("token") ? logoutUser() : null;
@@ -39,7 +44,7 @@ export default function App() {
     };
   }, [isAuthenticated, checkTokenAndRefresh]);
 
-  if (isAuthLoading) {
+  if (isAuthLoading || isLoading) {
     return (
       <Flex justifyContent={"center"} alignItems="center" height={"100vh"}>
         <Spinner

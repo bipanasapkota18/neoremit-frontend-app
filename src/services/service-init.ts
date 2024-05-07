@@ -1,5 +1,5 @@
+import { useStoreInitData } from "@neo/store/initData";
 import { AxiosError } from "axios";
-import { atom, useSetAtom } from "jotai";
 import { useQuery } from "react-query";
 import { NeoResponse, api } from "./service-api";
 import { NeoHttpClient } from "./service-axios";
@@ -10,7 +10,9 @@ export interface Module {
   scopes: string;
 }
 export interface IInitData {
-  id: number;
+  name: string;
+  role: string;
+  moduleList: any[];
 }
 
 const fetchInitData = () => () => {
@@ -18,15 +20,14 @@ const fetchInitData = () => () => {
 };
 
 const useFetchInitData = (enabled?: boolean) => {
-  const initDataAtom = atom<IInitData | null>(null);
-  const setStoredInitData = useSetAtom(initDataAtom);
+  const { setInitData } = useStoreInitData();
 
   return useQuery([api.init], fetchInitData(), {
     enabled: enabled,
     retry: 1,
     select: ({ data }) => data?.data || {},
     onSuccess: (data: IInitData) => {
-      setStoredInitData(data);
+      setInitData(data);
     },
     onError: (error: AxiosError) => {
       console.error(error);

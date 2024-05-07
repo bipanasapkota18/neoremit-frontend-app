@@ -84,7 +84,7 @@ const Document = () => {
       cell: (cell: CellContext<IDocumentResponse, any>) => {
         return cell.row.original.allowedExtensions.map((item, index) => {
           return (
-            <Badge key={index} padding="8px 24px" mx={2} borderRadius={"16px"}>
+            <Badge key={index} padding="8px 24px" mr={2} borderRadius={"16px"}>
               {item}
             </Badge>
           );
@@ -142,6 +142,7 @@ const Document = () => {
   ];
 
   const activePath = breadcrumbTitle(pathname);
+
   const handleDelete = async () => {
     await mutateDelete(changeId);
     setChangeId(null);

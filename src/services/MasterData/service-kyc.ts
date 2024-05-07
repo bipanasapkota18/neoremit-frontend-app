@@ -9,7 +9,6 @@ export interface ICountryFields {
   countryId: number;
   documents: Document[];
   kycFormField: KycFormField[];
-  // createField: createFields[];
 }
 
 export interface KycFormField {
