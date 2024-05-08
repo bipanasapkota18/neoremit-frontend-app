@@ -27,47 +27,33 @@ export const CounrtyDetails = () => {
     Number(searchParams.get("countryId"))
   );
 
-  const steps =
-    searchParams?.get("hasState") === "true" || countryById?.hasState
+  const steps = [
+    {
+      label: "Country Details",
+      icon: svgAssets.CountryDetails,
+      component: <AddCountry stepProps={{ nextStep, prevStep }} />
+    },
+    ...(searchParams?.get("hasState") === "true" || countryById?.hasState
       ? [
-          {
-            label: "Country Details",
-            icon: svgAssets.CountryDetails,
-            component: <AddCountry stepProps={{ nextStep, prevStep }} />
-          },
           {
             label: "State Setup",
             icon: svgAssets.StateSetup,
             component: <State stepProps={{ nextStep, prevStep }} />
-          },
-          {
-            label: "Base Rate Setup",
-            icon: svgAssets.BaseRate,
-            component: <BaseRate stepProps={{ nextStep, prevStep }} />
-          },
-          {
-            label: "KYC Setup",
-            icon: svgAssets.KycSetup,
-            component: <KycSetup stepProps={{ nextStep, prevStep }} />
           }
         ]
-      : [
-          {
-            label: "Country Details",
-            icon: svgAssets.CountryDetails,
-            component: <AddCountry stepProps={{ nextStep, prevStep }} />
-          },
-          {
-            label: "Base Rate Setup",
-            icon: svgAssets.BaseRate,
-            component: <BaseRate stepProps={{ nextStep, prevStep }} />
-          },
-          {
-            label: "KYC Setup",
-            icon: svgAssets.KycSetup,
-            component: <KycSetup stepProps={{ nextStep, prevStep }} />
-          }
-        ];
+      : []),
+    {
+      label: "Base Rate Setup",
+      icon: svgAssets.BaseRate,
+      component: <BaseRate stepProps={{ nextStep, prevStep }} />
+    },
+    {
+      label: "KYC Setup",
+      icon: svgAssets.KycSetup,
+      component: <KycSetup stepProps={{ nextStep, prevStep }} />
+    }
+  ];
+
   const hasCompletedAllSteps = activeStep === steps.length;
 
   if (hasCompletedAllSteps) {

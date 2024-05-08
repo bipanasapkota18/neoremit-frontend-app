@@ -115,7 +115,7 @@ const KycSetup = ({ stepProps }: IStepProps) => {
   }, []);
   const fetchData = async () => {
     try {
-      await Promise.all([mutateCountryFields(searchParams.get("countryId"))]);
+      await mutateCountryFields(searchParams.get("countryId"));
     } catch (error) {
       console.error("Error fetching data:", error);
     }
