@@ -1,4 +1,4 @@
-import { toastFail, toastSuccess } from "@neo/utility/Toast";
+import NeoToast from "@neo/utility/Toast/Toast";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "../service-api";
@@ -20,7 +20,10 @@ const useGetAllOccupation = () => {
   return useQuery([api.masterData.occupation.getAll], getAllOccupation, {
     select: data => data?.data?.data,
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -35,10 +38,16 @@ const useCreateOccupation = () => {
   return useMutation(createOccupation, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.masterData.occupation.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -53,10 +62,16 @@ const useUpdateOccupation = () => {
   return useMutation(updateOccupation, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.masterData.occupation.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -70,10 +85,16 @@ const useDeleteOccupation = () => {
   return useMutation(deleteOccupation, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.masterData.occupation.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -91,10 +112,16 @@ const useToggleOccupationStatus = (id: null | number) => {
       enabled: false,
       onSuccess: success => {
         queryClient.invalidateQueries(api.masterData.occupation.getAll);
-        toastSuccess(success?.data?.message);
+        NeoToast({
+          type: "success",
+          message: success?.data?.message
+        });
       },
       onError: (error: AxiosError<{ message: string }>) => {
-        toastFail(error?.response?.data?.message ?? error?.message);
+        NeoToast({
+          type: "error",
+          message: error?.response?.data?.message ?? error?.message
+        });
       }
     }
   );

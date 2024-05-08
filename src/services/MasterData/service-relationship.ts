@@ -1,4 +1,4 @@
-import { toastFail, toastSuccess } from "@neo/utility/Toast";
+import NeoToast from "@neo/utility/Toast/Toast";
 import { trimObjectValues } from "@neo/utility/helper";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -30,7 +30,10 @@ const useGetAllRelationShip = () => {
   return useQuery(api.masterData.relationship.getAll, getAllRelationShip, {
     select: data => data?.data?.data,
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -51,7 +54,10 @@ const useGetRelationshipById = (id: number | null) => {
         queryClient.invalidateQueries(api.masterData.relationship.getById);
       },
       onError: (error: AxiosError<{ message: string }>) => {
-        toastFail(error?.response?.data?.message ?? error?.message);
+        NeoToast({
+          type: "error",
+          message: error?.response?.data?.message ?? error?.message
+        });
       }
     }
   );
@@ -68,10 +74,16 @@ const useAddRelationship = () => {
   return useMutation(addRelationShip, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.masterData.relationship.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -93,10 +105,16 @@ const useUpdateRelationship = () => {
   return useMutation(updateRelationship, {
     onSuccess: success => {
       queryClient.invalidateQueries([api.masterData.relationship.getAll]);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -111,10 +129,16 @@ const useDeleteRelationship = () => {
   return useMutation(deleteRelationship, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.masterData.relationship.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -132,10 +156,16 @@ const useToggleRelationshipStatus = (id: number | null) => {
       enabled: false,
       onSuccess: success => {
         queryClient.invalidateQueries(api.masterData.relationship.getAll);
-        toastSuccess(success?.data?.message);
+        NeoToast({
+          type: "success",
+          message: success?.data?.message
+        });
       },
       onError: (error: AxiosError<{ message: string }>) => {
-        toastFail(error?.response?.data?.message ?? "Error");
+        NeoToast({
+          type: "error",
+          message: error?.response?.data?.message ?? error?.message
+        });
       }
     }
   );

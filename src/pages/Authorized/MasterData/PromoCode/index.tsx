@@ -226,7 +226,6 @@ const PromoCode = () => {
       console.error(e);
     }
   };
-  console.log(flag);
 
   return (
     <Flex direction={"column"} gap={"16px"}>

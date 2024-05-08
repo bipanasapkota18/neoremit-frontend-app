@@ -21,7 +21,7 @@ import {
 } from "@neo/services/MasterData/service-state";
 import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { IStepProps } from "../CountryDetails/AddCountry";
 import AddState from "./AddState";
 
@@ -50,10 +50,7 @@ const State = ({ stepProps }: IStepProps) => {
     pageSize: 10
   });
 
-  const { state } = useLocation();
-  const selectedCountry = state?.countryData?.find(
-    (country: any) => country.id === state?.countryId
-  );
+  const isNewCountry = searchParams?.get("isNewCountry") ?? false;
 
   const {
     mutateAsync,
@@ -73,16 +70,16 @@ const State = ({ stepProps }: IStepProps) => {
     mutateAsync({
       pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
       filterParams: {
-        countryId: searchParams.get("countryId") ?? selectedCountry?.id
+        countryId: Number(searchParams.get("countryId"))
       }
     });
-  }, [pageParams.pageIndex, pageParams.pageSize, selectedCountry]);
+  }, [pageParams.pageIndex, pageParams.pageSize]);
 
   const refetchData = () => {
     mutateAsync({
       pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
       filterParams: {
-        countryId: searchParams.get("countryId") ?? selectedCountry?.id
+        countryId: Number(searchParams.get("countryId"))
       }
     });
   };
@@ -215,12 +212,16 @@ const State = ({ stepProps }: IStepProps) => {
                 </Button>
                 <Button
                   onClick={() => {
-                    searchParams.get("countryId")
+                    isNewCountry
                       ? setSearchParams({
-                          countryId:
-                            searchParams.get("countryId") ?? selectedCountry?.id
+                          countryId: searchParams.get("countryId") + "",
+                          hasState: searchParams.get("hasState") + "",
+                          isNewCountry: isNewCountry
                         })
-                      : null;
+                      : setSearchParams({
+                          countryId: searchParams.get("countryId") + "",
+                          hasState: searchParams.get("hasState") + ""
+                        });
                     stepProps.nextStep();
                   }}
                 >
@@ -234,7 +235,7 @@ const State = ({ stepProps }: IStepProps) => {
 
       <AddState
         refetchData={refetchData}
-        countryId={searchParams.get("countryId") ?? selectedCountry?.id}
+        countryId={Number(searchParams.get("countryId"))}
         editId={editId}
         setEditId={setEditId}
         data={tableData}

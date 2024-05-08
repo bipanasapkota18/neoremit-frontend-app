@@ -49,6 +49,10 @@ const defaultValues = {
 };
 
 const BaseRate = ({ stepProps }: IStepProps) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const isNewCountry = searchParams?.get("isNewCountry") ?? false;
+
   const { data: countryData } = useGetCountryList();
 
   const {
@@ -87,8 +91,6 @@ const BaseRate = ({ stepProps }: IStepProps) => {
     mode: "onChange"
   });
 
-  const [searchParams] = useSearchParams();
-
   const { state } = useLocation();
 
   const selectedCountry = state?.countryData?.find(
@@ -96,17 +98,15 @@ const BaseRate = ({ stepProps }: IStepProps) => {
   );
 
   const { data: countryById } = useGetCountryById(
-    searchParams.get("countryId") ?? state?.countryId
+    Number(searchParams.get("countryId"))
   );
-
   const { data: baseRateData } = useGetBaseRate({
-    senderId: searchParams.get("countryId") ?? state?.countryId,
+    senderId: Number(searchParams.get("countryId")),
     receiverId: receiverId
   });
-
   const onAddBaseRate = async (data: typeof defaultValues) => {
     const preparedData = {
-      senderId: searchParams.get("countryId") ?? state?.countryId,
+      senderId: Number(searchParams.get("countryId")),
       receiverId: data.receiverId?.value,
       marginType: data.marginType?.value,
       marginRate: data.marginRate
@@ -116,6 +116,16 @@ const BaseRate = ({ stepProps }: IStepProps) => {
       data: preparedData
     });
     if (baseRateAddResponse.status === 200) {
+      isNewCountry
+        ? setSearchParams({
+            countryId: searchParams.get("countryId") + "",
+            hasState: searchParams.get("hasState") + "",
+            isNewCountry: isNewCountry
+          })
+        : setSearchParams({
+            countryId: searchParams.get("countryId") + "",
+            hasState: searchParams.get("hasState") + ""
+          });
       stepProps?.nextStep();
     }
   };
@@ -211,8 +221,7 @@ const BaseRate = ({ stepProps }: IStepProps) => {
                           color={colorScheme.gray_700}
                           fontWeight={600}
                         >
-                          {countryById?.data?.data?.name ??
-                            selectedCountry?.name}
+                          {countryById?.name ?? selectedCountry?.name}
                         </Text>
                       </HStack>
                       <HStack width={"100%"} spacing={3}>
@@ -234,8 +243,7 @@ const BaseRate = ({ stepProps }: IStepProps) => {
                           color={colorScheme.gray_700}
                           fontWeight={600}
                         >
-                          {countryById?.data?.data?.shortName ??
-                            selectedCountry?.shortName}
+                          {countryById?.shortName ?? selectedCountry?.shortName}
                         </Text>
                       </HStack>
                     </VStack>
@@ -260,8 +268,7 @@ const BaseRate = ({ stepProps }: IStepProps) => {
                           color={colorScheme.gray_700}
                           fontWeight={600}
                         >
-                          {countryById?.data?.data?.isoNumber ??
-                            selectedCountry?.isoNumber}
+                          {countryById?.isoNumber ?? selectedCountry?.isoNumber}
                         </Text>
                       </HStack>
                       <HStack width={"100%"} spacing={3}>
@@ -282,8 +289,7 @@ const BaseRate = ({ stepProps }: IStepProps) => {
                           color={colorScheme.gray_700}
                           fontWeight={600}
                         >
-                          {countryById?.data?.data?.code ??
-                            selectedCountry?.code}
+                          {countryById?.code ?? selectedCountry?.code}
                         </Text>
                       </HStack>
                     </VStack>
@@ -308,8 +314,7 @@ const BaseRate = ({ stepProps }: IStepProps) => {
                           color={colorScheme.gray_700}
                           fontWeight={600}
                         >
-                          {countryById?.data?.data?.phoneCode ??
-                            selectedCountry?.phoneCode}
+                          {countryById?.phoneCode ?? selectedCountry?.phoneCode}
                         </Text>
                       </HStack>
                       <HStack width={"100%"} spacing={3}>
@@ -332,7 +337,7 @@ const BaseRate = ({ stepProps }: IStepProps) => {
                           color={"#007F96"}
                         >
                           {baseRateData?.data?.data?.baseRate
-                            ? `${countryData?.data?.data?.find(country => country.id === receiverId)?.currency?.shortName} ${baseRateData?.data?.data?.baseRate}`
+                            ? `${countryById?.currency?.shortName} ${baseRateData?.data?.data?.baseRate}`
                             : "---"}
                         </Badge>
                         <Icon
@@ -390,7 +395,7 @@ const BaseRate = ({ stepProps }: IStepProps) => {
 
       <AddBaseRate
         baseRate={baseRateData?.data?.data?.baseRate ?? null}
-        senderId={searchParams.get("countryId") ?? state?.countryId}
+        senderId={Number(searchParams.get("countryId"))}
         receiverId={receiverId ?? null}
         countryId={selectedCountry?.id ?? null}
         baseRateConfigId={baseRateConfigId}
