@@ -24,6 +24,7 @@ export interface KeyField {
   id: number;
   name: string;
   label: string;
+  displayOrder: number;
   category: string;
 }
 

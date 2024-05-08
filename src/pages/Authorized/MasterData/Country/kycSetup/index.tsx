@@ -2,6 +2,7 @@ import {
   Button,
   Card,
   CardBody,
+  Divider,
   Flex,
   HStack,
   Heading,
@@ -17,13 +18,23 @@ import {
 } from "@neo/services/MasterData/service-kyc";
 import {
   categorizeAllKeyFields,
-  categorizeKeyFields
+  categorizeKeyFields,
+  convertToTitleCase
 } from "@neo/utility/helper";
 import React, { useEffect, useMemo } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { useSearchParams } from "react-router-dom";
 import { IStepProps } from "../CountryDetails/AddCountry";
 
+interface IAllFields {
+  header: string;
+  fields: (KeyField & {
+    isRequired: boolean;
+    display: boolean;
+    allowUpdate: boolean;
+  })[];
+}
+[];
 interface IKycFieldValues {
   header: string;
   fields: (KeyField & {
@@ -31,6 +42,18 @@ interface IKycFieldValues {
     display: boolean;
     allowUpdate: boolean;
   })[];
+}
+
+function customSort(item: IAllFields): number {
+  if (item.header === "PERSONAL_INFORMATION") {
+    return 0;
+  } else if (item.header === "ADDRESS_INFORMATION") {
+    return 1;
+  } else if (item.header === "DOCUMENT_INFORMATION") {
+    return 2;
+  } else {
+    return 3;
+  }
 }
 
 const KycSetup = ({ stepProps }: IStepProps) => {
@@ -118,7 +141,6 @@ const KycSetup = ({ stepProps }: IStepProps) => {
       console.error("Error saving form data:", error);
     }
   };
-
   return (
     <Flex direction={"column"} gap={"16px"}>
       <Card borderRadius={"16px"}>
@@ -129,52 +151,66 @@ const KycSetup = ({ stepProps }: IStepProps) => {
             flexDirection={"column"}
             gap={"24px"}
           >
-            {allFieldGroups?.map((group, index) => {
-              return (
-                <React.Fragment key={index}>
-                  <HStack justifyContent="space-between">
-                    <Heading fontSize={"17px"} fontWeight={"700"} flex={1}>
-                      {group.header}
-                    </Heading>
-                    {index === 0 && (
-                      <HStack w="40%" justifyContent={"space-evenly"}>
-                        <text>Is Required ?</text>
-                        <text>Display ?</text>
-                        <text>Allow Update ?</text>
-                      </HStack>
-                    )}
-                  </HStack>
-                  {group?.fields?.map((field, fieldIndex) => {
-                    return (
-                      <HStack key={field.id} justifyContent="space-between">
-                        <Text flex={1}>{field.label}</Text>
+            {allFieldGroups
+              ?.sort((a, b) => customSort(a) - customSort(b))
+              ?.map((group, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <HStack justifyContent="space-between">
+                      <Heading fontSize={"17px"} fontWeight={"700"} flex={1}>
+                        {convertToTitleCase(group.header)}
+                      </Heading>
 
-                        <HStack w="42%" justifyContent={"space-evenly"}>
-                          <CheckBox
-                            width="fit-content"
-                            control={control}
-                            borderColor="gray.400"
-                            name={`[${index}].fields[${fieldIndex}].isRequired`}
-                          />
-                          <CheckBox
-                            width="fit-content"
-                            control={control}
-                            borderColor="gray.400"
-                            name={`[${index}].fields[${fieldIndex}].display`}
-                          />
-                          <CheckBox
-                            width="fit-content"
-                            control={control}
-                            borderColor="gray.400"
-                            name={`[${index}].fields[${fieldIndex}].allowUpdate`}
-                          />
+                      {index === 0 && (
+                        <HStack w="40%" justifyContent={"space-evenly"}>
+                          <text>Is Required ?</text>
+                          <text>Display ?</text>
+                          <text>Allow Update ?</text>
                         </HStack>
-                      </HStack>
-                    );
-                  })}
-                </React.Fragment>
-              );
-            })}
+                      )}
+                    </HStack>
+
+                    {group?.fields
+
+                      ?.sort((a, b) => a.displayOrder - b.displayOrder)
+
+                      .map((field, fieldIndex) => {
+                        return (
+                          <React.Fragment key={field.id}>
+                            <HStack
+                              key={field.id}
+                              justifyContent="space-between"
+                            >
+                              <Text flex={1}>{field.label}</Text>
+
+                              <HStack w="42%" justifyContent={"space-evenly"}>
+                                <CheckBox
+                                  width="fit-content"
+                                  control={control}
+                                  borderColor="gray.400"
+                                  name={`[${index}].fields[${fieldIndex}].isRequired`}
+                                />
+                                <CheckBox
+                                  width="fit-content"
+                                  control={control}
+                                  borderColor="gray.400"
+                                  name={`[${index}].fields[${fieldIndex}].display`}
+                                />
+                                <CheckBox
+                                  width="fit-content"
+                                  control={control}
+                                  borderColor="gray.400"
+                                  name={`[${index}].fields[${fieldIndex}].allowUpdate`}
+                                />
+                              </HStack>
+                            </HStack>
+                            <Divider />
+                          </React.Fragment>
+                        );
+                      })}
+                  </React.Fragment>
+                );
+              })}
 
             <HStack mt={2} justifyContent={"space-between"}>
               <Button
