@@ -138,3 +138,11 @@ export function categorizeAllKeyFields(data?: KeyField[]): {
 
   return categorizedArray;
 }
+
+export function convertToTitleCase(str: string): string {
+  const words = str
+    .toLowerCase()
+    .split("_")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1));
+  return words.join(" ");
+}
