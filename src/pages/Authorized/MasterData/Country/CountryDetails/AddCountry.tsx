@@ -16,14 +16,15 @@ import { NAVIGATION_ROUTES } from "@neo/pages/App/navigationRoutes";
 import countryAdd from "@neo/schema/country/country";
 import {
   useAddCountry,
+  useGetCountryById,
   useUpdateCountry
 } from "@neo/services/MasterData/service-country";
 import { useGetCurrencyList } from "@neo/services/MasterData/service-currency";
 import { baseURL } from "@neo/services/service-axios";
 import { formatSelectOptions } from "@neo/utility/format";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const defaultValues = {
   name: "",
@@ -44,11 +45,15 @@ export interface IStepProps {
     prevStep: () => void;
   };
 }
+
 const AddCountry = ({ stepProps }: IStepProps) => {
   const navigate = useNavigate();
-  const [, setSearchParams] = useSearchParams();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const { mutateAsync: mutateAddCountry, isLoading: isAddLoading } =
     useAddCountry();
+
   const { mutateAsync: mutateUpdate, isLoading: isUpdateLoading } =
     useUpdateCountry();
 
@@ -57,8 +62,11 @@ const AddCountry = ({ stepProps }: IStepProps) => {
     resolver: yupResolver(countryAdd),
     mode: "onChange"
   });
+  const { data: selectedCountry } = useGetCountryById(
+    Number(searchParams.get("countryId"))
+  );
+  const isNewCountry = searchParams.get("isNewCountry") ?? false;
 
-  const location = useLocation();
   const { data: currencyData } = useGetCurrencyList();
 
   const currencyOptions = formatSelectOptions({
@@ -67,15 +75,8 @@ const AddCountry = ({ stepProps }: IStepProps) => {
     labelKey: "name"
   });
 
-  const selectedCountry = useMemo(
-    () =>
-      location?.state?.countryData?.find(
-        (country: any) => country.id === location?.state?.countryId
-      ),
-    [location?.state?.countryId]
-  );
   useEffect(() => {
-    if (location?.state?.countryId) {
+    if (searchParams.get("countryId")) {
       const selectedCurrency = currencyOptions?.find(
         (currency: any) => currency.value === selectedCountry?.currency?.id
       );
@@ -93,12 +94,12 @@ const AddCountry = ({ stepProps }: IStepProps) => {
         isActive: selectedCountry?.isActive
       });
     }
-  }, [location?.state, currencyData]);
+  }, [selectedCountry]);
 
   const onAddCountrySetup = async (data: typeof defaultValues) => {
-    if (location?.state?.countryId) {
+    if (searchParams.get("countryId")) {
       const updateresponse = await mutateUpdate({
-        id: location?.state?.countryId,
+        id: Number(searchParams?.get("countryId")),
         data: {
           ...data,
           flagIcon: data.flagIcon[0] ?? "",
@@ -107,6 +108,16 @@ const AddCountry = ({ stepProps }: IStepProps) => {
         }
       });
       if (updateresponse?.status === 200) {
+        isNewCountry
+          ? setSearchParams({
+              countryId: updateresponse?.data?.data?.id + "",
+              hasState: updateresponse?.data?.data?.hasState + "",
+              isNewCountry: isNewCountry
+            })
+          : setSearchParams({
+              countryId: updateresponse?.data?.data?.id + "",
+              hasState: updateresponse?.data?.data?.hasState + ""
+            });
         stepProps.nextStep();
       }
     } else {
@@ -116,10 +127,16 @@ const AddCountry = ({ stepProps }: IStepProps) => {
         currencyId: data?.currencyId?.value ?? null
       });
       if (createResponse?.status === 200) {
-        setSearchParams({
-          countryId: createResponse?.data?.data?.id,
-          hasState: createResponse?.data?.data?.hasState
-        });
+        isNewCountry
+          ? setSearchParams({
+              countryId: createResponse?.data?.data?.id,
+              hasState: createResponse?.data?.data?.hasState,
+              isNewCountry: isNewCountry
+            })
+          : setSearchParams({
+              countryId: createResponse?.data?.data?.id,
+              hasState: createResponse?.data?.data?.hasState
+            });
         stepProps.nextStep();
       }
     }
@@ -144,7 +161,7 @@ const AddCountry = ({ stepProps }: IStepProps) => {
             control={control}
             options={{ maxSize: 4 }}
             imagePreview={
-              location?.state?.countryId && selectedCountry?.flagIcon != null
+              selectedCountry?.flagIcon != null
                 ? `${baseURL}/document-service/master/flag-icon?fileId=${selectedCountry?.flagIcon}`
                 : ""
             }

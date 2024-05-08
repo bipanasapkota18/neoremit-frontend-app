@@ -34,11 +34,14 @@ const AddState = ({
   countryId
 }: AddStateProps) => {
   const { mutateAsync: mutateAddState } = useAddState();
+
   const { mutateAsync: mutateEditState } = useUpdateState();
+
   const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues,
     resolver: yupResolver(stateSchema)
   });
+
   useEffect(() => {
     if (editId) {
       const selectedState = editData?.find(item => item.id === editId);
@@ -48,6 +51,7 @@ const AddState = ({
       });
     }
   }, [editData, editId]);
+
   const onAddState = async (data: typeof defaultValues) => {
     if (editId) {
       await mutateEditState({

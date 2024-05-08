@@ -32,23 +32,19 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Country = () => {
-  // const {
-  //   isOpen: isCountryAddModalOpen,
-  //   onOpen: onOpenCountryAddModal,
-  //   onClose: onCloseCountryAddModal
-  // } = useDisclosure();
   const {
     isOpen: isOpenCountryDeleteModal,
     onOpen: onOpenCountryDeleteModal,
     onClose: onCloseCountryDeleteModal
   } = useDisclosure();
+
   const {
     isOpen: isOpenCountryStatusUpdateModal,
     onOpen: onOpenCountryStatusUpdateModal,
     onClose: onCloseCountryStatusUpdateModal
   } = useDisclosure();
+
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
-  const navigate = useNavigate();
   const [filterCount, setFilterCount] = useState(0);
   const [tableData, setTableData] = useState<CountriesList[] | undefined>();
   const [searchText, setSearchText] = useState<string>("" as string);
@@ -59,7 +55,10 @@ const Country = () => {
     pageIndex: 0,
     pageSize: 10
   });
+
+  const navigate = useNavigate();
   const { pathname } = useLocation();
+  const activePath = breadcrumbTitle(pathname);
 
   const {
     mutateAsync: addMutateCountry,
@@ -74,6 +73,7 @@ const Country = () => {
     refetch,
     isFetching
   } = useToggleStatus(changeId);
+
   useEffect(() => {
     addMutateCountry({
       pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
@@ -87,6 +87,7 @@ const Country = () => {
       filterParams: {}
     });
   };
+
   useEffect(() => {
     setTableData(countryData?.data?.data?.countriesList ?? []);
     setFilterCount(countryData?.data?.data?.totalItems ?? 0);
@@ -175,15 +176,10 @@ const Country = () => {
           <HStack>
             <TableActionButton
               onClickAction={() => {
-                navigate(NAVIGATION_ROUTES.COUNTRY, {
-                  state: {
-                    countryData: countryData?.data?.data?.countriesList,
-                    countryId: cell?.row?.original?.id
-                  }
-                });
-
-                // setEditId(cell?.row?.original?.id);
-                // onOpenCountryAddModal();
+                navigate(
+                  NAVIGATION_ROUTES.COUNTRY +
+                    `?countryId=${cell?.row?.original?.id}`
+                );
               }}
               icon={<svgAssets.EditButton />}
               label="Edit"
@@ -201,13 +197,14 @@ const Country = () => {
       }
     }
   ];
-  const activePath = breadcrumbTitle(pathname);
+
   const handleDelete = async () => {
     await mutateDelete(changeId);
     setChangeId(null);
     onCloseCountryDeleteModal();
     refetchData();
   };
+
   const handleStatusChange = async () => {
     try {
       await refetch();
@@ -218,6 +215,7 @@ const Country = () => {
       console.error(e);
     }
   };
+
   return (
     <Flex direction={"column"} gap={"16px"}>
       <BreadCrumb currentPage="Country Setup" options={activePath} />
@@ -254,7 +252,9 @@ const Country = () => {
             <Button
               minW={"max-content"}
               leftIcon={<svgAssets.AddButton />}
-              onClick={() => navigate(NAVIGATION_ROUTES.COUNTRY)}
+              onClick={() => {
+                navigate(NAVIGATION_ROUTES.COUNTRY + `?isNewCountry=${true}`);
+              }}
             >
               Add Country
             </Button>
@@ -277,14 +277,6 @@ const Country = () => {
         </CardBody>
       </Card>
 
-      {/* <AddCountrySetup
-        refetchData={refetchData}
-        data={countryData?.data?.data?.countriesList}
-        editId={editId}
-        setEditId={setEditId}
-        isOpen={isCountryAddModalOpen}
-        onClose={onCloseCountryAddModal}
-      /> */}
       <ConfirmationModal
         variant={"delete"}
         buttonText={"Delete"}

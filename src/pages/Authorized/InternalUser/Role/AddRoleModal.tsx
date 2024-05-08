@@ -65,7 +65,6 @@ const AddRole = ({ onClose, editId, setEditId }: AddRoleProps) => {
 
   useEffect(() => {
     if (editId && moduleList) {
-      console.log(getValues("moduleList"));
       reset({
         roleName: roleData?.roleName,
         roleDescription: roleData?.roleDescription,

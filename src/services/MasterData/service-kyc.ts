@@ -1,4 +1,4 @@
-import { toastFail, toastSuccess } from "@neo/utility/Toast";
+import NeoToast from "@neo/utility/Toast/Toast";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { api } from "../service-api";
@@ -54,21 +54,27 @@ const getFields = () => {
 const useGetFields = () => {
   return useMutation(getFields, {
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
 
-const countryFields = (countryId: string) => {
+const countryFields = (countryId: string | null) => {
   return NeoHttpClient.get<NeoResponse<ICountryFields>>(
-    api.masterData.kyc.countryField?.replace("{countryId}", countryId)
+    api.masterData.kyc.countryField?.replace("{countryId}", countryId + "")
   );
 };
 
 const useCountryFields = () => {
   return useMutation(countryFields, {
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -85,7 +91,10 @@ const useSaveKycFormFieldRequired = (id: number | null) => {
     {
       enabled: !!id,
       onError: (error: AxiosError<{ message: string }>) => {
-        toastFail(error?.response?.data?.message ?? error?.message);
+        NeoToast({
+          type: "error",
+          message: error?.response?.data?.message ?? error?.message
+        });
       }
     }
   );
@@ -104,7 +113,10 @@ const useSaveKycFormFieldDisplay = (id: number | null) => {
     {
       enabled: !!id,
       onError: (error: AxiosError<{ message: string }>) => {
-        toastFail(error?.response?.data?.message ?? error?.message);
+        NeoToast({
+          type: "error",
+          message: error?.response?.data?.message ?? error?.message
+        });
       }
     }
   );
@@ -121,7 +133,10 @@ const usesaveKycFormFieldallowUpdate = (id: number | null) => {
     {
       enabled: !!id,
       onError: (error: AxiosError<{ message: string }>) => {
-        toastFail(error?.response?.data?.message ?? error?.message);
+        NeoToast({
+          type: "error",
+          message: error?.response?.data?.message ?? error?.message
+        });
       }
     }
   );
@@ -144,10 +159,16 @@ const useFormFieldCreate = () => {
   return useMutation(formFieldCreate, {
     onSuccess: success => {
       queryCLient.invalidateQueries(api.masterData.kyc.countryField);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };

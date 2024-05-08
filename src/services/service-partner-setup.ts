@@ -1,4 +1,4 @@
-import { toastFail, toastSuccess } from "@neo/utility/Toast";
+import NeoToast from "@neo/utility/Toast/Toast";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "./service-api";
@@ -37,7 +37,10 @@ const useGetAllPartners = () => {
   return useQuery([api.partner_setup.getAll], getAllPartners, {
     select: data => data?.data?.data,
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -50,10 +53,16 @@ const useAddPartner = () => {
   return useMutation(addPartner, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.partner_setup.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -77,10 +86,16 @@ const useUpdatePartner = () => {
       queryClient.invalidateQueries(api.partner_setup.getAll);
       queryClient.invalidateQueries(api.partner_setup.getById);
 
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -95,10 +110,16 @@ const useDeletePartner = () => {
   return useMutation(deletePartner, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.partner_setup.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -113,10 +134,16 @@ const useTogglePartnerStatus = () => {
   return useMutation(togglePartnerStatus, {
     onSuccess: success => {
       queryCLient.invalidateQueries(api.partner_setup.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message || error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -132,7 +159,10 @@ const useGetPartnerById = (id: number | null) => {
     select: data => data?.data?.data,
 
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -144,7 +174,10 @@ const useGetAllTimezones = () => {
   return useQuery([api.partner_setup.timezone], getAllTimezones, {
     select: data => data?.data?.data,
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };

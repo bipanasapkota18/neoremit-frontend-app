@@ -1,4 +1,4 @@
-import { toastFail, toastSuccess } from "@neo/utility/Toast";
+import NeoToast from "@neo/utility/Toast/Toast";
 import { trimObjectValues } from "@neo/utility/helper";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -44,7 +44,10 @@ const getAllPurpose = ({ pageParams, filterParams }: IFilterParams) => {
 const useGetAllPurpose = () => {
   return useMutation(getAllPurpose, {
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -60,10 +63,16 @@ const useAddPurpose = () => {
   return useMutation(addPurpose, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.masterData.purpose_of_payment.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -79,10 +88,16 @@ const useUpdatePurpose = () => {
   return useMutation(updatePurpose, {
     onSuccess: success => {
       queryClient.invalidateQueries([api.masterData.purpose_of_payment.getAll]);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -97,10 +112,16 @@ const useDeletePurpose = () => {
   return useMutation(deletePurpose, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.masterData.purpose_of_payment.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -119,10 +140,16 @@ const useTogglePurposeStatus = (id: number | null) => {
       enabled: false,
       onSuccess: success => {
         queryClient.invalidateQueries(api.masterData.purpose_of_payment.getAll);
-        toastSuccess(success?.data?.message);
+        NeoToast({
+          type: "success",
+          message: success?.data?.message
+        });
       },
       onError: (error: AxiosError<{ message: string }>) => {
-        toastFail(error?.response?.data?.message ?? "Error");
+        NeoToast({
+          type: "error",
+          message: error?.response?.data?.message ?? error?.message
+        });
       }
     }
   );

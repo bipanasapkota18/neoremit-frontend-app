@@ -21,7 +21,7 @@ import {
 } from "@neo/utility/helper";
 import React, { useEffect, useMemo } from "react";
 import { FieldValues, useForm } from "react-hook-form";
-import { useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { IStepProps } from "../CountryDetails/AddCountry";
 
 interface IKycFieldValues {
@@ -34,10 +34,7 @@ interface IKycFieldValues {
 }
 
 const KycSetup = ({ stepProps }: IStepProps) => {
-  const { state } = useLocation();
-  const selectedCountry = state?.countryData?.find(
-    (country: any) => country.id === state?.countryId
-  );
+  const [searchParams] = useSearchParams();
 
   const { data: allFields, mutateAsync: fetchAllFields } = useGetFields();
 
@@ -95,7 +92,7 @@ const KycSetup = ({ stepProps }: IStepProps) => {
   }, []);
   const fetchData = async () => {
     try {
-      await Promise.all([mutateCountryFields(selectedCountry?.id)]);
+      await Promise.all([mutateCountryFields(searchParams.get("countryId"))]);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -114,7 +111,7 @@ const KycSetup = ({ stepProps }: IStepProps) => {
     try {
       await mutateFormFieldCreate({
         data: formFields,
-        id: selectedCountry?.id
+        id: Number(searchParams.get("countryId"))
       });
       stepProps.nextStep();
     } catch (error) {

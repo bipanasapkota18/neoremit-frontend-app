@@ -1,11 +1,13 @@
 import { Box } from "@chakra-ui/layout";
-import { Flex, Heading } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { svgAssets } from "@neo/assets/images/svgs";
 import BreadCrumb from "@neo/components/BreadCrumb";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
+import { NAVIGATION_ROUTES } from "@neo/pages/App/navigationRoutes";
+import { useGetCountryById } from "@neo/services/MasterData/service-country";
 import { colorScheme } from "@neo/theme/colorScheme";
 import { Step, Steps, useSteps } from "chakra-ui-steps";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import BaseRate from "../BaseRate";
 import State from "../State";
 import KycSetup from "../kycSetup";
@@ -15,32 +17,62 @@ export const CounrtyDetails = () => {
   const { nextStep, prevStep, activeStep, setStep } = useSteps({
     initialStep: 0
   });
-  const location = useLocation();
+  const navigate = useNavigate();
 
-  const steps = [
-    {
-      label: "Country Details",
-      icon: svgAssets.CountryDetails,
-      component: <AddCountry stepProps={{ nextStep, prevStep }} />
-    },
-    {
-      label: "State Setup",
-      icon: svgAssets.StateSetup,
-      component: <State stepProps={{ nextStep, prevStep }} />
-    },
-    {
-      label: "Base Rate Setup",
-      icon: svgAssets.BaseRate,
-      component: <BaseRate stepProps={{ nextStep, prevStep }} />
-    },
-    {
-      label: "KYC Setup",
-      icon: svgAssets.KycSetup,
-      component: <KycSetup stepProps={{ nextStep, prevStep }} />
-    }
-  ];
-  // const isLastStep = activeStep === steps.length - 1;
+  const [searchParams] = useSearchParams();
+
+  const isNewCountry = searchParams?.get("isNewCountry") ?? false;
+
+  const { data: countryById } = useGetCountryById(
+    Number(searchParams.get("countryId"))
+  );
+
+  const steps =
+    searchParams?.get("hasState") === "true" || countryById?.hasState
+      ? [
+          {
+            label: "Country Details",
+            icon: svgAssets.CountryDetails,
+            component: <AddCountry stepProps={{ nextStep, prevStep }} />
+          },
+          {
+            label: "State Setup",
+            icon: svgAssets.StateSetup,
+            component: <State stepProps={{ nextStep, prevStep }} />
+          },
+          {
+            label: "Base Rate Setup",
+            icon: svgAssets.BaseRate,
+            component: <BaseRate stepProps={{ nextStep, prevStep }} />
+          },
+          {
+            label: "KYC Setup",
+            icon: svgAssets.KycSetup,
+            component: <KycSetup stepProps={{ nextStep, prevStep }} />
+          }
+        ]
+      : [
+          {
+            label: "Country Details",
+            icon: svgAssets.CountryDetails,
+            component: <AddCountry stepProps={{ nextStep, prevStep }} />
+          },
+          {
+            label: "Base Rate Setup",
+            icon: svgAssets.BaseRate,
+            component: <BaseRate stepProps={{ nextStep, prevStep }} />
+          },
+          {
+            label: "KYC Setup",
+            icon: svgAssets.KycSetup,
+            component: <KycSetup stepProps={{ nextStep, prevStep }} />
+          }
+        ];
   const hasCompletedAllSteps = activeStep === steps.length;
+
+  if (hasCompletedAllSteps) {
+    navigate(NAVIGATION_ROUTES.COUNTRY_SETUP);
+  }
   const bg = "white";
 
   const { pathname } = useLocation();
@@ -52,11 +84,7 @@ export const CounrtyDetails = () => {
 
       <Steps
         onClickStep={i => {
-          location?.state?.countryId
-            ? setStep(i)
-            : activeStep > i
-              ? setStep(i)
-              : null;
+          !isNewCountry ? setStep(i) : activeStep > i ? setStep(i) : null;
         }}
         variant={"circles-alt"}
         colorScheme="none"
@@ -109,13 +137,6 @@ export const CounrtyDetails = () => {
           </Step>
         ))}
       </Steps>
-      {hasCompletedAllSteps && (
-        <Box sx={{ bg, my: 8, p: 8, rounded: "md" }}>
-          <Heading fontSize="xl" textAlign={"center"}>
-            Woohoo! All steps completed! 🎉
-          </Heading>
-        </Box>
-      )}
     </Flex>
   );
 };

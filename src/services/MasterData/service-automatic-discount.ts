@@ -1,4 +1,4 @@
-import { toastFail, toastSuccess } from "@neo/utility/Toast";
+import NeoToast from "@neo/utility/Toast/Toast";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "../service-api";
@@ -68,7 +68,10 @@ const getAllAutomaticDiscounts = () => {
 const useGetAllAutomaticDiscounts = () => {
   return useQuery(api.automatic_discount.getAll, getAllAutomaticDiscounts, {
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error.response?.data.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -85,7 +88,10 @@ const useGetAutomaticDiscountById = (id: number | null) => {
     {
       enabled: !!id,
       onError: (error: AxiosError<{ message: string }>) => {
-        toastFail(error.response?.data.message ?? error?.message);
+        NeoToast({
+          type: "error",
+          message: error?.response?.data?.message ?? error?.message
+        });
       }
     }
   );
@@ -98,10 +104,16 @@ const useAddAutomaticDiscount = () => {
   return useMutation("addAutomaticDiscount", addAutomaticDiscount, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.automatic_discount.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error.response?.data.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -123,10 +135,16 @@ const useUpdateAutomaticDiscount = () => {
   return useMutation("updateAutomaticDiscount", updateAutomaticDiscount, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.automatic_discount.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error.response?.data.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -141,36 +159,20 @@ const useDeleteAutomaticDiscount = () => {
   return useMutation(api.automatic_discount.delete, deleteAutomaticDiscount, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.automatic_discount.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error.response?.data.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
 
-// const togglePromoCodeStatus = (id: number | null) => () => {
-//   return NeoHttpClient.get<NeoResponse<IAutomaticDiscountRequest>>(
-//     api.automatic_discount.statusChange.replace("{id}", id + "")
-//   );
-// };
-// const useTogglePromoCodeStatus = (id: number | null) => {
-//   const queryClient = useQueryClient();
-//   return useQuery(
-//     [api.automatic_discount.statusChange, id],
-//     togglePromoCodeStatus(id),
-//     {
-//       enabled: false,
-//       onSuccess: success => {
-//         queryClient.invalidateQueries(api.automatic_discount.getAll);
-//         toastSuccess(success?.data?.message);
-//       },
-//       onError: (error: AxiosError<{ message: string }>) => {
-//         toastFail(error?.response?.data?.message ?? error?.message);
-//       }
-//     }
-//   );
-// };
 const toggleStatus = (id: number | null) => {
   return NeoHttpClient.put<NeoResponse>(
     api.automatic_discount.statusChange.replace("{id}", id + "")
@@ -181,10 +183,16 @@ const useToggleAutomaticDiscount = () => {
   return useMutation(toggleStatus, {
     onSuccess: success => {
       queryCLient.invalidateQueries(api.automatic_discount.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message || error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };

@@ -1,4 +1,4 @@
-import { toastFail, toastSuccess } from "@neo/utility/Toast";
+import NeoToast from "@neo/utility/Toast/Toast";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "./service-api";
@@ -72,7 +72,10 @@ const useGetAllFeesAndCharges = () => {
   return useQuery(api.fee_and_charges.getAll, getAllFeesAndCharges, {
     select: data => data?.data?.data,
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message || error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -88,7 +91,10 @@ const useGetFeeAndChargesbyId = (id: number | null) => {
     {
       enabled: !!id,
       onError: (error: AxiosError<{ message: string }>) => {
-        toastFail(error?.response?.data?.message || error?.message);
+        NeoToast({
+          type: "error",
+          message: error?.response?.data?.message ?? error?.message
+        });
       }
     }
   );
@@ -104,10 +110,16 @@ const useAddFeesAndCharges = () => {
   return useMutation(addFeesAndCharges, {
     onSuccess: success => {
       queryCLient.invalidateQueries(api.fee_and_charges.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message || error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -122,10 +134,16 @@ const useUpdateFeesAndCharges = () => {
   return useMutation(updataFeeAndCharges, {
     onSuccess: success => {
       queryCLient.invalidateQueries(api.fee_and_charges.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message || error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -139,10 +157,16 @@ const useFeeAndChargesDelete = () => {
   return useMutation(deleteFeeAndCharges, {
     onSuccess: success => {
       queryCLient.invalidateQueries(api.fee_and_charges.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message || error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -156,10 +180,16 @@ const useFeeandChargeToggle = () => {
   return useMutation(toggleFeeAndChargesStatus, {
     onSuccess: success => {
       queryCLient.invalidateQueries(api.fee_and_charges.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message || error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -184,10 +214,16 @@ const useAddFeeandChargesDetails = () => {
   return useMutation(addFeeandChargesDetails, {
     onSuccess: success => {
       queryCLient.invalidateQueries(api.fee_and_charges.getSingle);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message || error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -208,10 +244,16 @@ const useUpdateFeeandChargesDetails = () => {
   return useMutation(updateFeeandChargesDetails, {
     onSuccess: success => {
       queryCLient.invalidateQueries(api.fee_and_charges_details.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message || error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -225,10 +267,16 @@ const useFeeAndChargesDetailDelete = () => {
   return useMutation(deleteFeeAndChargesDetails, {
     onSuccess: success => {
       queryCLient.invalidateQueries(api.fee_and_charges.update);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message || error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };

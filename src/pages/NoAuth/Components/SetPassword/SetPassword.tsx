@@ -28,7 +28,6 @@ const SetPasswordPage = () => {
     confirm_password: ""
   };
   const [searchParams] = useSearchParams();
-  console.log(searchParams.get("email"));
 
   const handlePasswordChange = async (data: any) => {
     try {

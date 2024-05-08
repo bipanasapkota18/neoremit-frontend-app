@@ -11,6 +11,7 @@ export const api = {
       getList: `${service}/country/list/app`,
       getAll: `${service}/country/list`,
       create: `${service}/country`,
+      getById: `${service}/country/{id}`,
       update: `${service}/country/{id}`,
       statusChange: `${service}/country/status/{id}`
     },

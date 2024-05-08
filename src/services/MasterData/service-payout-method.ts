@@ -1,4 +1,4 @@
-import { toastFail, toastSuccess } from "@neo/utility/Toast";
+import NeoToast from "@neo/utility/Toast/Toast";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "../service-api";
@@ -34,8 +34,11 @@ const getAllPayoutMethod = () => {
 const useGetAllPayoutMethod = () => {
   return useQuery(api.masterData.payout_method.getAll, getAllPayoutMethod, {
     select: data => data?.data?.data,
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -55,8 +58,11 @@ const useGetPayOutMethodById = (id: number | null) => {
       onSuccess: () => {
         queryClient.invalidateQueries(api.masterData.payout_method.update);
       },
-      onError: (error: AxiosError) => {
-        toastFail(error?.message);
+      onError: (error: AxiosError<{ message: string }>) => {
+        NeoToast({
+          type: "error",
+          message: error?.response?.data?.message ?? error?.message
+        });
       }
     }
   );
@@ -73,10 +79,16 @@ const useAddPayoutMethod = () => {
   return useMutation(addPayoutMethod, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.masterData.payout_method.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -92,10 +104,16 @@ const useUpdatePayoutMethod = () => {
   return useMutation(updatePayoutMethod, {
     onSuccess: success => {
       queryClient.invalidateQueries([api.masterData.payout_method.getAll]);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -110,10 +128,16 @@ const useDeletePayoutMethod = () => {
   return useMutation(deletePayoutMethod, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.masterData.payout_method.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -131,10 +155,16 @@ const useToggleStatus = (id: number | null) => {
       enabled: false,
       onSuccess: success => {
         queryClient.invalidateQueries(api.masterData.payout_method.getAll);
-        toastSuccess(success?.data?.message);
+        NeoToast({
+          type: "success",
+          message: success?.data?.message
+        });
       },
       onError: (error: AxiosError<{ message: string }>) => {
-        toastFail(error?.response?.data?.message ?? "Error");
+        NeoToast({
+          type: "error",
+          message: error?.response?.data?.message ?? error?.message
+        });
       }
     }
   );

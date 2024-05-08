@@ -1,4 +1,4 @@
-import { toastFail, toastSuccess } from "@neo/utility/Toast";
+import NeoToast from "@neo/utility/Toast/Toast";
 import { AxiosError } from "axios";
 import { BroadcastChannel } from "broadcast-channel";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -42,12 +42,18 @@ const useLogoutMutation = () => {
       logoutChannel.postMessage("Logout");
       queryClient.clear();
       queryClient.setQueryData(authTokenKey, () => false);
-      toastSuccess(success?.data?.message ?? "Logout Successful");
+      NeoToast({
+        type: "success",
+        message: success?.data?.message ?? "Logout Successful"
+      });
       navigate("/login", { replace: true });
     },
     onError: error => {
       const logoutErr = error as AxiosError<{ message: string }>;
-      toastFail(logoutErr.response?.data?.message ?? "Logout failed !");
+      NeoToast({
+        type: "error",
+        message: logoutErr.response?.data?.message ?? "Logout failed !"
+      });
     }
   });
 };
@@ -75,11 +81,14 @@ const useLoginMutation = () => {
     },
     onError: error => {
       const loginErr = error as AxiosError<{ message: string; error: string }>;
-      toastFail(
-        loginErr.response?.data?.message ??
+
+      NeoToast({
+        type: "error",
+        message:
+          loginErr.response?.data?.message ??
           loginErr.response?.data?.error ??
           "Login failed !"
-      );
+      });
     }
   });
 };
