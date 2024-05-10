@@ -94,6 +94,8 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
                   />
                 </InputLeftElement>
                 <Input
+                  autocapitalize="off"
+                  autocomplete="off"
                   h={"98%"}
                   placeholder={label}
                   onChange={e => {
@@ -126,6 +128,8 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
     >
       <InputGroup gap={"8px"} maxW={"800px"} h={"46px"}>
         <Input
+          autocapitalize="off"
+          autocomplete="off"
           ml={0.5}
           pl={12}
           h={"100%"}

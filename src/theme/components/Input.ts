@@ -8,9 +8,8 @@ const { definePartsStyle, defineMultiStyleConfig } =
 
 const baseStyle = definePartsStyle({
   field: {
-    border: "1px solid",
+    border: "1px solid #E2E8F0",
     minHeight: "56px",
-    borderColor: colorScheme.input_border,
     borderRadius: "16px",
     padding: "8px 16px",
     fontSize: "14px",
@@ -18,21 +17,11 @@ const baseStyle = definePartsStyle({
     lineHeight: "22px",
     color: colorScheme.gray_700,
     _hover: {
-      border: "1px solid",
-      borderColor: `${colorScheme.input_border} !important`
+      border: `1px solid ${colorScheme.primary_500} !important`
     },
     _focus: {
       boxShadow: "none !important",
-      borderColor: `${colorScheme.input_border} !important`
-    },
-    _disabled: {
-      // backgroundColor: `${colorScheme.disabled} !important`
-    },
-    _groupInvalid: {
-      boxShadow: "none !important"
-    },
-    _placeholder: {
-      color: "black"
+      border: `1px solid ${colorScheme.primary_500} !important`
     }
   },
   sizes: {

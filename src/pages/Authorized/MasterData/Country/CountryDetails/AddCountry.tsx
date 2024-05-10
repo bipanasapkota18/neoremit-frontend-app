@@ -12,7 +12,6 @@ import { DropzoneComponentControlled } from "@neo/components/Form/DropzoneCompon
 import Select from "@neo/components/Form/SelectComponent";
 import SwitchInput from "@neo/components/Form/Switch";
 import TextInput from "@neo/components/Form/TextInput";
-import { NAVIGATION_ROUTES } from "@neo/pages/App/navigationRoutes";
 import countryAdd from "@neo/schema/country/country";
 import {
   useAddCountry,
@@ -24,7 +23,7 @@ import { baseURL } from "@neo/services/service-axios";
 import { formatSelectOptions } from "@neo/utility/format";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 const defaultValues = {
   name: "",
@@ -47,8 +46,6 @@ export interface IStepProps {
 }
 
 const AddCountry = ({ stepProps }: IStepProps) => {
-  const navigate = useNavigate();
-
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { mutateAsync: mutateAddCountry, isLoading: isAddLoading } =
@@ -270,15 +267,7 @@ const AddCountry = ({ stepProps }: IStepProps) => {
           />
         </GridItem>
       </SimpleGrid>
-      <HStack justifyContent={"space-between"}>
-        <Button
-          minW={"max-content"}
-          variant={"filter"}
-          mr={1}
-          onClick={() => navigate(NAVIGATION_ROUTES.MASTER_DATA.COUNTRY_SETUP)}
-        >
-          Prevoius
-        </Button>
+      <HStack justifyContent={"flex-end"}>
         <Button
           minW={"max-content"}
           type="submit"
