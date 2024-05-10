@@ -70,6 +70,8 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                 {colorInput ? (
                   <InputRightElement top="6%" right="2%">
                     <Input
+                      autocapitalize="off"
+                      autocomplete="off"
                       placeholder={label}
                       type={"color"}
                       p={0}
@@ -78,6 +80,7 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                       value={value ?? ""}
                       errorBorderColor={colorScheme.danger_500}
                       disabled={disabled}
+                      boxShadow="none !important"
                       {...extraProps}
                     />
                   </InputRightElement>
@@ -107,6 +110,8 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                   />
                 ) : (
                   <Input
+                    autocapitalize="off"
+                    autocomplete="off"
                     paddingLeft={startIcon ? 9 : ""}
                     paddingBottom={startIcon ? "" : 0}
                     placeholder={""}
@@ -122,6 +127,7 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                     errorBorderColor={colorScheme.danger_500}
                     disabled={disabled}
                     variant={variant}
+                    boxShadow="none !important"
                     css={{
                       "&::-webkit-calendar-picker-indicator": {
                         color: "rgba(0, 0, 0, 0)",

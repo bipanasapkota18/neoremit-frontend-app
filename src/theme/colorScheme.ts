@@ -41,7 +41,7 @@ export const colorScheme = {
   danger_200: "#EF9A9A",
   danger_300: "#E57373",
   danger_400: "#EF5350",
-  danger_500: "#F44336",
+  danger_500: "#E53E3E",
   danger_600: "#E53935",
   danger_700: "#D32F2F",
   danger_800: "#C62828",

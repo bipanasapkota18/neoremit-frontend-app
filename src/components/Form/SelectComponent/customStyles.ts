@@ -60,11 +60,15 @@ export const useCustomStyles = (error?: any) => {
       }
     ) => ({
       ...provided,
-      borderWidth: "2px",
-      borderColor: error ? colorScheme.danger_500 : "inherit",
+      borderWidth: "1px",
+      borderColor: error
+        ? colorScheme.danger_500
+        : isFocused
+          ? colorScheme.primary_500
+          : "inherit",
       ...(isDisabled && inheritControlBG ? { backgroundColor: "inherit" } : {}),
       "&:hover": {
-        borderColor: error ? colorScheme.danger_500 : "inherit",
+        borderColor: error ? colorScheme.danger_500 : colorScheme.primary_500,
         backgroundColor: isSingleTimeDropdown
           ? `${colorScheme.gray_100}`
           : "inherit",
@@ -80,11 +84,7 @@ export const useCustomStyles = (error?: any) => {
       },
       borderRadius: hasInputAddon ? "0px 6px 6px 0px" : "16px",
       flex: 1,
-      boxShadow: isFocused
-        ? error
-          ? "none"
-          : `0 0 0 1px ${colorScheme.purple_600}`
-        : "none"
+      boxShadow: "none"
     }),
     dropdownIndicator: (provided, { selectProps: { hideDropdownArrow } }) => {
       if (hideDropdownArrow) {
