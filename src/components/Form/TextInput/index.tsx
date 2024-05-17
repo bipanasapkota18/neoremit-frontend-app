@@ -70,8 +70,6 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                 {colorInput ? (
                   <InputRightElement top="6%" right="2%">
                     <Input
-                      autocapitalize="off"
-                      autocomplete="off"
                       placeholder={label}
                       type={"color"}
                       p={0}
@@ -110,8 +108,6 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                   />
                 ) : (
                   <Input
-                    autocapitalize="off"
-                    autocomplete="off"
                     paddingLeft={startIcon ? 9 : ""}
                     paddingBottom={startIcon ? "" : 0}
                     placeholder={""}
