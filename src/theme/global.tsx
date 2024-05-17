@@ -56,6 +56,7 @@ const globalStyles = () => {
         input:-webkit-autofill:focus,
         input:-webkit-autofill:active {
           box-shadow: 0 0 0 30px white inset !important;
+          z-index: 0;
         }
       `}
     />

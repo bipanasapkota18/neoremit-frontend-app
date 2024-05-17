@@ -102,7 +102,6 @@ const AddCurrency = ({
               control={control}
               type="text"
               isRequired
-              disabled
             />
           </GridItem>
           <GridItem colSpan={2}>
