@@ -230,8 +230,13 @@ const PromoCode = () => {
   return (
     <Flex direction={"column"} gap={"16px"}>
       <BreadCrumb
-        flag={flag}
-        setFlag={setFlag}
+        customOnClick={{
+          trigger: !!editId || flag,
+          func: () => {
+            setEditId(null);
+            setFlag.off();
+          }
+        }}
         currentPage={`Promo Code ${flag ? "Setup" : ""}`}
         options={activePath}
       />

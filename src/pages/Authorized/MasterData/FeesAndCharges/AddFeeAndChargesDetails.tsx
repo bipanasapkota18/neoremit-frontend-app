@@ -139,9 +139,6 @@ const AddFeeAndChargesDetails = ({
     try {
       if (EditDetailId) {
         if (tableData.length > 0) {
-          // const dataToEdit = tableData.find(
-          //   item => item.addId === EditDetailId
-          // );
           setTableData(oldValues =>
             oldValues.map(item =>
               item.addId === EditDetailId
@@ -227,6 +224,7 @@ const AddFeeAndChargesDetails = ({
               placeholder="Payment Method"
               control={control}
               options={payOutMethodOptions ?? []}
+              required
             />
           </GridItem>
           <GridItem colSpan={1}>
@@ -255,6 +253,7 @@ const AddFeeAndChargesDetails = ({
               placeholder="Type"
               control={control}
               options={feeTypeOptions ?? []}
+              required
             />
           </GridItem>
           <GridItem colSpan={2}>

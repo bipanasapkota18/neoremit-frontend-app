@@ -186,7 +186,7 @@ const useToggleCurrencyStatus = (id: number | null) => {
 };
 
 const getCurrencyList = () => {
-  return NeoHttpClient.get<NeoResponse<ICurrencyResponse>>(
+  return NeoHttpClient.get<NeoResponse<CurrenciesList>>(
     api.masterData.currency.getCurrencyList
   );
 };

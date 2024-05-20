@@ -87,7 +87,7 @@ function Pagination({ isBackendPaginated, pageIndex, table }: IPagination) {
             size="xs"
             fontSize={"lg"}
             border={"none"}
-            disabled={!table.getCanPreviousPage()}
+            isDisabled={!table.getCanPreviousPage()}
             icon={<HiOutlineChevronDoubleLeft />}
           />
           <IconButton
@@ -98,21 +98,16 @@ function Pagination({ isBackendPaginated, pageIndex, table }: IPagination) {
             size="xs"
             fontSize={"lg"}
             border={"none"}
-            disabled={!table.getCanPreviousPage()}
+            isDisabled={!table.getCanPreviousPage()}
             icon={<IoIosArrowBack />}
           />
           {PageNumberWrapper(currentPage, totalPage)}
-          {/* {currentPage != 1 && PageNumberWrapper(currentPage - 1)}
-          {currentPage < totalPage && PageNumberWrapper(currentPage + 1)}
-          {totalPage < currentPage - 1 &&
-            totalPage - 1 > 0 &&
-            PageNumberWrapper(totalPage - 1)} */}
 
           <IconButton
             aria-label="Next Page"
             variant={"outline"}
             onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            isDisabled={!table.getCanNextPage()}
             size="xs"
             fontSize={"lg"}
             border="none"
@@ -128,7 +123,7 @@ function Pagination({ isBackendPaginated, pageIndex, table }: IPagination) {
               aria-label="Last Page"
               variant={"outline"}
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
+              isDisabled={!table.getCanNextPage()}
               size="xs"
               fontSize={"lg"}
               border="none"

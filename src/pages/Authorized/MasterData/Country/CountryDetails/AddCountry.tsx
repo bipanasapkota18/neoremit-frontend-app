@@ -12,7 +12,6 @@ import { DropzoneComponentControlled } from "@neo/components/Form/DropzoneCompon
 import Select from "@neo/components/Form/SelectComponent";
 import SwitchInput from "@neo/components/Form/Switch";
 import TextInput from "@neo/components/Form/TextInput";
-import countryAdd from "@neo/schema/country/country";
 import {
   useAddCountry,
   useGetCountryById,
@@ -24,6 +23,7 @@ import { formatSelectOptions } from "@neo/utility/format";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "react-router-dom";
+import * as yup from "yup";
 
 const defaultValues = {
   name: "",
@@ -47,6 +47,24 @@ export interface IStepProps {
 
 const AddCountry = ({ stepProps }: IStepProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const countryAdd = yup.object().shape({
+    flagIcon: searchParams.get("countryId")
+      ? yup.mixed()
+      : yup.mixed().required("Please select flag icon"),
+    name: yup.string().required("Please enter country Name"),
+    code: yup.string().required("Please enter country Code"),
+    isoNumber: yup.string().required("Please enter country ISONumber"),
+    phoneCode: yup.string().required("Plese enter country Phone Code"),
+    shortName: yup
+      .string()
+      .required("Please enter country Short Name")
+      .test("length", "Enter a two digit short name", val => val?.length === 2),
+    canReceive: yup.boolean(),
+    canSend: yup.boolean(),
+    isActive: yup.boolean().nullable(),
+    hasState: yup.boolean(),
+    currencyId: yup.mixed().required("Currency is required")
+  });
 
   const { mutateAsync: mutateAddCountry, isLoading: isAddLoading } =
     useAddCountry();
@@ -54,11 +72,17 @@ const AddCountry = ({ stepProps }: IStepProps) => {
   const { mutateAsync: mutateUpdate, isLoading: isUpdateLoading } =
     useUpdateCountry();
 
-  const { control, handleSubmit, reset } = useForm({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm({
     defaultValues: defaultValues,
-    resolver: yupResolver(countryAdd),
-    mode: "onChange"
+    resolver: yupResolver(countryAdd)
   });
+  console.log(errors);
+
   const { data: selectedCountry } = useGetCountryById(
     Number(searchParams.get("countryId"))
   );
@@ -87,8 +111,7 @@ const AddCountry = ({ stepProps }: IStepProps) => {
         hasState: selectedCountry?.hasState,
         canReceive: selectedCountry?.canReceive,
         canSend: selectedCountry?.canSend,
-        currencyId: selectedCurrency,
-        isActive: selectedCountry?.isActive
+        currencyId: selectedCurrency
       });
     }
   }, [selectedCountry]);
@@ -156,9 +179,9 @@ const AddCountry = ({ stepProps }: IStepProps) => {
           <DropzoneComponentControlled
             name="flagIcon"
             control={control}
-            options={{ maxSize: 4 }}
+            options={{ maxSize: 2 }}
             imagePreview={
-              selectedCountry?.flagIcon != null
+              searchParams.get("countryId")
                 ? `${baseURL}/document-service/master/flag-icon?fileId=${selectedCountry?.flagIcon}`
                 : ""
             }
