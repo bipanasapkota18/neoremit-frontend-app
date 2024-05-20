@@ -50,6 +50,6 @@ const sizes = {
   lg: definePartsStyle({ field: lg, addon: lg })
 };
 
-const Input = defineMultiStyleConfig({ baseStyle, sizes });
+const InputConfig = defineMultiStyleConfig({ baseStyle, sizes });
 
-export default Input;
+export default InputConfig;

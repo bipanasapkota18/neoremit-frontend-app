@@ -28,4 +28,4 @@ const baseStyle = definePartsStyle({
   }
 });
 
-export const checkboxTheme = defineMultiStyleConfig({ baseStyle });
+export const CheckboxConfig = defineMultiStyleConfig({ baseStyle });

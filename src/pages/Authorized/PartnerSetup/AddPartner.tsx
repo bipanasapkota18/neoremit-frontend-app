@@ -153,17 +153,10 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
     )
   });
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors }
-  } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues,
     resolver: yupResolver(partnerSchema)
   });
-
-  console.log(errors);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -274,7 +267,6 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
             contact.email !== null
         )
     };
-    console.log(preparedData);
     if (editId) {
       await mutateUpdatePartner({
         id: editId,

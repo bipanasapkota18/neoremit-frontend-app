@@ -61,7 +61,7 @@ const variants = {
 };
 
 // export the component theme
-export const RadioTheme = defineMultiStyleConfig({
+export const RadioConfig = defineMultiStyleConfig({
   baseStyle,
   variants
 });

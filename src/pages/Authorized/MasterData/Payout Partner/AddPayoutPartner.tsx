@@ -37,9 +37,8 @@ const AddPayoutPartner = ({
   setEditId,
   data: editData
 }: AddPayoutPartnerProps) => {
-  // const [countryId, setCountryId] = useState(null as number | null);
   const schema = yup.object().shape({
-    image: yup.mixed().required("Please select image"),
+    image: editId ? yup.mixed() : yup.mixed().required("Please select image"),
     name: yup.string().required("Please enter Payout Partner Name"),
     code: yup.string().required("Please enter Payout Partner Code"),
     countryId: yup.object().required("Please select Country").nullable(),
@@ -51,16 +50,10 @@ const AddPayoutPartner = ({
   const { mutateAsync: mutateAddPayoutPartner } = useAddPayoutPartner();
   const { mutateAsync: mutateEditPayoutPartner } = useUpdatePayoutPartner();
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors }
-  } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues,
     resolver: yupResolver(schema)
   });
-  console.log(errors);
 
   const { data: countryData } = useGetCountryList();
 
@@ -96,7 +89,6 @@ const AddPayoutPartner = ({
         return country.value === selectedPayoutPartner?.country?.id;
       });
       reset({
-        image: selectedPayoutPartner?.image,
         name: selectedPayoutPartner?.name,
         code: selectedPayoutPartner?.code,
         countryId: {
@@ -117,7 +109,7 @@ const AddPayoutPartner = ({
       await mutateEditPayoutPartner({
         ...data,
         id: editId,
-        image: data.image[0] ?? null,
+        image: data?.image ?? null,
         countryId: data?.countryId?.value ?? null,
         payoutMethodId: data?.payoutMethodId?.value ?? null,
         isActive: selectedPayoutPartner?.isActive ?? true
@@ -125,7 +117,7 @@ const AddPayoutPartner = ({
     } else {
       await mutateAddPayoutPartner({
         ...data,
-        image: data.image[0] ?? "",
+        image: data.image ?? "",
         countryId: data?.countryId?.value ?? null,
         payoutMethodId: data?.payoutMethodId?.value ?? null
       });

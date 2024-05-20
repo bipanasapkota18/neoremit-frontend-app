@@ -72,16 +72,10 @@ const AddCountry = ({ stepProps }: IStepProps) => {
   const { mutateAsync: mutateUpdate, isLoading: isUpdateLoading } =
     useUpdateCountry();
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors }
-  } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues,
     resolver: yupResolver(countryAdd)
   });
-  console.log(errors);
 
   const { data: selectedCountry } = useGetCountryById(
     Number(searchParams.get("countryId"))
