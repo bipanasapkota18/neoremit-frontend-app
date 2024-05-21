@@ -37,7 +37,7 @@ const PayoutPartner = lazy(
   () => import("@neo/pages/Authorized/MasterData/Payout Partner")
 );
 const FeeAndCharges = lazy(
-  () => import("@neo/pages/Authorized/MasterData/FeesAndCharges")
+  () => import("@neo/pages/Authorized/FeesAndCharges")
 );
 const Occupation = lazy(
   () => import("@neo/pages/Authorized/MasterData/Occupation")
