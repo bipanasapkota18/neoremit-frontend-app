@@ -1,4 +1,4 @@
-import { toastFail, toastSuccess } from "@neo/utility/Toast";
+import { default as NeoToast } from "@neo/utility/Toast/Toast";
 import { trimObjectValues } from "@neo/utility/helper";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -52,7 +52,10 @@ const getAllCurrency = ({ pageParams, filterParams }: IFilterParams) => {
 const useGetAllCurrency = () => {
   return useMutation(getAllCurrency, {
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -66,7 +69,10 @@ const useGetCurrencyById = (id: number | null) => {
   return useQuery([id], () => getCurrencyById(id), {
     enabled: !!id,
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -82,10 +88,16 @@ const useAddCurrency = () => {
   return useMutation(addCurrency, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.masterData.currency.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -107,10 +119,16 @@ const useUpdateCurrency = () => {
   return useMutation(updateCurrency, {
     onSuccess: success => {
       queryClient.invalidateQueries([api.masterData.currency.getAll]);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -125,10 +143,16 @@ const useDeleteCurrency = () => {
   return useMutation(deleteCurrency, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.masterData.currency.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -146,25 +170,34 @@ const useToggleCurrencyStatus = (id: number | null) => {
       enabled: false,
       onSuccess: success => {
         queryClient.invalidateQueries(api.masterData.currency.getAll);
-        toastSuccess(success?.data?.message);
+        NeoToast({
+          type: "success",
+          message: success?.data?.message
+        });
       },
       onError: (error: AxiosError<{ message: string }>) => {
-        toastFail(error?.response?.data?.message ?? "Error");
+        NeoToast({
+          type: "error",
+          message: error?.response?.data?.message ?? error?.message
+        });
       }
     }
   );
 };
 
 const getCurrencyList = () => {
-  return NeoHttpClient.get<NeoResponse<ICurrencyResponse>>(
+  return NeoHttpClient.get<NeoResponse<CurrenciesList>>(
     api.masterData.currency.getCurrencyList
   );
 };
 const useGetCurrencyList = () => {
   return useQuery(api.masterData.currency.getCurrencyList, getCurrencyList, {
     select: data => data?.data?.data,
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };

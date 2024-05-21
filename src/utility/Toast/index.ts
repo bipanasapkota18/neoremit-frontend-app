@@ -1,13 +1,6 @@
 import toast, { Toaster } from "react-hot-toast";
 
 const toastSuccess = (message: string) => {
-  // toast.success(message, {
-  //   id: message,
-  //   style: {
-  //     border: "1px solid green",
-  //     padding: "12px"
-  //   }
-  // });
   toast.success(message, {
     style: {
       padding: "16px"

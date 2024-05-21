@@ -30,7 +30,7 @@ import { useLocation } from "react-router-dom";
 import AddPartner from "./AddPartner";
 
 const PartnerSetup = () => {
-  const [flag, setFlag] = useBoolean();
+  const [isOpenAddEditModal, setIsOpenAddEditModal] = useBoolean();
 
   const {
     isOpen: isOpenPartnerDeleteModal,
@@ -126,7 +126,7 @@ const PartnerSetup = () => {
             <TableActionButton
               onClickAction={() => {
                 setEditId(cell?.row?.original?.id);
-                setFlag.on();
+                setIsOpenAddEditModal.on();
               }}
               icon={<svgAssets.EditButton />}
               label="Edit"
@@ -162,17 +162,22 @@ const PartnerSetup = () => {
   return (
     <Flex direction={"column"} gap={"16px"}>
       <BreadCrumb
-        flag={flag}
-        setFlag={setFlag}
+        customOnClick={{
+          trigger: !!editId || isOpenAddEditModal,
+          func: () => {
+            setEditId(null);
+            setIsOpenAddEditModal.off();
+          }
+        }}
         currentPage="Partner Setup"
         options={activePath}
       />
-      {flag ? (
+      {isOpenAddEditModal ? (
         <AddPartner
           editId={editId}
           setEditId={setEditId}
           onClose={() => {
-            setFlag.off();
+            setIsOpenAddEditModal.off();
           }}
         />
       ) : (
@@ -211,7 +216,7 @@ const PartnerSetup = () => {
                 <Button
                   minW={"max-content"}
                   leftIcon={<svgAssets.AddButton />}
-                  onClick={setFlag.on}
+                  onClick={setIsOpenAddEditModal.on}
                 >
                   Add Partner
                 </Button>

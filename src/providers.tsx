@@ -11,7 +11,7 @@ import { QueryCache, QueryClient, QueryClientProvider } from "react-query";
 
 import { ReactQueryDevtools } from "react-query/devtools";
 import { BrowserRouter } from "react-router-dom";
-import { toastFail } from "./utility/Toast";
+import NeoToast from "./utility/Toast/Toast";
 
 const ErrorFallback = () => {
   return (
@@ -47,7 +47,10 @@ const queryClient = new QueryClient({
         setTimeout(() => {
           TokenService.clearToken();
           queryClient.clear();
-          toastFail("Session Expired! Please login again!");
+          NeoToast({
+            type: "error",
+            message: "Session Expired! Please login again!"
+          });
         }, 500);
       }
     }

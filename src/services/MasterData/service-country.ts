@@ -1,15 +1,13 @@
-import { toastFail, toastSuccess } from "@neo/utility/Toast";
+import NeoToast from "@neo/utility/Toast/Toast";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "../service-api";
 import { NeoHttpClient, toFormData } from "../service-axios";
 import { IPageParams } from "./master-data-common-interface";
-
 export interface ICountryResponse {
   totalItems: number;
   countriesList: CountriesList[];
 }
-
 export interface CountriesList {
   id: number;
   name: string;
@@ -24,7 +22,6 @@ export interface CountriesList {
   flagIcon?: any;
   hasState: boolean;
 }
-
 export interface Currency {
   id: number;
   code: string;
@@ -47,13 +44,9 @@ export interface ICountryRequest {
   canSend: boolean;
   isActive: boolean | null | undefined;
 }
-
-// interface IFilterItems {
-// }
 interface IFilterParams {
   pageParams?: IPageParams;
   filterParams: any;
-  //   filterParams: IFilterItems;
 }
 const getAllCountries = ({ pageParams, filterParams }: IFilterParams) => {
   return NeoHttpClient.post<NeoResponse<ICountryResponse>>(
@@ -72,11 +65,13 @@ const getAllCountries = ({ pageParams, filterParams }: IFilterParams) => {
 const useGetAllCountries = () => {
   return useMutation(getAllCountries, {
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
-
 const getCountryList = async () => {
   return await NeoHttpClient.get<NeoResponse<CountriesList[]>>(
     api.masterData.country.getList
@@ -84,12 +79,14 @@ const getCountryList = async () => {
 };
 const useGetCountryList = () => {
   return useQuery(api.masterData.country.getList, getCountryList, {
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
-
 const addCountry = (data: ICountryRequest) => {
   return NeoHttpClient.post<NeoResponse>(
     api.masterData.country.create,
@@ -99,39 +96,67 @@ const addCountry = (data: ICountryRequest) => {
 const useAddCountry = () => {
   return useMutation(addCountry, {
     onSuccess: success => {
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
-const getCountryById = (id: number | null) => () => {
+const getCountryById = (id: number | null) => {
   return NeoHttpClient.get<NeoResponse<CountriesList>>(
-    api.masterData.country.update.replace("{id}", `${id}`)
+    api.masterData.country.getById.replace("{id}", id + "")
   );
 };
 const useGetCountryById = (id: number | null) => {
-  return useQuery([id], getCountryById(id), {
-    enabled: !!id,
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+  return useQuery(
+    [api.masterData.country.getById, id],
+    () => getCountryById(id),
+    {
+      enabled: !!id,
+      select: data => data?.data?.data,
+      onError: (error: AxiosError<{ message: string }>) => {
+        NeoToast({
+          type: "error",
+          message: error?.response?.data?.message ?? error?.message
+        });
+      }
     }
-  });
+  );
 };
-const updateCountry = ({ id, data }: { id: number; data: ICountryRequest }) => {
+const updateCountry = ({
+  id,
+  data
+}: {
+  id: number | null;
+  data: ICountryRequest;
+}) => {
   return NeoHttpClient.post<NeoResponse<ICountryRequest>>(
     api.masterData.country.update.replace("{id}", id + ""),
     toFormData(data)
   );
 };
 const useUpdateCountry = () => {
+  const queryCLient = useQueryClient();
   return useMutation(updateCountry, {
     onSuccess: success => {
-      toastSuccess(success?.data?.message);
+      queryCLient.invalidateQueries(api.masterData.country.getById);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -143,11 +168,16 @@ const deleteCountry = (id: number | null) => {
 const useDeleteCountry = () => {
   return useMutation(deleteCountry, {
     onSuccess: success => {
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
-      // toastFail(error?.response?.data?.errors[0]);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -162,10 +192,16 @@ const useToggleStatus = (id: number | null) => {
     enabled: false,
     onSuccess: success => {
       queryClient.invalidateQueries(api.masterData.country.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? "Error");
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };

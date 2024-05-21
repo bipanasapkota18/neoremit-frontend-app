@@ -1,26 +1,31 @@
 import { checkboxAnatomy } from "@chakra-ui/anatomy";
 import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
+import { colorScheme } from "../colorScheme";
 
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(checkboxAnatomy.keys);
 
 const baseStyle = definePartsStyle({
+  // define the part you're going to style
   label: {
-    fontFamily: "mono", // change the font family of the label
-    color: "#2D3748"
+    pt: 1
   },
-
   control: {
-    padding: 2,
-    borderRadius: "4px",
-    width: "20px",
+    borderColor: "#A0AEC0",
     height: "20px",
-    color: "#A0AEC0",
+    width: "20px",
+    padding: 2,
+    borderRadius: 6,
+    backgroundColor: "white",
     _checked: {
-      bg: "#5A2F8D",
-      borderColor: "##A0AEC0"
+      backgroundColor: colorScheme.primary_500,
+      borderColor: colorScheme.primary_500,
+      _hover: {
+        backgroundColor: colorScheme.primary_500,
+        borderColor: colorScheme.primary_500
+      }
     }
   }
 });
 
-export const checkboxTheme = defineMultiStyleConfig({ baseStyle });
+export const CheckboxConfig = defineMultiStyleConfig({ baseStyle });

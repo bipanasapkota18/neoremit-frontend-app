@@ -94,6 +94,8 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
                   />
                 </InputLeftElement>
                 <Input
+                  autocapitalize="off"
+                  autocomplete="off"
                   h={"98%"}
                   placeholder={label}
                   onChange={e => {

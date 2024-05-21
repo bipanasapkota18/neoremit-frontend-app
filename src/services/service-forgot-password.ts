@@ -1,8 +1,8 @@
-import { toastFail } from "@neo/utility/Toast";
 import { AxiosError } from "axios";
 import { useMutation } from "react-query";
 import { NeoResponse, api } from "./service-api";
 import { NeoHttpClient } from "./service-axios";
+import NeoToast from "@neo/utility/Toast/Toast";
 
 interface IEmailVerification {
   email: string;
@@ -36,7 +36,10 @@ const emailVerification = (data: IEmailVerification) => {
 const useEmailVerification = () => {
   return useMutation(emailVerification, {
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message || error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -47,7 +50,10 @@ const verifyOTP = (data: IOTPVerification) => {
 const useVerifyOTP = () => {
   return useMutation(verifyOTP, {
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message || error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -57,7 +63,10 @@ const resendOTP = (data: IResendOTP) => {
 const useResendOTP = () => {
   return useMutation(resendOTP, {
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message || error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -70,7 +79,10 @@ const resetPassword = (data: ISetPassword) => {
 const useResetPassword = () => {
   return useMutation(resetPassword, {
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message || error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -82,7 +94,10 @@ const setPassword = (data: ISetPasswordFirst) => {
 const useSetPassword = () => {
   return useMutation(setPassword, {
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message || error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };

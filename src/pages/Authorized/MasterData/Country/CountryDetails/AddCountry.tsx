@@ -4,6 +4,7 @@ import {
   GridItem,
   HStack,
   SimpleGrid,
+  Stack,
   Tooltip
 } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -11,18 +12,18 @@ import { DropzoneComponentControlled } from "@neo/components/Form/DropzoneCompon
 import Select from "@neo/components/Form/SelectComponent";
 import SwitchInput from "@neo/components/Form/Switch";
 import TextInput from "@neo/components/Form/TextInput";
-import { NAVIGATION_ROUTES } from "@neo/pages/App/navigationRoutes";
-import countryAdd from "@neo/schema/country/country";
 import {
   useAddCountry,
+  useGetCountryById,
   useUpdateCountry
 } from "@neo/services/MasterData/service-country";
 import { useGetCurrencyList } from "@neo/services/MasterData/service-currency";
 import { baseURL } from "@neo/services/service-axios";
 import { formatSelectOptions } from "@neo/utility/format";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import * as yup from "yup";
 
 const defaultValues = {
   name: "",
@@ -43,21 +44,44 @@ export interface IStepProps {
     prevStep: () => void;
   };
 }
+
 const AddCountry = ({ stepProps }: IStepProps) => {
-  const navigate = useNavigate();
-  const [, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const countryAdd = yup.object().shape({
+    flagIcon: searchParams.get("countryId")
+      ? yup.mixed()
+      : yup.mixed().required("Please select flag icon"),
+    name: yup.string().required("Please enter country Name"),
+    code: yup.string().required("Please enter country Code"),
+    isoNumber: yup.string().required("Please enter country ISONumber"),
+    phoneCode: yup.string().required("Plese enter country Phone Code"),
+    shortName: yup
+      .string()
+      .required("Please enter country Short Name")
+      .test("length", "Enter a two digit short name", val => val?.length === 2),
+    canReceive: yup.boolean(),
+    canSend: yup.boolean(),
+    isActive: yup.boolean().nullable(),
+    hasState: yup.boolean(),
+    currencyId: yup.mixed().required("Currency is required")
+  });
+
   const { mutateAsync: mutateAddCountry, isLoading: isAddLoading } =
     useAddCountry();
+
   const { mutateAsync: mutateUpdate, isLoading: isUpdateLoading } =
     useUpdateCountry();
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues,
-    resolver: yupResolver(countryAdd),
-    mode: "onChange"
+    resolver: yupResolver(countryAdd)
   });
 
-  const location = useLocation();
+  const { data: selectedCountry } = useGetCountryById(
+    Number(searchParams.get("countryId"))
+  );
+  const isNewCountry = searchParams.get("isNewCountry") ?? false;
+
   const { data: currencyData } = useGetCurrencyList();
 
   const currencyOptions = formatSelectOptions({
@@ -66,15 +90,8 @@ const AddCountry = ({ stepProps }: IStepProps) => {
     labelKey: "name"
   });
 
-  const selectedCountry = useMemo(
-    () =>
-      location?.state?.countryData?.find(
-        (country: any) => country.id === location?.state?.countryId
-      ),
-    [location?.state?.countryId]
-  );
   useEffect(() => {
-    if (location?.state?.countryId) {
+    if (searchParams.get("countryId")) {
       const selectedCurrency = currencyOptions?.find(
         (currency: any) => currency.value === selectedCountry?.currency?.id
       );
@@ -88,16 +105,15 @@ const AddCountry = ({ stepProps }: IStepProps) => {
         hasState: selectedCountry?.hasState,
         canReceive: selectedCountry?.canReceive,
         canSend: selectedCountry?.canSend,
-        currencyId: selectedCurrency,
-        isActive: selectedCountry?.isActive
+        currencyId: selectedCurrency
       });
     }
-  }, [location?.state, currencyData]);
+  }, [selectedCountry]);
 
   const onAddCountrySetup = async (data: typeof defaultValues) => {
-    if (location?.state?.countryId) {
+    if (searchParams.get("countryId")) {
       const updateresponse = await mutateUpdate({
-        id: location?.state?.countryId,
+        id: Number(searchParams?.get("countryId")),
         data: {
           ...data,
           flagIcon: data.flagIcon[0] ?? "",
@@ -106,6 +122,16 @@ const AddCountry = ({ stepProps }: IStepProps) => {
         }
       });
       if (updateresponse?.status === 200) {
+        isNewCountry
+          ? setSearchParams({
+              countryId: updateresponse?.data?.data?.id + "",
+              hasState: updateresponse?.data?.data?.hasState + "",
+              isNewCountry: isNewCountry
+            })
+          : setSearchParams({
+              countryId: updateresponse?.data?.data?.id + "",
+              hasState: updateresponse?.data?.data?.hasState + ""
+            });
         stepProps.nextStep();
       }
     } else {
@@ -115,10 +141,16 @@ const AddCountry = ({ stepProps }: IStepProps) => {
         currencyId: data?.currencyId?.value ?? null
       });
       if (createResponse?.status === 200) {
-        setSearchParams({
-          countryId: createResponse?.data?.data?.id,
-          hasState: createResponse?.data?.data?.hasState
-        });
+        isNewCountry
+          ? setSearchParams({
+              countryId: createResponse?.data?.data?.id,
+              hasState: createResponse?.data?.data?.hasState,
+              isNewCountry: isNewCountry
+            })
+          : setSearchParams({
+              countryId: createResponse?.data?.data?.id,
+              hasState: createResponse?.data?.data?.hasState
+            });
         stepProps.nextStep();
       }
     }
@@ -130,15 +162,20 @@ const AddCountry = ({ stepProps }: IStepProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onAddCountrySetup)}>
-      <SimpleGrid columns={3} spacing={"30px"}>
+    <Stack
+      as={"form"}
+      padding={"24px"}
+      gap={"24px"}
+      onSubmit={handleSubmit(onAddCountrySetup)}
+    >
+      <SimpleGrid columns={3} gap={"24px"}>
         <GridItem colSpan={3}>
           <DropzoneComponentControlled
             name="flagIcon"
             control={control}
-            options={{ maxSize: 4 }}
+            options={{ maxSize: 2 }}
             imagePreview={
-              location?.state?.countryId && selectedCountry?.flagIcon != null
+              searchParams.get("countryId")
                 ? `${baseURL}/document-service/master/flag-icon?fileId=${selectedCountry?.flagIcon}`
                 : ""
             }
@@ -247,15 +284,7 @@ const AddCountry = ({ stepProps }: IStepProps) => {
           />
         </GridItem>
       </SimpleGrid>
-      <HStack mt={2} justifyContent={"space-between"}>
-        <Button
-          minW={"max-content"}
-          variant={"filter"}
-          mr={1}
-          onClick={() => navigate(NAVIGATION_ROUTES.MASTER_DATA.COUNTRY_SETUP)}
-        >
-          Prevoius
-        </Button>
+      <HStack justifyContent={"flex-end"}>
         <Button
           minW={"max-content"}
           type="submit"
@@ -264,7 +293,7 @@ const AddCountry = ({ stepProps }: IStepProps) => {
           Save and Proceed
         </Button>
       </HStack>
-    </form>
+    </Stack>
   );
 };
 

@@ -9,26 +9,24 @@ import {
   useMediaQuery
 } from "@chakra-ui/react";
 import { colorScheme } from "@neo/theme/colorScheme";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { sidebarAssets } from "../../assets/images/svgs/Sidebar/index";
 import GoBack from "../Button/GoBack";
 
 const BreadCrumb = ({
   options,
   currentPage,
-  flag,
-  setFlag
+  customOnClick
 }: BreadCrumbProps) => {
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
   const navigate = useNavigate();
-
   return (
     <Flex justifyContent="space-between" alignItems={"center"}>
       <HStack>
         <GoBack
           isIcon
           onClick={() => {
-            flag ? setFlag.off() : navigate(-1);
+            customOnClick?.trigger ? customOnClick?.func() : navigate(-1);
           }}
         />
         <Text
@@ -50,19 +48,17 @@ const BreadCrumb = ({
         separator={<sidebarAssets.Ellipse />}
       >
         {options?.map(option => (
-          <BreadcrumbItem key={option.label}>
+          <BreadcrumbItem key={option.label} pointerEvents={"none"}>
             {option.icon && (
               <Icon width={"20px"} height={"20px"} as={option.icon} />
             )}
             <BreadcrumbLink
-              as={Link}
               mr={"3px"}
               color={
                 option.label === "Home"
                   ? colorScheme.search_icon
                   : colorScheme.primary_400
               }
-              to={option.href || "#"}
             >
               {option.label}
             </BreadcrumbLink>
@@ -81,7 +77,6 @@ type BreadCrumbProps = {
     icon?: React.ComponentType<{ width: string; height: string }>;
     options?: unknown[];
   }>;
-  flag?: any;
-  setFlag?: any;
+  customOnClick?: { trigger: boolean; func: () => void };
   currentPage: string;
 };

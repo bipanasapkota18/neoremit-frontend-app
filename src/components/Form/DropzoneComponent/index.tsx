@@ -1,7 +1,7 @@
 import {
   Box,
   CloseButton,
-  FormErrorMessage,
+  FormControl,
   Heading,
   HStack,
   IconButton,
@@ -18,7 +18,6 @@ import { svgAssets } from "@neo/assets/images/svgs";
 import { colorScheme } from "@neo/theme/colorScheme";
 import Dropzone, { Accept, DropEvent, FileRejection } from "react-dropzone";
 import { FaExpandAlt } from "react-icons/fa";
-import CropPlugin from "./plugins/CropPlugin/CropPlugin";
 import { MultipleUploadPlugin } from "./plugins/MultipleUploadPlugin";
 import { decideFileIcon } from "./utils";
 
@@ -36,7 +35,6 @@ export interface IDropzoneComponentControlledProps {
   name: string;
   control: Control<any>;
   imagePreview?: string;
-  errorMessage?: string;
   options: {
     isMultiple?: boolean;
     isFile?: boolean;
@@ -53,12 +51,11 @@ export interface IDropzoneComponentControlledProps {
   };
 }
 
-export const defaultMaxSize = 5;
+export const defaultMaxSize = 2;
 
 export function DropzoneComponentControlled({
   name,
   control,
-  errorMessage,
   imagePreview,
   options
 }: IDropzoneComponentControlledProps) {
@@ -180,18 +177,6 @@ export function DropzoneComponentControlled({
   const singleUploadPreviewActions = () => {
     return (
       <HStack w="100%" justifyContent={"flex-end"} alignItems={"center"}>
-        {imageList[0]?.type?.includes("image") && (
-          <CropPlugin
-            {...{
-              imageList,
-              setAcceptedFileList,
-              setImageList,
-              preview,
-              setPreview,
-              cropPluginRef
-            }}
-          />
-        )}
         {singleUploadPreview && (
           <Tooltip
             borderRadius={"4px"}
@@ -231,7 +216,7 @@ export function DropzoneComponentControlled({
       name={name}
       render={({ field: { onChange }, fieldState: { error } }) => {
         useEffect(() => {
-          onChange(acceptedFileList);
+          onChange(acceptedFileList?.length < 1 ? null : acceptedFileList);
         }, [acceptedFileList]);
         const handleOnFileDrop:
           | (<T extends File>(
@@ -261,55 +246,60 @@ export function DropzoneComponentControlled({
 
         return (
           <>
-            <Dropzone
-              onDrop={handleOnFileDrop}
-              maxSize={
-                maxSize
-                  ? convert(maxSize, "MB").to("bytes")
-                  : convert(defaultMaxSize, "MB").to("bytes")
-              } // default maxSize 5MB
-              multiple={!!isMultiple}
-              accept={accept ? accept : { "*/*": [".*"] }}
-            >
-              {({ getRootProps, getInputProps }) => (
-                <section>
-                  <Box
-                    {...getRootProps()}
-                    borderColor={
-                      errorMessage ? colorScheme.danger_500 : "#D1D5DB"
-                    }
-                    background={colorScheme.gray_50}
-                    padding={6}
-                    borderRadius={"3px"}
-                    height={"100%"}
-                  >
-                    <input {...getInputProps()} />
-                    <VStack spacing={4}>{renderDropzoneContainer()}</VStack>
-                  </Box>
-                  <FormErrorMessage>
-                    {error ? error?.message : ""}
-                  </FormErrorMessage>
+            <FormControl isInvalid={!!error}>
+              <Dropzone
+                onDrop={handleOnFileDrop}
+                maxSize={
+                  maxSize
+                    ? convert(maxSize, "MB").to("bytes")
+                    : convert(defaultMaxSize, "MB").to("bytes")
+                } // default maxSize 5MB
+                multiple={!!isMultiple}
+                accept={accept ? accept : { "*/*": [".*"] }}
+              >
+                {({ getRootProps, getInputProps }) => (
+                  <section>
+                    <Box
+                      {...getRootProps()}
+                      border={
+                        error
+                          ? `1px dashed ${colorScheme.danger_500}`
+                          : "1px dashed #E2E8F0"
+                      }
+                      background={colorScheme.gray_50}
+                      padding={6}
+                      borderRadius={"4px"}
+                      height={"100%"}
+                    >
+                      <input {...getInputProps()} />
+                      <VStack spacing={4}>{renderDropzoneContainer()}</VStack>
+                    </Box>
 
-                  <Text mt={errorMessage && 1} color={colorScheme.danger_500}>
-                    {errorMessage}
-                  </Text>
+                    <Text
+                      ml={error && 1}
+                      mt={error && 1}
+                      color={colorScheme.danger_500}
+                    >
+                      {error ? error?.message : ""}
+                    </Text>
 
-                  {/* Multiple Upload Container */}
-                  <MultipleUploadPlugin
-                    {...{
-                      preview,
-                      setPreview,
-                      rejectedFileList,
-                      setRejectedFileList,
-                      isMultiple,
-                      previewColumnsNo,
-                      setAcceptedFileList,
-                      maxSize
-                    }}
-                  />
-                </section>
-              )}
-            </Dropzone>
+                    {/* Multiple Upload Container */}
+                    <MultipleUploadPlugin
+                      {...{
+                        preview,
+                        setPreview,
+                        rejectedFileList,
+                        setRejectedFileList,
+                        isMultiple,
+                        previewColumnsNo,
+                        setAcceptedFileList,
+                        maxSize
+                      }}
+                    />
+                  </section>
+                )}
+              </Dropzone>
+            </FormControl>
           </>
         );
       }}

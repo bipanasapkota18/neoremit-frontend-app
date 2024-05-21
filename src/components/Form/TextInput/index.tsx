@@ -78,6 +78,7 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                       value={value ?? ""}
                       errorBorderColor={colorScheme.danger_500}
                       disabled={disabled}
+                      boxShadow="none !important"
                       {...extraProps}
                     />
                   </InputRightElement>
@@ -122,6 +123,7 @@ const TextInput: React.FC<TextInputProps & InputProps & TextareaProps> = ({
                     errorBorderColor={colorScheme.danger_500}
                     disabled={disabled}
                     variant={variant}
+                    boxShadow="none !important"
                     css={{
                       "&::-webkit-calendar-picker-indicator": {
                         color: "rgba(0, 0, 0, 0)",

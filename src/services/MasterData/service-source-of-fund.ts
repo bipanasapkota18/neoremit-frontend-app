@@ -1,4 +1,4 @@
-import { toastFail, toastSuccess } from "@neo/utility/Toast";
+import NeoToast from "@neo/utility/Toast/Toast";
 import { trimObjectValues } from "@neo/utility/helper";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -42,8 +42,11 @@ const getAllSourceoffund = ({ pageParams, filterParams }: IFilterParams) => {
 };
 const useGetAllSourceOfFund = () => {
   return useMutation(getAllSourceoffund, {
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -56,10 +59,16 @@ const addSourceoffund = (data: ISourceOfFundRequest) => {
 const useAddSourceOfFund = () => {
   return useMutation(addSourceoffund, {
     onSuccess: success => {
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -78,10 +87,16 @@ const updateSourceOfFund = ({
 const useUpdateSourceOfFund = () => {
   return useMutation(updateSourceOfFund, {
     onSuccess: success => {
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -94,10 +109,16 @@ const deleteSourceOfFund = (id: number | null) => {
 const useDeleteSourceOfFund = () => {
   return useMutation(deleteSourceOfFund, {
     onSuccess: success => {
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -115,10 +136,16 @@ const useToggleSourceStatus = (id: number | null) => {
       enabled: false,
       onSuccess: success => {
         queryClient.invalidateQueries(api.masterData.source_of_fund.getAll);
-        toastSuccess(success?.data?.message);
+        NeoToast({
+          type: "success",
+          message: success?.data?.message
+        });
       },
       onError: (error: AxiosError<{ message: string }>) => {
-        toastFail(error?.response?.data?.message ?? "Error");
+        NeoToast({
+          type: "error",
+          message: error?.response?.data?.message ?? error?.message
+        });
       }
     }
   );

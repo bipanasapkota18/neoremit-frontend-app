@@ -1,4 +1,4 @@
-import { toastFail, toastSuccess } from "@neo/utility/Toast";
+import NeoToast from "@neo/utility/Toast/Toast";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "../service-api";
@@ -30,7 +30,10 @@ const useGetAllUsers = () => {
   return useQuery([api.internalUser.getAll], getAllUserManagementResponse, {
     select: data => data.data.data,
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -45,11 +48,17 @@ const useCreateUser = () => {
   const queryClient = useQueryClient();
   return useMutation(createUser, {
     onSuccess: success => {
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
       queryClient.invalidateQueries(api.internalUser.getAll);
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -64,11 +73,17 @@ const useBlockUnblocktoggle = () => {
   const queryClient = useQueryClient();
   return useMutation(toogleBlockUnblock, {
     onSuccess: success => {
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
       queryClient.invalidateQueries(api.internalUser.getAll);
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message || error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };

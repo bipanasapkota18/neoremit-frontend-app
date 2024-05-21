@@ -1,4 +1,5 @@
-import { toastFail, toastSuccess } from "@neo/utility/Toast";
+import NeoToast from "@neo/utility/Toast/Toast";
+import { filterFalseyValues } from "@neo/utility/remove-falsey";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "../service-api";
@@ -42,8 +43,11 @@ const getAllPayoutPartners = () => {
 const useGetAllPayoutPartners = () => {
   return useQuery(api.masterData.payout_partner.getAll, getAllPayoutPartners, {
     select: data => data?.data?.data,
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -58,17 +62,20 @@ const useGetPayoutPartnerById = (id: number | null) => {
     () => getPayoutPartnerById(id),
     {
       enabled: !!id,
-      onError: (error: AxiosError) => {
-        toastFail(error?.message);
+      onError: (error: AxiosError<{ message: string }>) => {
+        NeoToast({
+          type: "error",
+          message: error?.response?.data?.message ?? error?.message
+        });
       }
     }
   );
 };
 
-const addPayoutPartner = (data: any) => {
+const addPayoutPartner = (data: IPayoutPartnerRequest) => {
   return NeoHttpClient.post<NeoResponse<IPayoutPartnerRequest>>(
     api.masterData.payout_partner.create,
-    toFormData(data)
+    toFormData(filterFalseyValues(data))
   );
 };
 const useAddPayoutPartner = () => {
@@ -76,17 +83,23 @@ const useAddPayoutPartner = () => {
   return useMutation(addPayoutPartner, {
     onSuccess: (success: any) => {
       queryClient.invalidateQueries(api.masterData.payout_partner.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
 const updatePayoutPartner = (data: IPayoutPartnerRequest) => {
   return NeoHttpClient.post<NeoResponse<IPayoutPartnerRequest>>(
     api.masterData.payout_partner.update.replace("{id}", data.id + ""),
-    toFormData(data)
+    toFormData(filterFalseyValues(data))
   );
 };
 const useUpdatePayoutPartner = () => {
@@ -94,10 +107,16 @@ const useUpdatePayoutPartner = () => {
   return useMutation(updatePayoutPartner, {
     onSuccess: (success: any) => {
       queryClient.invalidateQueries(api.masterData.payout_partner.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -111,10 +130,16 @@ const useDeletePayoutPartner = () => {
   return useMutation(deletePayoutPartner, {
     onSuccess: (success: any) => {
       queryClient.invalidateQueries(api.masterData.payout_partner.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
-    onError: (error: AxiosError) => {
-      toastFail(error?.message);
+    onError: (error: AxiosError<{ message: string }>) => {
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -133,10 +158,16 @@ const useToggleStatus = (id: number | null) => {
       enabled: false,
       onSuccess: success => {
         queryClient.invalidateQueries(api.masterData.payout_partner.getAll);
-        toastSuccess(success?.data?.message);
+        NeoToast({
+          type: "success",
+          message: success?.data?.message
+        });
       },
       onError: (error: AxiosError<{ message: string }>) => {
-        toastFail(error?.response?.data?.message ?? "Error");
+        NeoToast({
+          type: "error",
+          message: error?.response?.data?.message ?? error?.message
+        });
       }
     }
   );

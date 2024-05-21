@@ -1,4 +1,5 @@
 import { GridItem, SimpleGrid } from "@chakra-ui/react";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { DropzoneComponentControlled } from "@neo/components/Form/DropzoneComponent";
 import Select from "@neo/components/Form/SelectComponent";
 import TextInput from "@neo/components/Form/TextInput";
@@ -13,7 +14,7 @@ import { baseURL } from "@neo/services/service-axios";
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
-
+import * as yup from "yup";
 const defaultValues = {
   image: "",
   name: "",
@@ -36,12 +37,24 @@ const AddPayoutPartner = ({
   setEditId,
   data: editData
 }: AddPayoutPartnerProps) => {
-  // const [countryId, setCountryId] = useState(null as number | null);
+  const schema = yup.object().shape({
+    image: editId ? yup.mixed() : yup.mixed().required("Please select image"),
+    name: yup.string().required("Please enter Payout Partner Name"),
+    code: yup.string().required("Please enter Payout Partner Code"),
+    countryId: yup.object().required("Please select Country").nullable(),
+    payoutMethodId: yup
+      .object()
+      .required("Please select Payout Method")
+      .nullable()
+  });
   const { mutateAsync: mutateAddPayoutPartner } = useAddPayoutPartner();
   const { mutateAsync: mutateEditPayoutPartner } = useUpdatePayoutPartner();
+
   const { control, handleSubmit, reset } = useForm({
-    defaultValues: defaultValues
+    defaultValues: defaultValues,
+    resolver: yupResolver(schema)
   });
+
   const { data: countryData } = useGetCountryList();
 
   const { data: payoutMethod } = useGetAllPayoutMethod();
@@ -52,16 +65,19 @@ const AddPayoutPartner = ({
       }),
     [editId]
   );
+
   const countryOptions = formatSelectOptions({
     data: countryData?.data?.data,
     valueKey: "id",
     labelKey: "name"
   });
+
   const payoutMethodOptions = formatSelectOptions({
     data: payoutMethod,
     valueKey: "id",
     labelKey: "name"
   });
+
   useEffect(() => {
     if (editId) {
       const selectedPayoutMethod = payoutMethodOptions?.find(
@@ -73,7 +89,6 @@ const AddPayoutPartner = ({
         return country.value === selectedPayoutPartner?.country?.id;
       });
       reset({
-        image: selectedPayoutPartner?.image,
         name: selectedPayoutPartner?.name,
         code: selectedPayoutPartner?.code,
         countryId: {
@@ -88,12 +103,13 @@ const AddPayoutPartner = ({
       });
     }
   }, [editId, editData]);
+
   const onAddPayoutPartner = async (data: typeof defaultValues) => {
     if (editId) {
       await mutateEditPayoutPartner({
         ...data,
         id: editId,
-        image: data.image[0] ?? null,
+        image: data?.image ?? null,
         countryId: data?.countryId?.value ?? null,
         payoutMethodId: data?.payoutMethodId?.value ?? null,
         isActive: selectedPayoutPartner?.isActive ?? true
@@ -101,7 +117,7 @@ const AddPayoutPartner = ({
     } else {
       await mutateAddPayoutPartner({
         ...data,
-        image: data.image[0] ?? "",
+        image: data.image ?? "",
         countryId: data?.countryId?.value ?? null,
         payoutMethodId: data?.payoutMethodId?.value ?? null
       });
@@ -109,6 +125,7 @@ const AddPayoutPartner = ({
 
     handleCloseModal();
   };
+
   const handleCloseModal = () => {
     setEditId(null);
     reset(defaultValues);
@@ -131,7 +148,7 @@ const AddPayoutPartner = ({
             <DropzoneComponentControlled
               name="image"
               control={control}
-              options={{ maxSize: 4 }}
+              options={{ maxSize: 2 }}
               imagePreview={
                 editId
                   ? `${baseURL}/document-service/master/payout/partner/image?fileId=${selectedPayoutPartner?.image}`

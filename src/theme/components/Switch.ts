@@ -25,11 +25,8 @@ const baseStyle = definePartsStyle({
   }
 });
 
-const Switch = defineMultiStyleConfig({
-  baseStyle,
-  defaultProps: {
-    size: "lg"
-  }
+const SwitchConfig = defineMultiStyleConfig({
+  baseStyle
 });
 
-export default Switch;
+export default SwitchConfig;

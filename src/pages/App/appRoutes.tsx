@@ -51,7 +51,7 @@ const PromoCode = lazy(
 const RoleSetup = lazy(
   () => import("@neo/pages/Authorized/InternalUser/Role/")
 );
-const User = lazy(() => import("@neo/pages/Authorized/MasterData/User"));
+const User = lazy(() => import("@neo/pages/Authorized/InternalUser/User"));
 
 export const appRoutes = [
   {

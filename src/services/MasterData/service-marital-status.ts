@@ -1,4 +1,4 @@
-import { toastFail, toastSuccess } from "@neo/utility/Toast";
+import NeoToast from "@neo/utility/Toast/Toast";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "../service-api";
@@ -27,7 +27,10 @@ const useGetAllMaritalStatus = () => {
   return useQuery([api.masterData.marital_status.getAll], getAllMaritalStatus, {
     select: data => data.data.data,
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -42,11 +45,17 @@ const useAddMaritalStatus = () => {
   const queryClient = useQueryClient();
   return useMutation(createMaritalStatus, {
     onSuccess: success => {
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
       queryClient.invalidateQueries(api.masterData.marital_status.getAll);
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -66,11 +75,17 @@ const useUpdateMaritalStatus = () => {
   const queryClient = useQueryClient();
   return useMutation(updateMaritalStatus, {
     onSuccess: success => {
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
       queryClient.invalidateQueries(api.masterData.marital_status.getAll);
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -87,11 +102,17 @@ const useChangeMaritalStatusStatus = (id: number | null) => {
     {
       enabled: false,
       onSuccess: success => {
-        toastSuccess(success?.data?.message);
+        NeoToast({
+          type: "success",
+          message: success?.data?.message
+        });
         queryClient.invalidateQueries(api.masterData.marital_status.getAll);
       },
       onError: (error: AxiosError<{ message: string }>) => {
-        toastFail(error?.response?.data?.message ?? error?.message);
+        NeoToast({
+          type: "error",
+          message: error?.response?.data?.message ?? error?.message
+        });
       }
     }
   );
@@ -106,10 +127,16 @@ const useDeleteMaritalStatus = () => {
   return useMutation(deleteMaritalStatus, {
     onSuccess: success => {
       queryClient.invalidateQueries(api.masterData.marital_status.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
