@@ -41,7 +41,7 @@ const SwitchInput: React.FC<SwitchInputProps & SwitchProps> = ({
             isRequired={!!isRequired}
             isInvalid={!!error}
           >
-            <Flex width={"100%"} justifyContent={"space-between"}>
+            <Flex width={"100%"} gap={4} justifyContent={"flex-start"}>
               <FormLabel mb={0} ml={2} cursor={"pointer"}>
                 {label}
               </FormLabel>

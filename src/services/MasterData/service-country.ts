@@ -106,13 +106,13 @@ const useAddCountry = () => {
     }
   });
 };
-const getCountryById = (id: number | null) => {
+const getCountryById = (id: number | null) => () => {
   return NeoHttpClient.get<NeoResponse<CountriesList>>(
-    api.masterData.country.update.replace("{id}", id + "")
+    api.masterData.country.update.replace("{id}", `${id}`)
   );
 };
 const useGetCountryById = (id: number | null) => {
-  return useQuery([id], () => getCountryById(id), {
+  return useQuery([id], getCountryById(id), {
     enabled: !!id,
     onError: (error: AxiosError) => {
       toastFail(error?.message);

@@ -6,7 +6,6 @@ import {
   FormHelperText,
   Text
 } from "@chakra-ui/react";
-
 import { Control, Controller } from "react-hook-form";
 
 interface CheckBoxProps extends CheckboxProps {
@@ -52,6 +51,7 @@ const CheckBox = ({
                   {label}
                 </Text>
               </ChakraCheckBox>
+
               <FormErrorMessage>{error ? error?.message : ""}</FormErrorMessage>
               {helperText ? <FormHelperText>{helperText}</FormHelperText> : ""}
             </FormControl>

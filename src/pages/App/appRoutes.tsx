@@ -1,11 +1,10 @@
 import LayoutWrapper from "@neo/components/LayoutWrapper";
 import { lazy } from "react";
 
+import Accounting from "../Authorized/MasterData/Accounting";
 import { CounrtyDetails } from "../Authorized/MasterData/Country/CountryDetails";
 import { NAVIGATION_ROUTES } from "./navigationRoutes";
-
 const PartnerSetup = lazy(() => import("@neo/pages/Authorized/PartnerSetup"));
-
 const AutomaticDiscount = lazy(
   () => import("@neo/pages/Authorized/MasterData/AutomaticDiscount")
 );
@@ -135,6 +134,10 @@ export const appRoutes = [
       {
         path: NAVIGATION_ROUTES.PARTNERS,
         element: <PartnerSetup />
+      },
+      {
+        path: NAVIGATION_ROUTES.ACCOUNTING,
+        element: <Accounting />
       }
     ]
   }

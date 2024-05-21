@@ -145,14 +145,14 @@ const KycSetup = ({ stepProps }: IStepProps) => {
     }
   };
   return (
-    <Flex direction={"column"} gap={"16px"}>
-      <Card borderRadius={"16px"}>
-        <CardBody display={"flex"} flexDir={"column"} gap={"16px"}>
+    <Flex direction={"column"}>
+      <Card borderRadius={16} p={4}>
+        <CardBody>
           <Stack
             as="form"
             onSubmit={handleSubmit(onSubmit)}
             flexDirection={"column"}
-            gap={"24px"}
+            gap={6}
           >
             {allFieldGroups
               ?.sort((a, b) => customSort(a) - customSort(b))
@@ -160,7 +160,12 @@ const KycSetup = ({ stepProps }: IStepProps) => {
                 return (
                   <React.Fragment key={index}>
                     <HStack justifyContent="space-between">
-                      <Heading fontSize={"17px"} fontWeight={"700"} flex={1}>
+                      <Heading
+                        fontSize={"17px"}
+                        fontWeight={"700"}
+                        flex={1}
+                        // mt={index != 0 ? 4}
+                      >
                         {convertToTitleCase(group.header)}
                       </Heading>
 
@@ -174,19 +179,19 @@ const KycSetup = ({ stepProps }: IStepProps) => {
                     </HStack>
 
                     {group?.fields
-
                       ?.sort((a, b) => a.displayOrder - b.displayOrder)
-
-                      .map((field, fieldIndex) => {
+                      ?.map((field, fieldIndex) => {
                         return (
                           <React.Fragment key={field.id}>
                             <HStack
                               key={field.id}
                               justifyContent="space-between"
                             >
-                              <Text flex={1}>{field.label}</Text>
+                              <Text flex={1} fontSize={"14px"}>
+                                {field.label}
+                              </Text>
 
-                              <HStack w="42%" justifyContent={"space-evenly"}>
+                              <HStack w="41%" justifyContent={"space-evenly"}>
                                 <CheckBox
                                   width="fit-content"
                                   control={control}
@@ -196,6 +201,7 @@ const KycSetup = ({ stepProps }: IStepProps) => {
                                 <CheckBox
                                   width="fit-content"
                                   control={control}
+                                  variant={"circular"}
                                   borderColor="gray.400"
                                   name={`[${index}].fields[${fieldIndex}].display`}
                                 />
@@ -232,4 +238,5 @@ const KycSetup = ({ stepProps }: IStepProps) => {
     </Flex>
   );
 };
+
 export default KycSetup;

@@ -32,6 +32,7 @@ const defaultValues = {
   countryHeadQuarterId: null as ISelectOptions<number> | null,
   companyName: null,
   address: null,
+
   phoneNumber: null,
   emailAddress: null,
   timeZone: null as ISelectOptions<string> | null,
@@ -88,6 +89,7 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
     partnerType: yup.object().required("Partner Type is required").nullable(),
     companyName: yup.string().required("Company Name is required").nullable(),
     address: yup.string().required("Address is required").nullable(),
+
     phoneNumber: yup.string().required("Phone Number is required").nullable(),
     emailAddress: yup
       .string()
@@ -150,6 +152,7 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
       reset({
         companyName: selectedPartner?.companyName,
         address: selectedPartner?.address,
+
         phoneNumber: selectedPartner?.phoneNumber,
         emailAddress: selectedPartner?.emailAddress,
         operatingCountryIds: selectedPartner?.operatingCountries?.map(
@@ -336,24 +339,6 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
                 placeholder="-Time Zone-"
                 name="timeZone"
                 options={timezone_options}
-                required
-              />
-            </GridItem>
-            <GridItem colSpan={1}>
-              <TextInput
-                control={control}
-                type="text"
-                label="Enter Partner Code"
-                name="partnercode"
-                required
-              />
-            </GridItem>
-            <GridItem colSpan={1}>
-              <TextInput
-                control={control}
-                type="text"
-                label="Enter Chain Id"
-                name="chainid"
                 required
               />
             </GridItem>

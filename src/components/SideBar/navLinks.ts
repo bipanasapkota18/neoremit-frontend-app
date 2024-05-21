@@ -137,6 +137,11 @@ export const navLinks = [
     icon: sidebarAssets.Partners,
     href: NAVIGATION_ROUTES.PARTNERS,
     label: "Partner Setup"
+  },
+  {
+    icon: sidebarAssets.MasterData,
+    href: NAVIGATION_ROUTES.ACCOUNTING,
+    label: " Accounting"
   }
 
   // {
