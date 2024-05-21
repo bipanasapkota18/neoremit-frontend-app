@@ -72,6 +72,7 @@ export const CounrtyDetails = () => {
         onClickStep={i => {
           !isNewCountry ? setStep(i) : activeStep > i ? setStep(i) : null;
         }}
+        pointerEvents={isNewCountry ? "none" : "auto"}
         variant={"circles-alt"}
         colorScheme="none"
         sx={{

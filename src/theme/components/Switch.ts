@@ -26,8 +26,8 @@ const baseStyle = definePartsStyle({
   }
 });
 
-const Switch = defineMultiStyleConfig({
+const SwitchConfig = defineMultiStyleConfig({
   baseStyle
 });
 
-export default Switch;
+export default SwitchConfig;

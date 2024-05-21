@@ -6,6 +6,8 @@ import { NeoHttpClient } from "./service-axios";
 
 export interface IPartnerRequest {
   countryHeadQuarterId: number | null;
+  chainId: number | null;
+  partnerCode: string | null;
   partnerType: string | undefined;
   companyName: string | null;
   address: string | null;

@@ -1,4 +1,5 @@
 import NeoToast from "@neo/utility/Toast/Toast";
+import { filterFalseyValues } from "@neo/utility/remove-falsey";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "../service-api";
@@ -71,10 +72,10 @@ const useGetPayoutPartnerById = (id: number | null) => {
   );
 };
 
-const addPayoutPartner = (data: any) => {
+const addPayoutPartner = (data: IPayoutPartnerRequest) => {
   return NeoHttpClient.post<NeoResponse<IPayoutPartnerRequest>>(
     api.masterData.payout_partner.create,
-    toFormData(data)
+    toFormData(filterFalseyValues(data))
   );
 };
 const useAddPayoutPartner = () => {
@@ -98,7 +99,7 @@ const useAddPayoutPartner = () => {
 const updatePayoutPartner = (data: IPayoutPartnerRequest) => {
   return NeoHttpClient.post<NeoResponse<IPayoutPartnerRequest>>(
     api.masterData.payout_partner.update.replace("{id}", data.id + ""),
-    toFormData(data)
+    toFormData(filterFalseyValues(data))
   );
 };
 const useUpdatePayoutPartner = () => {

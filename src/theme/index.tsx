@@ -1,11 +1,12 @@
 import { extendTheme } from "@chakra-ui/react";
 import { StepsTheme as Steps } from "chakra-ui-steps";
 import { FormComponent } from "./Form/Form";
-import { RadioTheme } from "./Form/Radio";
+import { RadioConfig } from "./Form/Radio";
 import { colorScheme } from "./colorScheme";
 import { ButtonConfig } from "./components/Button";
-import Input from "./components/Input";
-import Switch from "./components/Switch";
+import { CheckboxConfig } from "./components/Checkbox";
+import InputConfig from "./components/Input";
+import SwitchConfig from "./components/Switch";
 import { TableConfig } from "./components/Table";
 export { globalStyles } from "./global";
 
@@ -18,10 +19,11 @@ export const theme = extendTheme(
     shadows: { outline: "0 0 0 3px var(--chakra-colors-purple-100)" },
     components: {
       Button: ButtonConfig,
-      Input: Input,
+      Input: InputConfig,
       Table: TableConfig,
-      Switch: Switch,
-      Radio: RadioTheme,
+      Switch: SwitchConfig,
+      Radio: RadioConfig,
+      Checkbox: CheckboxConfig,
       Steps
     },
     breakpoints: {

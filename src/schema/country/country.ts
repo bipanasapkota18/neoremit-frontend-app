@@ -1,6 +1,7 @@
 import * as yup from "yup";
 
 const countryAdd = yup.object().shape({
+  flagIcon: yup.mixed().required("Please select flag icon"),
   name: yup.string().required("Please enter country Name"),
   code: yup.string().required("Please enter country Code"),
   isoNumber: yup.string().required("Please enter country ISONumber"),

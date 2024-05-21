@@ -1,3 +1,4 @@
+import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -22,9 +23,10 @@ import {
   useGetPartnerById,
   useUpdatePartner
 } from "@neo/services/service-partner-setup";
+import { colorScheme } from "@neo/theme/colorScheme";
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
-import { Dispatch, SetStateAction, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
 import * as yup from "yup";
 
 const defaultValues = {
@@ -32,6 +34,8 @@ const defaultValues = {
   countryHeadQuarterId: null as ISelectOptions<number> | null,
   companyName: null,
   address: null,
+  chainId: null,
+  partnerCode: null,
   phoneNumber: null,
   emailAddress: null,
   timeZone: null as ISelectOptions<string> | null,
@@ -39,10 +43,16 @@ const defaultValues = {
   partnerSettlementInfo: {
     fundingCurrencyId: null as ISelectOptions<number> | null,
     localCurrencyId: null as ISelectOptions<number> | null,
-    transactionLimit: null,
+    transactionLimit: null as never as number,
     acceptPinNo: false
   },
-  partnerContactInfo: null as PartnerContactInfo[] | null
+  partnerContactInfo: [
+    {
+      contactName: null,
+      designation: null,
+      email: null
+    }
+  ]
 };
 interface AddPartnerProps {
   editId: number | null;
@@ -88,7 +98,14 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
     partnerType: yup.object().required("Partner Type is required").nullable(),
     companyName: yup.string().required("Company Name is required").nullable(),
     address: yup.string().required("Address is required").nullable(),
-    phoneNumber: yup.string().required("Phone Number is required").nullable(),
+    chainId: yup.string().required("Chain Id is required").nullable(),
+    partnerCode: yup.string().required("Partner Code is required").nullable(),
+    phoneNumber: yup
+      .number()
+      .typeError("Please enter number")
+      .required("Phone Number is required")
+      .positive("Phone Number cannot be negative")
+      .nullable(),
     emailAddress: yup
       .string()
       .email("Enter a valid email address")
@@ -111,6 +128,7 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
         .nullable(),
       transactionLimit: yup
         .number()
+        .typeError("Transaction Limit must be a number")
         .required("Transaction Limit is required")
         .min(1, "Transaction Limit must be greater than 0")
         .nullable(),
@@ -118,25 +136,19 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
     }),
     partnerContactInfo: yup.array().of(
       yup.object().shape({
-        contactName: yup.string().when("$index", {
-          is: 0, // Only apply validation when the index is 0 (first element)
-          then: yup.string().required("Contact Name is required").nullable(),
-          otherwise: yup.string().nullable() // Optional for other elements
-        }),
-        designation: yup.string().when("$index", {
-          is: 0, // Only apply validation when the index is 0 (first element)
-          then: yup.string().required("Designation is required").nullable(),
-          otherwise: yup.string().nullable() // Optional for other elements
-        }),
-        email: yup.string().when("$index", {
-          is: 0, // Only apply validation when the index is 0 (first element)
-          then: yup
-            .string()
-            .email("Enter a valid email address")
-            .required("Email Address is required")
-            .nullable(),
-          otherwise: yup.string().nullable() // Optional for other elements
-        })
+        contactName: yup
+          .string()
+          .required("Contact Name is required")
+          .nullable(),
+        designation: yup
+          .string()
+          .required("Designation is required")
+          .nullable(),
+        email: yup
+          .string()
+          .email("Enter a valid email address")
+          .required("Email Address is required")
+          .nullable()
       })
     )
   });
@@ -145,6 +157,18 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
     defaultValues: defaultValues,
     resolver: yupResolver(partnerSchema)
   });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "partnerContactInfo"
+  });
+  // useEffect(() => {
+  //   if (partnerSchema) {
+  //     clearErrors("partnerContactInfo");
+  //     trigger;
+  //   }
+  // }, [partnerSchema, clearErrors, trigger]);
+
   useEffect(() => {
     if (editId) {
       reset({
@@ -152,6 +176,8 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
         address: selectedPartner?.address,
         phoneNumber: selectedPartner?.phoneNumber,
         emailAddress: selectedPartner?.emailAddress,
+        chainId: selectedPartner?.chainId,
+        partnerCode: selectedPartner?.partnerCode,
         operatingCountryIds: selectedPartner?.operatingCountries?.map(
           (country: any) => ({
             value: country.id,
@@ -315,7 +341,7 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
             <GridItem colSpan={1}>
               <TextInput
                 control={control}
-                type="text"
+                type="number"
                 label="Enter Phone Number"
                 name="phoneNumber"
                 required
@@ -344,7 +370,7 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
                 control={control}
                 type="text"
                 label="Enter Partner Code"
-                name="partnercode"
+                name="partnerCode"
                 required
               />
             </GridItem>
@@ -353,7 +379,7 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
                 control={control}
                 type="text"
                 label="Enter Chain Id"
-                name="chainid"
+                name="chainId"
                 required
               />
             </GridItem>
@@ -405,57 +431,70 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
             Partner Contact Person
           </Heading>
           <SimpleGrid columns={3} gap={6}>
-            <GridItem colSpan={1}>
-              <TextInput
-                control={control}
-                type="text"
-                label="Enter Contact Name"
-                name={`partnerContactInfo[${0}].contactName`}
-                required
-              />
-            </GridItem>
-            <GridItem colSpan={1}>
-              <TextInput
-                control={control}
-                type="text"
-                label="Enter Designation"
-                name={`partnerContactInfo[${0}].designation`}
-                required
-              />
-            </GridItem>
-            <GridItem colSpan={1}>
-              <TextInput
-                control={control}
-                type="text"
-                label="Enter Email Address"
-                name={`partnerContactInfo[${0}].email`}
-                required
-              />
-            </GridItem>
-            <GridItem colSpan={1}>
-              <TextInput
-                control={control}
-                type="text"
-                label="Enter Contact Name"
-                name={`partnerContactInfo[${1}].contactName`}
-              />
-            </GridItem>
-            <GridItem colSpan={1}>
-              <TextInput
-                control={control}
-                type="text"
-                label="Enter Designation"
-                name={`partnerContactInfo[${1}].designation`}
-              />
-            </GridItem>
-            <GridItem colSpan={1}>
-              <TextInput
-                control={control}
-                type="text"
-                label="Enter Email Address"
-                name={`partnerContactInfo[${1}].email`}
-              />
-            </GridItem>
+            {fields.map((field, index) => (
+              <React.Fragment key={field.id}>
+                <GridItem colSpan={1}>
+                  <TextInput
+                    control={control}
+                    type="text"
+                    label="Enter Contact Name"
+                    name={`partnerContactInfo[${index}].contactName`}
+                    required
+                  />
+                </GridItem>
+                <GridItem colSpan={1}>
+                  <TextInput
+                    control={control}
+                    type="text"
+                    label="Enter Designation"
+                    name={`partnerContactInfo[${index}].designation`}
+                    required
+                  />
+                </GridItem>
+                <GridItem colSpan={1}>
+                  <TextInput
+                    control={control}
+                    type="text"
+                    label="Enter Email Address"
+                    name={`partnerContactInfo[${index}].email`}
+                    required
+                  />
+                </GridItem>
+                {index == 1 && (
+                  <Button
+                    minW={"max-content"}
+                    w={"30%"}
+                    type="button"
+                    background={colorScheme.danger_400}
+                    _hover={{ bg: colorScheme.danger_600 }}
+                    _active={{ bg: colorScheme.danger_600 }}
+                    onClick={() => remove(index)}
+                    display={"flex"}
+                    gap={2}
+                  >
+                    <DeleteIcon height={"20px"} width={"20px"} /> Delete
+                  </Button>
+                )}
+                {fields.length < 2 ? (
+                  <Button
+                    minW={"max-content"}
+                    w={"50%"}
+                    type="button"
+                    onClick={() =>
+                      append({
+                        contactName: null,
+                        designation: null,
+                        email: null
+                      })
+                    }
+                    display={"flex"}
+                    gap={2}
+                  >
+                    <AddIcon /> Add Partner Contact Info
+                  </Button>
+                ) : null}
+              </React.Fragment>
+            ))}
           </SimpleGrid>
         </Box>
         <form onSubmit={handleSubmit(onAddPartner)}>

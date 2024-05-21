@@ -48,12 +48,9 @@ export interface ICountryRequest {
   isActive: boolean | null | undefined;
 }
 
-// interface IFilterItems {
-// }
 interface IFilterParams {
   pageParams?: IPageParams;
   filterParams: any;
-  //   filterParams: IFilterItems;
 }
 const getAllCountries = ({ pageParams, filterParams }: IFilterParams) => {
   return NeoHttpClient.post<NeoResponse<ICountryResponse>>(

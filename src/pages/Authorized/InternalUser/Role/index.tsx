@@ -155,8 +155,13 @@ const PayoutMethod = () => {
       <BreadCrumb
         currentPage="Roles"
         options={activePath}
-        flag={flag}
-        setFlag={setFlag}
+        customOnClick={{
+          trigger: !!editId || flag,
+          func: () => {
+            setEditId(null);
+            setFlag.off();
+          }
+        }}
       />
       <Card
         borderRadius={"16px"}
