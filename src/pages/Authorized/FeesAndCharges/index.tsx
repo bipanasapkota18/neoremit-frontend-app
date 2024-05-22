@@ -50,6 +50,7 @@ const FeeAndCharges = () => {
 
   const { data: feeAndChargesData, isLoading: isDataLoading } =
     useGetAllFeesAndCharges();
+
   const { mutateAsync: mutateDeleteFeeAndCharges, isLoading: isDeleteLoading } =
     useFeeAndChargesDelete();
   const {
@@ -59,7 +60,7 @@ const FeeAndCharges = () => {
 
   const handleDelete = async () => {
     try {
-      await mutateDeleteFeeAndCharges(editId);
+      await mutateDeleteFeeAndCharges(changeId);
       setEditId(null);
       onCloseFeeAndChargeDeleteModal();
     } catch (e) {
@@ -140,7 +141,7 @@ const FeeAndCharges = () => {
             />
             <TableActionButton
               onClickAction={() => {
-                setEditId(cell?.row?.original?.id);
+                setChangeId(cell?.row?.original?.id);
                 onOpenFeeAndChargeDeleteModal();
               }}
               icon={<svgAssets.DeleteButton />}
@@ -240,7 +241,10 @@ const FeeAndCharges = () => {
         onApprove={handleDelete}
         message="Deleting will permanently remove this data from the system. This cannot be Undone."
         isOpen={isOpenFeeAndChargeDeleteModal}
-        onClose={onCloseFeeAndChargeDeleteModal}
+        onClose={() => {
+          setChangeId(null);
+          onCloseFeeAndChargeDeleteModal();
+        }}
       />
 
       <ConfirmationModal

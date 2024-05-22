@@ -103,7 +103,7 @@ const AddFeeAndChargesDetails = ({
       const selectedWhileAdd = tableData.find(
         item => item.addId === EditDetailId
       );
-      const selectedPayOutMethod = payOutMethodOptions?.filter((item: any) =>
+      const selectedPayOutMethod = payOutMethodOptions?.filter(item =>
         selectedWhileAdd?.payoutMethods
           ?.map((item: any) => {
             return item.value;
@@ -112,7 +112,7 @@ const AddFeeAndChargesDetails = ({
       );
 
       const selectedFeeType = feeTypeOptions?.find(
-        (item: any) => item.value === selectedWhileAdd?.feeAndChargeType
+        item => item.value === selectedWhileAdd?.feeAndChargeType
       );
       reset({
         ...selectedWhileAdd,
@@ -132,7 +132,7 @@ const AddFeeAndChargesDetails = ({
           .includes(item.value)
       );
       const selectedFeeType = feeTypeOptions?.find(
-        (item: any) => item.value === selectedFeeAndCharge?.feeAndChargeType
+        item => item.value === selectedFeeAndCharge?.feeAndChargeType
       );
       reset({
         ...selectedFeeAndCharge,

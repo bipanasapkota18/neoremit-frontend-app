@@ -93,6 +93,7 @@ const AddFeeAndCharges = ({
 
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
   const [editDetailId, setEditDetailId] = useState<number | null>(null);
+  const [changeId, setChangeId] = useState(null as number | null);
   const { data: feeAndChargeDetails, isLoading: isGetFeeAndChargesLoading } =
     useGetFeeAndChargesbyId(editId);
   const { data: countryList, mutateAsync } = useGetAllCountries();
@@ -212,9 +213,9 @@ const AddFeeAndCharges = ({
               <TableActionButton
                 onClickAction={() => {
                   if (tableData.length > 0) {
-                    setEditDetailId(cell?.row?.original?.addId ?? null);
+                    setChangeId(cell?.row?.original?.addId ?? null);
                   } else {
-                    setEditDetailId(cell?.row?.original?.id);
+                    setChangeId(cell?.row?.original?.id);
                   }
                   onOpenFeeAndChargeDeleteModal();
                 }}
@@ -228,17 +229,17 @@ const AddFeeAndCharges = ({
     ],
     [tableData]
   );
+
   const handleDelete = async () => {
     try {
       if (tableData.length > 0) {
-        const newTableData = tableData?.filter(
-          data => data.addId !== editDetailId
-        );
+        const newTableData = tableData?.filter(data => data.addId !== changeId);
         setTableData(newTableData);
       } else {
-        await mutateDeleteFeeAndCharges(editDetailId);
+        await mutateDeleteFeeAndCharges(changeId);
       }
-      setEditDetailId(null);
+      reset();
+      setChangeId(null);
       onCloseFeeAndChargeDeleteModal();
     } catch (e) {
       console.error(e);
@@ -459,7 +460,10 @@ const AddFeeAndCharges = ({
         onApprove={handleDelete}
         message="Deleting will permanently remove this data from the system. This cannot be Undone."
         isOpen={isOpenFeeAndChargeDeleteModal}
-        onClose={onCloseFeeAndChargeDeleteModal}
+        onClose={() => {
+          setChangeId(null);
+          onCloseFeeAndChargeDeleteModal();
+        }}
       />
     </Flex>
   );
