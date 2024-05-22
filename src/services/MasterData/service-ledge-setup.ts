@@ -78,7 +78,7 @@ const useUpdateLedgerHeadStatus = () => {
   return useMutation(updateLedgerHeadStatus, {
     onSuccess: success => {
       toastSuccess(success?.data?.message);
-      queryClient.invalidateQueries(api.masterData.marital_status.getAll);
+      queryClient.invalidateQueries(api.ledger_setup.getAll);
     },
     onError: (error: AxiosError<{ message: string }>) => {
       toastFail(error?.response?.data?.message ?? error?.message);
@@ -97,7 +97,7 @@ const useDeleteLedgerHead = () => {
   const QueryClient = useQueryClient();
   return useMutation(deleteLedgerHead, {
     onSuccess: success => {
-      QueryClient.invalidateQueries(api.ledger_setup.update);
+      QueryClient.invalidateQueries(api.ledger_setup.getAll);
       toastSuccess(success?.data?.message);
     },
     onError: (error: AxiosError<{ message: string }>) => {

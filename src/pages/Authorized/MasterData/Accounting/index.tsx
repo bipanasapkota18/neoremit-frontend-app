@@ -66,13 +66,13 @@ const Accounting = () => {
     {
       header: "Partner Ledger",
       accessorKey: "isPartnerLedger",
-      cell: (data: any) => {
-        return data.row.original.isPartnerLedger ? "Yes" : "No";
+      cell: (cell: CellContext<ILedgerHeadResponse, any>) => {
+        return cell?.row?.original?.isPartnerLedger ? "Yes" : "No";
       }
     },
     {
       header: "Currency",
-      accessorKey: "currency.name"
+      accessorKey: "currency?.name"
     },
     {
       header: "Action",
@@ -96,6 +96,7 @@ const Accounting = () => {
               }}
               icon={<svgAssets.DeleteButton />}
               label="Delete"
+              isDisabled={cell?.row?.original?.isPartnerLedger}
             />
           </HStack>
         );
