@@ -174,6 +174,7 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
       reset({
         companyName: selectedPartner?.companyName,
         address: selectedPartner?.address,
+
         phoneNumber: selectedPartner?.phoneNumber,
         emailAddress: selectedPartner?.emailAddress,
         chainId: selectedPartner?.chainId,

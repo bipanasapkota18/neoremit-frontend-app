@@ -1,14 +1,10 @@
 import { switchAnatomy } from "@chakra-ui/anatomy";
 import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
 import { colorScheme } from "../colorScheme";
-
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(switchAnatomy.keys);
-
 const baseStyle = definePartsStyle({
-  // define the part you're going to style
   container: {},
-
   track: {
     display: "flex",
     alignItems: "center",
@@ -25,9 +21,10 @@ const baseStyle = definePartsStyle({
     width: "20px"
   }
 });
-
 const SwitchConfig = defineMultiStyleConfig({
-  baseStyle
+  baseStyle,
+  defaultProps: {
+    size: "lg"
+  }
 });
-
 export default SwitchConfig;

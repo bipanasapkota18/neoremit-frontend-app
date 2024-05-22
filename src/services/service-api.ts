@@ -145,12 +145,18 @@ export const api = {
     statusChange: `${service}/master/partnerSetup/toggle/status/{id}`,
     getById: `${service}/master/partnerSetup/getPartnerSetup/{partnerId}`
   },
+  ledger_setup: {
+    getAll: `${service}/master/ledger/list`,
+    create: `${service}/master/ledger`,
+    update: `${service}/master/ledger/{id}`
+  },
 
   internalUser: {
     getAll: `${service}/users/getAllInternalUsers`,
     create: `${service}/users/create-user`,
     toggleStatus: `${service}/users/blockUnblockUser/{UserId}`
   },
+
   role: {
     getAll: `${service}/api/role-module`,
     create: `${service}/api/role-module`,

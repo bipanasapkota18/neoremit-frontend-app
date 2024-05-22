@@ -4,12 +4,10 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { NeoResponse, api } from "../service-api";
 import { NeoHttpClient, toFormData } from "../service-axios";
 import { IPageParams } from "./master-data-common-interface";
-
 export interface ICountryResponse {
   totalItems: number;
   countriesList: CountriesList[];
 }
-
 export interface CountriesList {
   id: number;
   name: string;
@@ -24,7 +22,6 @@ export interface CountriesList {
   flagIcon?: any;
   hasState: boolean;
 }
-
 export interface Currency {
   id: number;
   code: string;
@@ -47,7 +44,6 @@ export interface ICountryRequest {
   canSend: boolean;
   isActive: boolean | null | undefined;
 }
-
 interface IFilterParams {
   pageParams?: IPageParams;
   filterParams: any;
@@ -76,7 +72,6 @@ const useGetAllCountries = () => {
     }
   });
 };
-
 const getCountryList = async () => {
   return await NeoHttpClient.get<NeoResponse<CountriesList[]>>(
     api.masterData.country.getList
@@ -92,7 +87,6 @@ const useGetCountryList = () => {
     }
   });
 };
-
 const addCountry = (data: ICountryRequest) => {
   return NeoHttpClient.post<NeoResponse>(
     api.masterData.country.create,

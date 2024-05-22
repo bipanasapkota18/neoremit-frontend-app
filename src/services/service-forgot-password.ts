@@ -1,8 +1,8 @@
+import NeoToast from "@neo/utility/Toast/Toast";
 import { AxiosError } from "axios";
 import { useMutation } from "react-query";
 import { NeoResponse, api } from "./service-api";
 import { NeoHttpClient } from "./service-axios";
-import NeoToast from "@neo/utility/Toast/Toast";
 
 interface IEmailVerification {
   email: string;
