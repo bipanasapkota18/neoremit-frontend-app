@@ -157,12 +157,7 @@ const KycSetup = ({ stepProps }: IStepProps) => {
                 return (
                   <React.Fragment key={index}>
                     <HStack justifyContent="space-between">
-                      <Heading
-                        fontSize={"17px"}
-                        fontWeight={"700"}
-                        flex={1}
-                        // mt={index != 0 ? 4}
-                      >
+                      <Heading fontSize={"17px"} fontWeight={"700"} flex={1}>
                         {convertToTitleCase(group.header)}
                       </Heading>
 

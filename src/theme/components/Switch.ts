@@ -1,21 +1,18 @@
 import { switchAnatomy } from "@chakra-ui/anatomy";
 import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
-
+import { colorScheme } from "../colorScheme";
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(switchAnatomy.keys);
-
 const baseStyle = definePartsStyle({
-  // define the part you're going to style
   container: {},
-
   track: {
     display: "flex",
     alignItems: "center",
     borderRadius: "100px",
-    background: "#E2E8F0"
-    // _checked: {
-    //   background: colorScheme.primary_400
-    // }
+    background: "#E2E8F0",
+    _checked: {
+      background: colorScheme.primary_400
+    }
   },
   thumb: {
     borderRadius: "24px",
@@ -24,9 +21,10 @@ const baseStyle = definePartsStyle({
     width: "20px"
   }
 });
-
 const SwitchConfig = defineMultiStyleConfig({
-  baseStyle
+  baseStyle,
+  defaultProps: {
+    size: "lg"
+  }
 });
-
 export default SwitchConfig;

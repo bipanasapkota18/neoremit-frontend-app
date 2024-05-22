@@ -87,6 +87,7 @@ const Accounting = () => {
               }}
               icon={<svgAssets.EditButton />}
               label="Edit"
+              isDisabled={cell?.row?.original?.isPartnerLedger}
             />
             <TableActionButton
               onClickAction={() => {

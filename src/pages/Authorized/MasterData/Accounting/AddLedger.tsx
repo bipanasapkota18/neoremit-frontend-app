@@ -26,13 +26,15 @@ const defaultValues = {
   name: "",
   shortCode: "",
   currencyId: null as ISelectOptions<number> | null,
-  description: ""
+  description: "",
+  isPartnerLedger: false
 };
 
 const AddLedgerHeadModal = ({
   isOpen,
   onClose,
   editId,
+  setEditId,
   data: editData
 }: AddLedgerHeadModalProps) => {
   const {
@@ -55,8 +57,9 @@ const AddLedgerHeadModal = ({
   });
 
   const handleCloseModal = () => {
+    reset(defaultValues);
+    setEditId(null);
     onClose();
-    reset();
   };
 
   useEffect(() => {
@@ -71,7 +74,8 @@ const AddLedgerHeadModal = ({
         name: selectedLedgerHead?.name ?? "",
         shortCode: selectedLedgerHead?.shotCode ?? "",
         currencyId: selectedCurrency,
-        description: selectedLedgerHead?.description ?? ""
+        description: selectedLedgerHead?.description ?? "",
+        isPartnerLedger: selectedLedgerHead?.isPartnerLedger ?? false
       });
     }
   }, [editId]);
@@ -153,6 +157,7 @@ const AddLedgerHeadModal = ({
             control={control}
             label="Partner Ledger"
             name="isPartnerLedger"
+            isDisabled
           />
         </GridItem>
       </SimpleGrid>
