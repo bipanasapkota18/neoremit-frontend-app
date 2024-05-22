@@ -4,6 +4,7 @@ import {
   CardBody,
   Flex,
   HStack,
+  Text,
   useDisclosure,
   useMediaQuery
 } from "@chakra-ui/react";
@@ -19,7 +20,7 @@ import {
   ILedgerHeadResponse,
   useDeleteLedgerHead,
   useGetAlLedgerlList
-} from "@neo/services/MasterData/service-ledge-setup";
+} from "@neo/services/MasterData/service-ledger-setup";
 import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -47,8 +48,12 @@ const Accounting = () => {
     {
       header: "S.N",
       accessorKey: "sn",
-      cell: (data: any) => {
-        return data?.row?.index + 1;
+      cell: (cell: CellContext<ILedgerHeadResponse, any>) => {
+        return (
+          <Text>
+            {pageParams.pageIndex * pageParams.pageSize + cell.row.index + 1}
+          </Text>
+        );
       }
     },
     {
@@ -57,11 +62,21 @@ const Accounting = () => {
     },
     {
       header: "Ledger Short Code",
-      accessorKey: "shotCode"
+      accessorKey: "shotCode",
+      cell: (cell: CellContext<ILedgerHeadResponse, any>) => {
+        return <Text>{cell?.row?.original?.shotCode}</Text>;
+      }
     },
     {
       header: "Description",
-      accessorKey: "description"
+      accessorKey: "description",
+      cell: (cell: CellContext<ILedgerHeadResponse, any>) => {
+        return (
+          <Text wordBreak={"break-word"}>
+            {cell?.row?.original?.description}
+          </Text>
+        );
+      }
     },
     {
       header: "Partner Ledger",
@@ -72,7 +87,10 @@ const Accounting = () => {
     },
     {
       header: "Currency",
-      accessorKey: "currency?.name"
+      accessorKey: "currency",
+      cell: (cell: CellContext<ILedgerHeadResponse, any>) => {
+        return cell?.row?.original?.currency?.name;
+      }
     },
     {
       header: "Action",
@@ -107,12 +125,11 @@ const Accounting = () => {
   const activePath = breadcrumbTitle(pathname);
   const [isDekstop] = useMediaQuery("(min-width:1000px)");
   const [searchText, setSearchText] = useState<string>("" as string);
+
   const handleDelete = async () => {
     await mutateDelete(changeId);
     setChangeId(null);
     onCloseLedgerHeadDeleteModal();
-
-    onClose;
   };
 
   return (

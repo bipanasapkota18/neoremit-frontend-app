@@ -284,6 +284,7 @@ const AddAutomaticDiscount = ({
                 <Select
                   placeholder="-Deduction From-"
                   control={control}
+                  required
                   name="firstNTransactionPerCustomer.deductionFrom"
                   options={deduction_from_options ?? []}
                 />
@@ -292,6 +293,7 @@ const AddAutomaticDiscount = ({
                 <Select
                   control={control}
                   placeholder="-Discount Type-"
+                  required
                   name="firstNTransactionPerCustomer.discountType"
                   options={discount_type_options ?? []}
                 />

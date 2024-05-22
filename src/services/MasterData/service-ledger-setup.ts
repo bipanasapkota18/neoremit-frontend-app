@@ -1,4 +1,4 @@
-import { toastFail, toastSuccess } from "@neo/utility/Toast";
+import NeoToast from "@neo/utility/Toast/Toast";
 import { trimObjectValues } from "@neo/utility/helper";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -37,7 +37,10 @@ const useGetAlLedgerlList = () => {
   return useQuery([api.ledger_setup.getAll], getAllLedgerList, {
     select: data => data?.data?.data,
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -53,10 +56,16 @@ const useAddLedgerHead = () => {
   return useMutation(addLedgerHead, {
     onSuccess: success => {
       QueryClient.invalidateQueries(api.ledger_setup.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -77,11 +86,17 @@ const useUpdateLedgerHeadStatus = () => {
   const queryClient = useQueryClient();
   return useMutation(updateLedgerHeadStatus, {
     onSuccess: success => {
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
       queryClient.invalidateQueries(api.ledger_setup.getAll);
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
@@ -98,10 +113,16 @@ const useDeleteLedgerHead = () => {
   return useMutation(deleteLedgerHead, {
     onSuccess: success => {
       QueryClient.invalidateQueries(api.ledger_setup.getAll);
-      toastSuccess(success?.data?.message);
+      NeoToast({
+        type: "success",
+        message: success?.data?.message
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toastFail(error?.response?.data?.message ?? error?.message);
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
     }
   });
 };
