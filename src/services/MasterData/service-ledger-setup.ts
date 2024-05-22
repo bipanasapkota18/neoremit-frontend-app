@@ -15,7 +15,7 @@ export interface ILedgerHeadRequest {
 export interface ILedgerHeadResponse {
   id: number;
   name: string;
-  shotCode: string;
+  shortCode: string;
   currency: Currency;
   isPartnerLedger: boolean;
   description: string;

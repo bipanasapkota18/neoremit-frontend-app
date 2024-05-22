@@ -72,7 +72,7 @@ const AddLedgerHeadModal = ({
       );
       reset({
         name: selectedLedgerHead?.name ?? "",
-        shortCode: selectedLedgerHead?.shotCode ?? "",
+        shortCode: selectedLedgerHead?.shortCode ?? "",
         currencyId: selectedCurrency,
         description: selectedLedgerHead?.description ?? "",
         isPartnerLedger: selectedLedgerHead?.isPartnerLedger ?? false

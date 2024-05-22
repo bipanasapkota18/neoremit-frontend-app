@@ -62,9 +62,9 @@ const Accounting = () => {
     },
     {
       header: "Ledger Short Code",
-      accessorKey: "shotCode",
+      accessorKey: "shortCode",
       cell: (cell: CellContext<ILedgerHeadResponse, any>) => {
-        return <Text>{cell?.row?.original?.shotCode}</Text>;
+        return <Text>{cell?.row?.original?.shortCode}</Text>;
       }
     },
     {
