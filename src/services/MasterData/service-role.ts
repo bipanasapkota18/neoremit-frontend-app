@@ -110,7 +110,7 @@ const useToggleRoleStatus = (roleId: number | null) => {
 };
 
 const getRoleById = (id: number | null) => {
-  return NeoHttpClient.get<NeoResponse>(
+  return NeoHttpClient.get<NeoResponse<IRoleResponse>>(
     api.role.getById.replace("{roleId}", id + "")
   );
 };
