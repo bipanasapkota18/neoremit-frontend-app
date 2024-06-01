@@ -100,9 +100,12 @@ const PayoutMethod = () => {
       size: 100
     },
     {
+      header: "Hierarchy",
+      accessorKey: "roleHierarchy"
+    },
+    {
       header: "Status",
       accessorKey: "status",
-      size: 20,
       cell: (data: any) => {
         return (
           <Switch

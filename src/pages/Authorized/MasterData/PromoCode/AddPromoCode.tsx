@@ -115,12 +115,12 @@ const AddPromoCode = ({
     doesExpire: yup.string(),
     validTo: yup
       .date()
-      .typeError("Please enter to date")
       .when("doesExpire", {
         is: (value: string) => value === "Yes",
         then: yup
           .date()
           .typeError("Enter expiry date")
+          .typeError("Please enter to date")
           .when("startDate", (validFrom, promocodeSchema) => {
             if (validFrom) {
               const dayAfter = new Date(validFrom.getTime() + 86400000);

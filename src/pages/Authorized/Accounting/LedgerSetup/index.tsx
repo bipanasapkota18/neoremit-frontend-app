@@ -4,6 +4,7 @@ import {
   CardBody,
   Flex,
   HStack,
+  Text,
   useDisclosure,
   useMediaQuery
 } from "@chakra-ui/react";
@@ -19,7 +20,7 @@ import {
   ILedgerHeadResponse,
   useDeleteLedgerHead,
   useGetAlLedgerlList
-} from "@neo/services/MasterData/service-ledge-setup";
+} from "@neo/services/MasterData/service-ledger-setup";
 import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -48,8 +49,12 @@ const LedgerSetup = () => {
     {
       header: "S.N",
       accessorKey: "sn",
-      cell: (data: any) => {
-        return data?.row?.index + 1;
+      cell: (cell: CellContext<ILedgerHeadResponse, any>) => {
+        return (
+          <Text>
+            {pageParams.pageIndex * pageParams.pageSize + cell.row.index + 1}
+          </Text>
+        );
       }
     },
     {
@@ -58,22 +63,35 @@ const LedgerSetup = () => {
     },
     {
       header: "Ledger Short Code",
-      accessorKey: "shotCode"
+      accessorKey: "shortCode",
+      cell: (cell: CellContext<ILedgerHeadResponse, any>) => {
+        return <Text>{cell?.row?.original?.shortCode}</Text>;
+      }
     },
     {
       header: "Description",
-      accessorKey: "description"
+      accessorKey: "description",
+      cell: (cell: CellContext<ILedgerHeadResponse, any>) => {
+        return (
+          <Text wordBreak={"break-word"}>
+            {cell?.row?.original?.description}
+          </Text>
+        );
+      }
     },
     {
       header: "Partner Ledger",
       accessorKey: "isPartnerLedger",
-      cell: (data: any) => {
-        return data.row.original.isPartnerLedger ? "Yes" : "No";
+      cell: (cell: CellContext<ILedgerHeadResponse, any>) => {
+        return cell?.row?.original?.isPartnerLedger ? "Yes" : "No";
       }
     },
     {
       header: "Currency",
-      accessorKey: "currency.name"
+      accessorKey: "currency",
+      cell: (cell: CellContext<ILedgerHeadResponse, any>) => {
+        return cell?.row?.original?.currency?.name;
+      }
     },
     {
       header: "Action",
@@ -97,6 +115,7 @@ const LedgerSetup = () => {
               }}
               icon={<svgAssets.DeleteButton />}
               label="Delete"
+              isDisabled={cell?.row?.original?.isPartnerLedger}
             />
           </HStack>
         );
@@ -107,12 +126,11 @@ const LedgerSetup = () => {
   const activePath = breadcrumbTitle(pathname);
   const [isDekstop] = useMediaQuery("(min-width:1000px)");
   const [searchText, setSearchText] = useState<string>("" as string);
+
   const handleDelete = async () => {
     await mutateDelete(changeId);
     setChangeId(null);
     onCloseLedgerHeadDeleteModal();
-
-    onClose;
   };
 
   return (

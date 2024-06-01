@@ -27,6 +27,7 @@ interface IModuleListRequest {
   moduleName: string;
   scopeList: string[];
 }
+
 const defaultValues = {
   roleName: null as string | null,
   roleDescription: null as string | null,
@@ -39,7 +40,7 @@ interface AddRoleProps {
   onClose: () => void;
 }
 const AddRole = ({ onClose, editId, setEditId }: AddRoleProps) => {
-  const { data: roleData } = useGetRoleById(editId);
+  const { data: roleData, isLoading: isGetLoading } = useGetRoleById(editId);
 
   const schema = yup.object().shape({
     roleName: yup.string().required("Role Name is required").nullable(),
@@ -64,32 +65,6 @@ const AddRole = ({ onClose, editId, setEditId }: AddRoleProps) => {
   });
 
   useEffect(() => {
-    if (editId && moduleList) {
-      reset({
-        roleName: roleData?.roleName,
-        roleDescription: roleData?.roleDescription,
-        roleHierarchy: roleData?.roleHierarchy,
-        moduleList: getValues("moduleList")?.map(item => {
-          const currentModule = roleData?.moduleList?.find(
-            (module: any) => module.moduleId == item.moduleId
-          );
-          return {
-            moduleId: currentModule?.moduleId,
-            moduleName: currentModule?.moduleName,
-            scopeList: currentModule?.scopeList.reduce(
-              (acc: any, curr: any) => {
-                acc[curr] = true;
-                return acc;
-              },
-              {}
-            )
-          };
-        })
-      });
-    }
-  }, [roleData]);
-
-  useEffect(() => {
     setValue(
       "moduleList",
       moduleList?.map(item => {
@@ -100,7 +75,32 @@ const AddRole = ({ onClose, editId, setEditId }: AddRoleProps) => {
         };
       })
     );
-  }, [moduleList, roleData]);
+    if (editId && moduleList) {
+      reset({
+        roleName: roleData?.roleName,
+        roleDescription: roleData?.roleDescription,
+        roleHierarchy: roleData?.roleHierarchy,
+        moduleList: getValues("moduleList")?.map(item => {
+          const currentModule =
+            roleData?.moduleList?.find(
+              module => module.moduleId == item.moduleId
+            ) ?? item;
+          return {
+            moduleId: currentModule?.moduleId,
+            moduleName: currentModule?.moduleName,
+            scopeList: currentModule?.scopeList.reduce(
+              (acc: any, curr: string) => {
+                console.log(typeof acc);
+                acc[curr] = true;
+                return acc;
+              },
+              []
+            )
+          };
+        })
+      });
+    }
+  }, [roleData, moduleList, editId]);
 
   const onAddRole = async (formData: typeof defaultValues) => {
     const preparedModuleList = formData?.moduleList?.map(moduleData => ({
@@ -163,7 +163,7 @@ const AddRole = ({ onClose, editId, setEditId }: AddRoleProps) => {
             />
           </GridItem>
         </SimpleGrid>
-        {isLoading ? (
+        {isLoading || isGetLoading ? (
           <LoadingIllustration />
         ) : (
           <>
@@ -200,7 +200,6 @@ const AddRole = ({ onClose, editId, setEditId }: AddRoleProps) => {
                           color={"#2D3748"}
                         >
                           <CheckBox
-                            width={"10%"}
                             name={`moduleList[${moduleIndex}].scopeList[${scope}]`}
                             control={control}
                             label={scope}

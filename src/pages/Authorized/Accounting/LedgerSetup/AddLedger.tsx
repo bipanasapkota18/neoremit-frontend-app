@@ -10,7 +10,7 @@ import {
   ILedgerHeadResponse,
   useAddLedgerHead,
   useUpdateLedgerHeadStatus
-} from "@neo/services/MasterData/service-ledge-setup";
+} from "@neo/services/MasterData/service-ledger-setup";
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -72,7 +72,7 @@ const AddLedgerHeadModal = ({
       );
       reset({
         name: selectedLedgerHead?.name ?? "",
-        shortCode: selectedLedgerHead?.shotCode ?? "",
+        shortCode: selectedLedgerHead?.shortCode ?? "",
         currencyId: selectedCurrency,
         description: selectedLedgerHead?.description ?? "",
         isPartnerLedger: selectedLedgerHead?.isPartnerLedger ?? false
@@ -129,7 +129,7 @@ const AddLedgerHeadModal = ({
             name="shortCode"
             label="Ledger Short code"
             control={control}
-            type="number"
+            type="text"
             isRequired
           />
         </GridItem>

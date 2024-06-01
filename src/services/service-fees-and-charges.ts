@@ -243,7 +243,7 @@ const useUpdateFeeandChargesDetails = () => {
   const queryCLient = useQueryClient();
   return useMutation(updateFeeandChargesDetails, {
     onSuccess: success => {
-      queryCLient.invalidateQueries(api.fee_and_charges_details.getAll);
+      queryCLient.invalidateQueries(api.fee_and_charges.getSingle);
       NeoToast({
         type: "success",
         message: success?.data?.message
@@ -266,7 +266,7 @@ const useFeeAndChargesDetailDelete = () => {
   const queryCLient = useQueryClient();
   return useMutation(deleteFeeAndChargesDetails, {
     onSuccess: success => {
-      queryCLient.invalidateQueries(api.fee_and_charges.update);
+      queryCLient.invalidateQueries(api.fee_and_charges.getSingle);
       NeoToast({
         type: "success",
         message: success?.data?.message
