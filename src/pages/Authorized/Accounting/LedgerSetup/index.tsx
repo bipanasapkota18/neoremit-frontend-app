@@ -24,7 +24,8 @@ import { CellContext, PaginationState } from "@tanstack/react-table";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import AddLedgerHeadModal from "./AddLedger";
-const Accounting = () => {
+
+const LedgerSetup = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [editId, setEditId] = useState(null as number | null);
   const [changeId, setChangeId] = useState(null as number | null);
@@ -188,5 +189,4 @@ const Accounting = () => {
     </Flex>
   );
 };
-
-export default Accounting;
+export default LedgerSetup;

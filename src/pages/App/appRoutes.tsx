@@ -1,14 +1,18 @@
 import LayoutWrapper from "@neo/components/LayoutWrapper";
 import { lazy } from "react";
 
-import Accounting from "../Authorized/MasterData/Accounting";
 import { CounrtyDetails } from "../Authorized/MasterData/Country/CountryDetails";
 import { NAVIGATION_ROUTES } from "./navigationRoutes";
 const PartnerSetup = lazy(() => import("@neo/pages/Authorized/PartnerSetup"));
 const AutomaticDiscount = lazy(
   () => import("@neo/pages/Authorized/MasterData/AutomaticDiscount")
 );
-
+const LedgerSetup = lazy(
+  () => import("@neo/pages/Authorized/Accounting/LedgerSetup")
+);
+const VoucherEntry = lazy(
+  () => import("@neo/pages/Authorized/Accounting/VoucherEntry")
+);
 const Document = lazy(
   () => import("@neo/pages/Authorized/MasterData/DocumentSetup")
 );
@@ -47,12 +51,10 @@ const MaritalStatus = lazy(
 const PromoCode = lazy(
   () => import("@neo/pages/Authorized/MasterData/PromoCode")
 );
-
 const RoleSetup = lazy(
   () => import("@neo/pages/Authorized/InternalUser/Role/")
 );
 const User = lazy(() => import("@neo/pages/Authorized/InternalUser/User"));
-
 export const appRoutes = [
   {
     path: "/",
@@ -70,6 +72,14 @@ export const appRoutes = [
       {
         path: NAVIGATION_ROUTES.MASTER_DATA.RELATIONSHIP,
         element: <Relationship />
+      },
+      {
+        path: NAVIGATION_ROUTES.ACCOUNTING.LEDGER_SETUP,
+        element: <LedgerSetup />
+      },
+      {
+        path: NAVIGATION_ROUTES.ACCOUNTING.VOUCHER_ENTRY,
+        element: <VoucherEntry />
       },
       {
         path: NAVIGATION_ROUTES.MASTER_DATA.PURPOSE_OF_PAYMENT,
@@ -134,10 +144,6 @@ export const appRoutes = [
       {
         path: NAVIGATION_ROUTES.PARTNERS,
         element: <PartnerSetup />
-      },
-      {
-        path: NAVIGATION_ROUTES.ACCOUNTING,
-        element: <Accounting />
       }
     ]
   }

@@ -17,7 +17,6 @@ const defaultValues = {
 const OTP = ({ setScreen }: AuthPageProps) => {
   const { email } = useStore();
   const { mutateAsync: emailVerification, isLoading } = useVerifyOTP();
-
   const schema = yup.object().shape({
     otpCode: yup.string().required("Please Enter OTP").min(6).nullable()
   });

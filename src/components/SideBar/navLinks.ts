@@ -101,6 +101,7 @@ export const navLinks = [
       }
     ]
   },
+
   {
     icon: sidebarAssets.MasterData,
     href: NAVIGATION_ROUTES.FEES_AND_CHARGES,
@@ -140,9 +141,26 @@ export const navLinks = [
   },
   {
     icon: sidebarAssets.MasterData,
-    href: NAVIGATION_ROUTES.ACCOUNTING,
-    label: " Accounting"
+    label: "Accounting",
+    isNotLink: true,
+    childNav: [
+      {
+        icon: sidebarAssets.Ellipse,
+        href: NAVIGATION_ROUTES.ACCOUNTING.LEDGER_SETUP,
+        label: "Ledger Setup"
+      },
+      {
+        icon: sidebarAssets.Ellipse,
+        href: NAVIGATION_ROUTES.ACCOUNTING.VOUCHER_ENTRY,
+        label: "Voucher Entry"
+      }
+    ]
   }
+  // {
+  //   icon: sidebarAssets.MasterData,
+  //   href: NAVIGATION_ROUTES.ACCOUNTING,
+  //   label: " Accounting"
+  // }
 
   // {
   //   icon: FaIcons,
