@@ -30,10 +30,12 @@ const LedgerSetup = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [editId, setEditId] = useState(null as number | null);
   const [changeId, setChangeId] = useState(null as number | null);
+
   const [pageParams, setPageParams] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10
   });
+
   const { data: ledgerList } = useGetAlLedgerlList();
 
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =

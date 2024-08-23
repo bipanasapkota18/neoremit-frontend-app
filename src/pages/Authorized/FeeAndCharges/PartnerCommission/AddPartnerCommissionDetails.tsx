@@ -1,38 +1,38 @@
 import { GridItem, SimpleGrid } from "@chakra-ui/react";
+import { yupResolver } from "@hookform/resolvers/yup";
 import Select from "@neo/components/Form/SelectComponent";
 import TextInput from "@neo/components/Form/TextInput";
 import Modal from "@neo/components/Modal";
-import { useGetAllPayoutMethod } from "@neo/services/MasterData/service-payout-method";
-import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
-import { useForm } from "react-hook-form";
 
-import { yupResolver } from "@hookform/resolvers/yup";
+import { useGetAllPayoutMethod } from "@neo/services/MasterData/service-payout-method";
 import {
-  IFeeAndChargeDetailsResponse,
-  useAddFeeandChargesDetails,
-  useUpdateFeeandChargesDetails
-} from "@neo/services/service-fees-and-charges";
+  IPartnerCommissionResponseById,
+  useAddPartnerCommissionDetails,
+  useUpdatePartnerCommissionDetails
+} from "@neo/services/service-partner-commission";
+import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
+import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import { IArrayValues } from "./AddFeeAndCharges";
+import { IArrayValues } from "./AddPartnerCommission";
 
 const defaultValues = {
-  payoutMethods: null as ISelectOptions<any>[] | null,
+  paymentMethod: null as ISelectOptions<string> | null,
   fromAmount: null as number | null,
   toAmount: null as number | null,
-  feeAndChargeType: null as ISelectOptions<string> | null,
-  fee: null as number | null
+  type: null as ISelectOptions<string> | null,
+  commission: null as number | null
 };
-interface AddFeeAndChargesDetailsProps {
+interface AddPartnerCommissionDetailsProps {
   EditDetailId: number | null;
-  data: IFeeAndChargeDetailsResponse | undefined;
+  data: IPartnerCommissionResponseById | undefined;
   setEditDetailId: Dispatch<SetStateAction<number | null>>;
   isOpen: boolean;
   onClose: () => void;
   tableData: IArrayValues[];
   setTableData: Dispatch<SetStateAction<IArrayValues[]>>;
 }
-const AddFeeAndChargesDetails = ({
+const AddPartnerCommissionDetails = ({
   isOpen,
   onClose,
   EditDetailId,
@@ -40,34 +40,18 @@ const AddFeeAndChargesDetails = ({
   setEditDetailId,
   setTableData,
   tableData
-}: AddFeeAndChargesDetailsProps) => {
-  const { mutateAsync: mutateAddFeeandChargeDetail } =
-    useAddFeeandChargesDetails();
-  const { mutateAsync: mutateEditFeeAndChargeDetail } =
-    useUpdateFeeandChargesDetails();
+}: AddPartnerCommissionDetailsProps) => {
+  const { mutateAsync: mutateAddPartnerCommissionDetail } =
+    useAddPartnerCommissionDetails();
+  const { mutateAsync: mutateUpdatePartnerCommission } =
+    useUpdatePartnerCommissionDetails();
 
   const schema = yup.object().shape({
-    payoutMethods: yup
-      .array()
-      .min(1, "Select at least payment method")
-      .required("Select at least payment method")
-      .of(yup.object())
-      .nullable(),
-    fromAmount: yup
-      .number()
-      .typeError("Please enter from amount")
-      .positive("Please enter positive value")
-      .required("Please enter from amount"),
-    toAmount: yup
-      .number()
-      .typeError("Please enter to amount")
-      .positive("Please enter positive value")
-      .required("Please enter to amount"),
-    feeAndChargeType: yup
-      .object()
-      .required("Select a fee and charge type")
-      .nullable(),
-    fee: yup.number().typeError("Please enter fee").required()
+    paymentMethod: yup.object().required("Select a payment method").nullable(),
+    fromAmount: yup.number().typeError("Please enter from amount").required(),
+    toAmount: yup.number().typeError("Please enter to amount").required(),
+    type: yup.object().required("Select a commission type").nullable(),
+    commission: yup.number().typeError("Please enter commission").required()
   });
 
   const { control, handleSubmit, reset } = useForm({
@@ -76,13 +60,11 @@ const AddFeeAndChargesDetails = ({
   });
 
   const selectedFeeAndCharge = useMemo(
-    () =>
-      editData?.feeAndChargesDetails?.find(item => item.id === EditDetailId),
+    () => editData?.paymentDetails?.find(item => item.id === EditDetailId),
     [editData, EditDetailId]
   );
 
   const { data: payoutMethodData } = useGetAllPayoutMethod();
-
   const payOutMethodOptions = formatSelectOptions({
     data: payoutMethodData,
     labelKey: "name",
@@ -103,52 +85,46 @@ const AddFeeAndChargesDetails = ({
       const selectedWhileAdd = tableData.find(
         item => item.addId === EditDetailId
       );
-      const selectedPayOutMethod = payOutMethodOptions?.filter(item =>
-        selectedWhileAdd?.payoutMethods
-          ?.map((item: any) => {
-            return item.value;
-          })
-          .includes(item.value)
-      );
 
       const selectedFeeType = feeTypeOptions?.find(
-        item => item.value === selectedWhileAdd?.feeAndChargeType
+        (item: any) => item.value === selectedWhileAdd?.type
       );
       reset({
         ...selectedWhileAdd,
-        payoutMethods: selectedPayOutMethod,
-        feeAndChargeType: {
+        paymentMethod: {
+          label: selectedFeeAndCharge?.paymentMethod,
+          value: selectedFeeAndCharge?.paymentMethod
+        },
+        type: {
           label: selectedFeeType?.label,
           value: selectedFeeType?.value + ""
         },
         fromAmount: selectedWhileAdd?.fromAmount ?? null,
         toAmount: selectedWhileAdd?.toAmount ?? null,
-        fee: selectedWhileAdd?.fee ?? null
+        commission: selectedWhileAdd?.commission ?? null
       });
     } else if (EditDetailId) {
-      const selectedPayOutMethod = payOutMethodOptions?.filter((item: any) =>
-        selectedFeeAndCharge?.payoutMethods
-          ?.map(item => item.id)
-          .includes(item.value)
-      );
       const selectedFeeType = feeTypeOptions?.find(
-        item => item.value === selectedFeeAndCharge?.feeAndChargeType
+        (item: any) => item.value === selectedFeeAndCharge?.type
       );
       reset({
         ...selectedFeeAndCharge,
-        payoutMethods: selectedPayOutMethod,
-        feeAndChargeType: {
+        paymentMethod: {
+          label: selectedFeeAndCharge?.paymentMethod,
+          value: selectedFeeAndCharge?.paymentMethod
+        },
+        type: {
           label: selectedFeeType?.label,
           value: selectedFeeType?.value + ""
         },
         fromAmount: selectedFeeAndCharge?.fromAmount ?? null,
         toAmount: selectedFeeAndCharge?.toAmount ?? null,
-        fee: selectedFeeAndCharge?.fee ?? null
+        commission: selectedFeeAndCharge?.commission ?? null
       });
     }
   }, [EditDetailId]);
 
-  const onAddFeeAndChargesDetails = async (data: typeof defaultValues) => {
+  const onAddPartnerCommissionDetails = async (data: typeof defaultValues) => {
     try {
       if (EditDetailId) {
         if (tableData.length > 0) {
@@ -157,40 +133,40 @@ const AddFeeAndChargesDetails = ({
               item.addId === EditDetailId
                 ? {
                     ...item,
-                    feeAndChargeType: data?.feeAndChargeType?.value ?? "",
-                    payoutMethods: data?.payoutMethods ?? [],
+                    type: data?.type?.value ?? "",
+                    paymentMethod:
+                      data?.paymentMethod?.label?.toUpperCase() ?? null,
                     fromAmount: Number(data?.fromAmount) ?? null,
                     toAmount: Number(data?.toAmount) ?? null,
-                    fee: Number(data?.fee) ?? null
+                    commission: Number(data?.commission) ?? null
                   }
                 : item
             )
           );
         } else {
-          await mutateEditFeeAndChargeDetail({
+          await mutateUpdatePartnerCommission({
             id: EditDetailId,
             data: {
               ...data,
               fromAmount: Number(data?.fromAmount) ?? null,
               toAmount: Number(data?.toAmount) ?? null,
-              fee: Number(data?.fee) ?? null,
-              payoutMethods: data?.payoutMethods?.map(item => item.value) ?? [],
-              feeAndChargeType: data?.feeAndChargeType?.value ?? "",
-              id: EditDetailId
+              commission: Number(data?.commission) ?? null,
+              paymentMethod: data?.paymentMethod?.label.toUpperCase() ?? null,
+              type: data?.type?.value ?? ""
             }
           });
         }
       } else {
         if (editData) {
-          await mutateAddFeeandChargeDetail({
-            feeAndChargeId: editData?.id ?? null,
+          await mutateAddPartnerCommissionDetail({
+            id: editData?.id ?? null,
             data: {
               ...data,
               fromAmount: Number(data?.fromAmount) ?? null,
               toAmount: Number(data?.toAmount) ?? null,
-              fee: Number(data?.fee) ?? null,
-              payoutMethods: data?.payoutMethods?.map(item => item.value) ?? [],
-              feeAndChargeType: data?.feeAndChargeType?.value ?? ""
+              commission: Number(data?.commission) ?? null,
+              paymentMethod: data?.paymentMethod?.label.toUpperCase() ?? null,
+              type: data?.type?.value ?? ""
             }
           });
         } else {
@@ -198,11 +174,11 @@ const AddFeeAndChargesDetails = ({
             ...oldValues,
             {
               addId: oldValues.length + 1,
-              feeAndChargeType: data?.feeAndChargeType?.value ?? "",
-              payoutMethods: data?.payoutMethods,
+              type: data?.type?.label.toUpperCase() ?? "",
+              paymentMethod: data?.paymentMethod,
               fromAmount: Number(data?.fromAmount) ?? null,
               toAmount: Number(data?.toAmount) ?? null,
-              fee: Number(data?.fee) ?? null
+              commission: Number(data?.commission) ?? null
             }
           ]);
         }
@@ -227,13 +203,12 @@ const AddFeeAndChargesDetails = ({
         submitButtonText="Save"
         cancelButtonText="Cancel"
         title={EditDetailId ? "Edit Fee and Charges" : "Add Fee and Charges"}
-        onSubmit={handleSubmit(onAddFeeAndChargesDetails)}
+        onSubmit={handleSubmit(onAddPartnerCommissionDetails)}
       >
         <SimpleGrid columns={2} spacing={"16px"}>
           <GridItem colSpan={2}>
             <Select
-              isMulti
-              name="payoutMethods"
+              name="paymentMethod"
               placeholder="Payment Method"
               control={control}
               options={payOutMethodOptions ?? []}
@@ -262,7 +237,7 @@ const AddFeeAndChargesDetails = ({
           </GridItem>
           <GridItem mt={2} colSpan={2}>
             <Select
-              name="feeAndChargeType"
+              name="type"
               placeholder="Type"
               control={control}
               options={feeTypeOptions ?? []}
@@ -272,8 +247,8 @@ const AddFeeAndChargesDetails = ({
           <GridItem colSpan={2}>
             <TextInput
               size={"lg"}
-              name="fee"
-              label="Enter Fee"
+              name="commission"
+              label="Enter Commission"
               control={control}
               type="number"
               isRequired
@@ -284,4 +259,4 @@ const AddFeeAndChargesDetails = ({
     </>
   );
 };
-export default AddFeeAndChargesDetails;
+export default AddPartnerCommissionDetails;

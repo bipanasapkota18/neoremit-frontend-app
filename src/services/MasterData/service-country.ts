@@ -34,7 +34,7 @@ export interface ICountryRequest {
   id?: number | null;
   name: string;
   shortName: string;
-  code: string;
+  code: string | null;
   phoneCode: string;
   isoNumber: string;
   currencyId: number | null;
@@ -205,9 +205,25 @@ const useToggleStatus = (id: number | null) => {
     }
   });
 };
+
+const getAllCountryCode = () => {
+  return NeoHttpClient.get<NeoResponse>(api.masterData.country.countryCodeList);
+};
+const useFetchAllCountryCode = () => {
+  return useQuery(api.masterData.country.countryCodeList, getAllCountryCode, {
+    select: data => data?.data?.data,
+    onError: (error: AxiosError<{ message: string }>) => {
+      NeoToast({
+        type: "error",
+        message: error?.response?.data?.message ?? error?.message
+      });
+    }
+  });
+};
 export {
   useAddCountry,
   useDeleteCountry,
+  useFetchAllCountryCode,
   useGetAllCountries,
   useGetCountryById,
   useGetCountryList,

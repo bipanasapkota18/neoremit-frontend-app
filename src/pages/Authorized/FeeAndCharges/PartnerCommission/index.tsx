@@ -18,17 +18,17 @@ import SearchInput from "@neo/components/Form/SearchInput";
 import ConfirmationModal from "@neo/components/Modal/DeleteModal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import {
-  IFeeAndChargeResponse,
-  useFeeAndChargesDelete,
-  useFeeandChargeToggle,
-  useGetAllFeesAndCharges
-} from "@neo/services/service-fees-and-charges";
+  IPartnerCommissionResponse,
+  useDeletePartnerCommission,
+  useGetAllPartnerCommissionData,
+  useTogglePartnerCommissionStatus
+} from "@neo/services/service-partner-commission";
 import { CellContext } from "@tanstack/react-table";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import AddFeeandCharges from "./AddFeeAndCharges";
+import AddPartnerCommission from "./AddPartnerCommission";
 
-const FeeAndCharges = () => {
+const PartnerCommission = () => {
   const [flag, setFlag] = useBoolean();
   const { pathname } = useLocation();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
@@ -48,19 +48,21 @@ const FeeAndCharges = () => {
     onClose: onCloseFeeAndChargeToggleModal
   } = useDisclosure();
 
-  const { data: feeAndChargesData, isLoading: isDataLoading } =
-    useGetAllFeesAndCharges();
-
-  const { mutateAsync: mutateDeleteFeeAndCharges, isLoading: isDeleteLoading } =
-    useFeeAndChargesDelete();
+  const { data: partnerCommissionData, isLoading: isDataLoading } =
+    useGetAllPartnerCommissionData();
   const {
-    mutateAsync: mutateStatusUpdateFeeAndCharges,
+    mutateAsync: mutateDeletePartnerCommission,
+    isLoading: isDeleteLoading
+  } = useDeletePartnerCommission();
+
+  const {
+    mutateAsync: mutatePartnerCommissionStatus,
     isLoading: isStatusUPdateLoading
-  } = useFeeandChargeToggle();
+  } = useTogglePartnerCommissionStatus();
 
   const handleDelete = async () => {
     try {
-      await mutateDeleteFeeAndCharges(changeId);
+      await mutateDeletePartnerCommission(editId);
       setEditId(null);
       onCloseFeeAndChargeDeleteModal();
     } catch (e) {
@@ -70,7 +72,7 @@ const FeeAndCharges = () => {
 
   const handleStatusChange = async () => {
     try {
-      await mutateStatusUpdateFeeAndCharges(changeId);
+      await mutatePartnerCommissionStatus(changeId);
       setChangeId(null);
       onCloseFeeAndChargeToggleModal();
     } catch (e) {
@@ -82,42 +84,42 @@ const FeeAndCharges = () => {
     {
       header: "S.N",
       accessorKey: "sn",
-      cell: (cell: CellContext<IFeeAndChargeResponse, any>) => {
+      cell: (cell: CellContext<IPartnerCommissionResponse, any>) => {
         return cell?.row?.index + 1;
       }
     },
     {
-      header: "Fee Name",
-      accessorKey: "feeName",
+      header: "Partner Name",
+      accessorKey: "partner",
       size: 40
     },
     {
       header: "Country",
-      accessorKey: "country",
+      accessorKey: "payoutCountryId",
       size: 30,
-      cell: (data: CellContext<IFeeAndChargeResponse, any>) => {
-        return data.row.original?.country?.name;
+      cell: (data: CellContext<IPartnerCommissionResponse, any>) => {
+        return data.row.original?.payoutCountryId?.name;
       }
     },
     {
       header: "Currency",
-      accessorKey: "currency",
+      accessorKey: "commissionCurrencyId",
       size: 20,
-      cell: (data: CellContext<IFeeAndChargeResponse, any>) => {
-        return data.row.original?.currencyDetailResponseDto?.name;
+      cell: (data: CellContext<IPartnerCommissionResponse, any>) => {
+        return data.row.original?.commissionCurrencyId?.name;
       }
     },
     {
       header: "Status",
       accessorKey: "status",
       size: 20,
-      cell: (data: any) => {
+      cell: (data: CellContext<IPartnerCommissionResponse, any>) => {
         return (
           <Switch
             size="lg"
-            isChecked={data?.row?.original?.isActive}
+            isChecked={data?.row?.original?.status}
             onChange={() => {
-              setActive(!active);
+              setActive(data?.row?.original?.status);
               setChangeId(data?.row?.original?.id);
               onOpenFeeAndChargeToggleModal();
             }}
@@ -128,7 +130,7 @@ const FeeAndCharges = () => {
     {
       header: "Action",
       accessorKey: "action",
-      cell: (cell: CellContext<IFeeAndChargeResponse, any>) => {
+      cell: (cell: CellContext<IPartnerCommissionResponse, any>) => {
         return (
           <HStack>
             <TableActionButton
@@ -141,7 +143,7 @@ const FeeAndCharges = () => {
             />
             <TableActionButton
               onClickAction={() => {
-                setChangeId(cell?.row?.original?.id);
+                setEditId(cell?.row?.original?.id);
                 onOpenFeeAndChargeDeleteModal();
               }}
               icon={<svgAssets.DeleteButton />}
@@ -164,19 +166,17 @@ const FeeAndCharges = () => {
             setFlag.off();
           }
         }}
-        currentPage={flag ? "Fee and Charges Setup" : "Fee and Charges"}
+        currentPage={
+          flag ? "Payout Partner Commission Setup" : "Payout Partner Commission"
+        }
         options={activePath}
       />
-      <Card
-        borderRadius={"16px"}
-        boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"
-      >
+      <Card>
         <CardBody>
           {flag ? (
-            <AddFeeandCharges
+            <AddPartnerCommission
               editId={editId}
               setEditId={setEditId}
-              data={feeAndChargesData}
               onClose={() => {
                 setFlag.off();
               }}
@@ -192,29 +192,30 @@ const FeeAndCharges = () => {
                   alignSelf="stretch"
                 >
                   {isDesktop ? (
-                    <SearchInput
-                      width={"450px"}
-                      label="Search"
-                      name="search"
-                      onSearch={setSearchText}
-                      type="text"
-                    />
+                    <>
+                      <SearchInput
+                        width={"450px"}
+                        label="Search"
+                        name="search"
+                        onSearch={setSearchText}
+                        type="text"
+                      />
+                      <FilterButton
+                        onClick={() => {
+                          //
+                        }}
+                      />
+                    </>
                   ) : (
                     ""
                   )}
-
-                  <FilterButton
-                    onClick={() => {
-                      //
-                    }}
-                  />
                 </HStack>
                 <Button
                   minW={"max-content"}
                   leftIcon={<svgAssets.AddButton />}
                   onClick={setFlag.on}
                 >
-                  Add Fees and Charges
+                  Add Partner Commission
                 </Button>
               </HStack>
               <DataTable
@@ -226,7 +227,7 @@ const FeeAndCharges = () => {
                   globalFilter: searchText,
                   setGlobalFilter: setSearchText
                 }}
-                data={feeAndChargesData ?? []}
+                data={partnerCommissionData ?? []}
                 columns={columns}
               />
             </>
@@ -241,10 +242,7 @@ const FeeAndCharges = () => {
         onApprove={handleDelete}
         message="Deleting will permanently remove this data from the system. This cannot be Undone."
         isOpen={isOpenFeeAndChargeDeleteModal}
-        onClose={() => {
-          setChangeId(null);
-          onCloseFeeAndChargeDeleteModal();
-        }}
+        onClose={onCloseFeeAndChargeDeleteModal}
       />
 
       <ConfirmationModal
@@ -253,7 +251,7 @@ const FeeAndCharges = () => {
         title={"Are You Sure?"}
         isLoading={isStatusUPdateLoading}
         onApprove={handleStatusChange}
-        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this fee and charge?`}
+        message={`Are you sure you want to ${active ? "Disable" : "Enable"} partner commssion?`}
         isOpen={isOpenFeeAndChargeToggleModal}
         onClose={() => {
           setChangeId(null);
@@ -264,4 +262,4 @@ const FeeAndCharges = () => {
   );
 };
 
-export default FeeAndCharges;
+export default PartnerCommission;

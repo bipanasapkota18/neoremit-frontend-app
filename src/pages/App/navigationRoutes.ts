@@ -48,5 +48,7 @@ export const NAVIGATION_ROUTES = {
   PARTNERS: "/partners",
 
   COUNTRY: "/country",
-  MOBILE_REDIRECT: "/google-signup-success"
+  PARTNER_COMMISION: "/partner-commision",
+  MOBILE_REDIRECT: "/google-signup-success",
+  PARTNER_DATA_MAPPING: "/partner-data-mapping"
 };

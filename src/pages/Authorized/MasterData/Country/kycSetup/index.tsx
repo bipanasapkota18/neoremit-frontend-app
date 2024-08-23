@@ -63,7 +63,8 @@ const KycSetup = ({ stepProps }: IStepProps) => {
 
   const { data: countryFields, mutateAsync: mutateCountryFields } =
     useCountryFields();
-  const { mutateAsync: mutateFormFieldCreate } = useFormFieldCreate();
+  const { mutateAsync: mutateFormFieldCreate, isLoading } =
+    useFormFieldCreate();
 
   useEffect(() => {
     mutateCountryFields;
@@ -222,7 +223,9 @@ const KycSetup = ({ stepProps }: IStepProps) => {
                 Previous
               </Button>
 
-              <Button type="submit">Save and Proceed</Button>
+              <Button type="submit" isLoading={isLoading}>
+                Save and Proceed
+              </Button>
             </HStack>
           </Stack>
         </CardBody>

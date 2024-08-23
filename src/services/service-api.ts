@@ -13,7 +13,8 @@ export const api = {
       create: `${service}/country`,
       getById: `${service}/country/{id}`,
       update: `${service}/country/{id}`,
-      statusChange: `${service}/country/status/{id}`
+      statusChange: `${service}/country/status/{id}`,
+      countryCodeList: `${service}/country/list`
     },
     base_rate: {
       baseRateSetup: `${service}/master/base-rate-config/baseRateSetup/{id}`,
@@ -150,7 +151,19 @@ export const api = {
     create: `${service}/master/ledger`,
     update: `${service}/master/ledger/{id}`
   },
-
+  partner_commission_setup: {
+    getAll: `${service}/partner-commission/getAll`,
+    getById: `${service}/partner-commission/getById/{partnerCommissionId}`,
+    create: `${service}/partner-commission/create`,
+    update: `${service}/partner-commission/update/{partnerCommissionId}`,
+    delete: `${service}/partner-commission/delete/{partnerCommissionId}`,
+    toggleStatus: `${service}/partner-commission/toggle/status/{id}`
+  },
+  partner_commission_details: {
+    create: `${service}/partner-commission-payment/add/{partnerCommissionId}`,
+    update: `${service}/partner-commission-payment/update/{id}`,
+    delete: `${service}/partner-commission-payment/delete/{id}`
+  },
   internalUser: {
     getAll: `${service}/users/getAllInternalUsers`,
     create: `${service}/users/create-user`,
@@ -165,7 +178,17 @@ export const api = {
     activeRoles: `${service}/api/role-module/roles`,
     getById: `${service}/api/role-module/{roleId}`
   },
-
+  partner_data_mapping: {
+    getPartnerCountry: `${service}/master/partner/mapping/country/list/{partnerCode}`,
+    saveCountryMapping: `${service}/master/partner/mapping/country`,
+    getCountry: `${service}/master/partner/mapping/country/{id}`,
+    getAllPartnerCountries: `/partner-service/partner/config/countries`
+  },
+  partner_state_mapping: {
+    getPartnerState: `${service}/master/partner/mapping/state/list/{countryCode}/{partnerCode}`,
+    saveStateMapping: `${service}/master/partner/mapping/state`,
+    getState: `${service}/master/partner/mapping/state/{id}`
+  },
   init: `${service}/users/init-admin`
 };
 

@@ -48,7 +48,7 @@ const BreadCrumb = ({
         separator={<sidebarAssets.Ellipse />}
       >
         {options?.map(option => (
-          <BreadcrumbItem key={option.label} pointerEvents={"none"}>
+          <BreadcrumbItem key={option.label}>
             {option.icon && (
               <Icon width={"20px"} height={"20px"} as={option.icon} />
             )}
@@ -74,7 +74,11 @@ type BreadCrumbProps = {
   options: Array<{
     label: string;
     href?: string;
-    icon?: React.ComponentType<{ width: string; height: string }>;
+    icon?: React.FunctionComponent<
+      React.SVGProps<SVGSVGElement> & {
+        title?: string | undefined;
+      }
+    >;
     options?: unknown[];
   }>;
   customOnClick?: { trigger: boolean; func: () => void };

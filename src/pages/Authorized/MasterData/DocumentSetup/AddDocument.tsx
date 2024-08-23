@@ -7,6 +7,7 @@ import Modal from "@neo/components/Modal";
 import documentSchema from "@neo/schema/document/document";
 // import documentSchema from "@neo/schema/document/document";
 import {
+  IDocumentExtension,
   useAddDocument,
   useGetAllExtensions,
   useUpdateDocument
@@ -25,7 +26,7 @@ interface AddDocumentProps {
 
 const defaultValues = {
   documentName: "",
-  allowedExtensions: null as unknown as ISelectOptions<string>[] | null,
+  allowedExtensions: null as ISelectOptions<string>[] | null,
   documentCode: "",
   documentSize: "" as unknown as number
 };
@@ -57,13 +58,19 @@ const AddDocument = ({
       const selectedDocument = editData?.find((document: any) => {
         return document.id === editId;
       });
+      const selectedExtensions = extensionOptions?.filter(item =>
+        selectedDocument?.allowedExtensions
+          ?.map((ext: IDocumentExtension) => {
+            return ext;
+          })
+          .includes(item.label)
+      );
       reset({
         documentName: selectedDocument?.documentName,
-        allowedExtensions: selectedDocument?.allowedExtensions?.map(
-          (item: string) => {
-            return { label: item, value: item };
-          }
-        ),
+        allowedExtensions: selectedExtensions?.map(item => ({
+          label: item?.label,
+          value: item?.value as string
+        })),
         documentCode: selectedDocument?.documentCode,
         documentSize: selectedDocument?.documentSize
       });
@@ -126,6 +133,7 @@ const AddDocument = ({
               options={extensionOptions ?? []}
               control={control}
               isMulti
+              required
             />
           </GridItem>
           <GridItem colSpan={2}>

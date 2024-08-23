@@ -12,6 +12,7 @@ const NeoToast = ({ type, message }: IToast) => {
       <HStack
         style={{
           minWidth: "400px",
+          maxWidth: "400px",
           padding: 15,
           marginRight: 12,
           gap: 6,
@@ -34,7 +35,7 @@ const NeoToast = ({ type, message }: IToast) => {
             <Icon as={svgAssets.SuccessIccon} height={"24px"} width={"24px"} />
           )}
         </Center>
-        <Text fontSize={"md"} fontWeight={500}>
+        <Text fontSize={"md"} wordBreak={"break-word"} fontWeight={500}>
           {message}
         </Text>
 

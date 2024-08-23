@@ -61,10 +61,11 @@ const Country = () => {
   const activePath = breadcrumbTitle(pathname);
 
   const {
-    mutateAsync: addMutateCountry,
+    mutateAsync: mutateCountry,
     data: countryData,
     isLoading
   } = useGetAllCountries();
+
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
     useDeleteCountry();
 
@@ -75,16 +76,16 @@ const Country = () => {
   } = useToggleStatus(changeId);
 
   useEffect(() => {
-    addMutateCountry({
+    mutateCountry({
       pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
-      filterParams: {}
+      filterParams: { searchParam: searchText }
     });
-  }, [pageParams.pageIndex, pageParams.pageSize]);
+  }, [pageParams.pageIndex, pageParams.pageSize, searchText]);
 
   const refetchData = () => {
-    addMutateCountry({
+    mutateCountry({
       pageParams: { page: pageParams.pageIndex, size: pageParams.pageSize },
-      filterParams: {}
+      filterParams: { searchParam: searchText }
     });
   };
 
@@ -219,10 +220,7 @@ const Country = () => {
   return (
     <Flex direction={"column"} gap={"16px"}>
       <BreadCrumb currentPage="Country Setup" options={activePath} />
-      <Card
-        borderRadius={"16px"}
-        boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"
-      >
+      <Card>
         <CardBody>
           <HStack justifyContent={"space-between"}>
             <HStack
@@ -260,10 +258,10 @@ const Country = () => {
             </Button>
           </HStack>
           <DataTable
-            filter={{
-              globalFilter: searchText,
-              setGlobalFilter: setSearchText
-            }}
+            // filter={{
+            //   globalFilter: searchText,
+            //   setGlobalFilter: setSearchText
+            // }}
             isLoading={isLoading}
             pagination={{
               manual: true,

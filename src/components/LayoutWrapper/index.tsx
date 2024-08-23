@@ -65,6 +65,7 @@ const LayoutWrapper: React.FC = () => {
           flexGrow={1}
           ml={sidebarWidth + "px"}
           transition={sidebarAnimate}
+          backgroundColor={"#FFFFFF"}
           zIndex={0}
           overflowX="hidden"
         >
@@ -87,10 +88,11 @@ const LayoutWrapper: React.FC = () => {
             }
           >
             <Box
-              minHeight={"90vh"}
-              px={6}
-              pt={8}
+              minHeight={"80vh"}
+              px={8}
+              py={8}
               bg={colorScheme.admin_background}
+              borderRadius={"30px"}
             >
               <Outlet />
             </Box>

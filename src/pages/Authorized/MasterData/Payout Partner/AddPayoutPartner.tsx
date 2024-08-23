@@ -47,8 +47,10 @@ const AddPayoutPartner = ({
       .required("Please select Payout Method")
       .nullable()
   });
-  const { mutateAsync: mutateAddPayoutPartner } = useAddPayoutPartner();
-  const { mutateAsync: mutateEditPayoutPartner } = useUpdatePayoutPartner();
+  const { mutateAsync: mutateAddPayoutPartner, isLoading: isAddLoading } =
+    useAddPayoutPartner();
+  const { mutateAsync: mutateEditPayoutPartner, isLoading: isUpdateLoading } =
+    useUpdatePayoutPartner();
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues,
@@ -57,7 +59,7 @@ const AddPayoutPartner = ({
 
   const { data: countryData } = useGetCountryList();
 
-  const { data: payoutMethod } = useGetAllPayoutMethod();
+  const { data: payoutMethodData } = useGetAllPayoutMethod();
   const selectedPayoutPartner = useMemo(
     () =>
       editData?.find((payoutPartner: any) => {
@@ -73,7 +75,7 @@ const AddPayoutPartner = ({
   });
 
   const payoutMethodOptions = formatSelectOptions({
-    data: payoutMethod,
+    data: payoutMethodData?.filter(item => item.isActive),
     valueKey: "id",
     labelKey: "name"
   });
@@ -109,7 +111,7 @@ const AddPayoutPartner = ({
       await mutateEditPayoutPartner({
         ...data,
         id: editId,
-        image: data?.image ?? null,
+        image: data?.image ? data?.image[0] : "",
         countryId: data?.countryId?.value ?? null,
         payoutMethodId: data?.payoutMethodId?.value ?? null,
         isActive: selectedPayoutPartner?.isActive ?? true
@@ -117,7 +119,7 @@ const AddPayoutPartner = ({
     } else {
       await mutateAddPayoutPartner({
         ...data,
-        image: data.image ?? "",
+        image: data?.image ? data?.image[0] : "",
         countryId: data?.countryId?.value ?? null,
         payoutMethodId: data?.payoutMethodId?.value ?? null
       });
@@ -138,6 +140,7 @@ const AddPayoutPartner = ({
         size={"xl"}
         isOpen={isOpen}
         onClose={handleCloseModal}
+        isSubmitting={isAddLoading || isUpdateLoading}
         submitButtonText="Save"
         cancelButtonText="Cancel"
         title={editId ? "Edit Bank/Wallet List" : "Add Bank/Wallet List"}
@@ -160,9 +163,10 @@ const AddPayoutPartner = ({
             <Select
               size={"lg"}
               name="countryId"
-              placeholder="Country"
+              placeholder="-Select Country-"
               control={control}
               options={countryOptions ?? []}
+              required
               // onChange={() => {
               //   setCountryId(watch("countryId")?.value);
               // }}
@@ -172,9 +176,10 @@ const AddPayoutPartner = ({
             <Select
               size={"lg"}
               name="payoutMethodId"
-              placeholder="Payout Method"
+              placeholder="-Select Payout Method-"
               control={control}
               options={payoutMethodOptions ?? []}
+              required
             />
           </GridItem>
 

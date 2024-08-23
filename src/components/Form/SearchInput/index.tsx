@@ -76,7 +76,7 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
               id={name}
               maxW={"350px !important"}
             >
-              <InputGroup h={"56px"}>
+              <InputGroup>
                 <InputLeftElement color="#FFFFFF">
                   <IconButton
                     type="submit"
@@ -96,7 +96,6 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
                 <Input
                   autocapitalize="off"
                   autocomplete="off"
-                  h={"98%"}
                   placeholder={label}
                   onChange={e => {
                     onSearch(e.target.value);
@@ -126,11 +125,10 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
       id={name}
       maxW={"800px !important"}
     >
-      <InputGroup gap={"8px"} maxW={"800px"} h={"46px"}>
+      <InputGroup gap={"8px"} maxW={"800px"}>
         <Input
           ml={0.5}
           pl={12}
-          h={"100%"}
           placeholder={label}
           onChange={handleChange}
           value={value}
@@ -151,9 +149,8 @@ const SearchInput: React.FC<SearchInputProps & InputProps> = ({
           <IconButton
             type="submit"
             variant={"search"}
-            top="6%"
+            top="8%"
             size="md"
-            h={"85%"}
             aria-label="customerCode"
             onClick={() => onSearch(searchString)}
             disabled={extraProps.isDisabled}

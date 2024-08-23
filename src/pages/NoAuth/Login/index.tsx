@@ -10,7 +10,7 @@ const Login = () => {
       <VStack alignItems="flex-start" gap={"4px"}>
         <HStack gap={"12px"}>
           <Text fontSize="2xl" fontWeight="600" color={colorScheme.gray_800}>
-            Welcome Back!
+            Welcome {localStorage.getItem("email") ? "Back" : ""}
           </Text>
           <Text fontSize={"24px"} lineHeight={"30.12px"}>
             &#128075;

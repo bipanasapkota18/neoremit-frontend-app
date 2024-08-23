@@ -141,10 +141,7 @@ const State = ({ stepProps }: IStepProps) => {
   return (
     <Flex direction={"column"} gap={"16px"}>
       {/* <BreadCrumb currentPage="State Setup" options={activePath} /> */}
-      <Card
-        borderRadius={"32px"}
-        boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"
-      >
+      <Card borderRadius={"32px"}>
         <CardBody>
           <Heading
             fontSize="17px"
@@ -156,7 +153,7 @@ const State = ({ stepProps }: IStepProps) => {
           >
             State Setup
           </Heading>
-          <Card borderRadius={"16px"} borderTop={"1px solid #EDF2F7"}>
+          <Card borderTop={"1px solid #EDF2F7"}>
             <CardBody>
               <HStack justifyContent={"space-between"}>
                 <HStack

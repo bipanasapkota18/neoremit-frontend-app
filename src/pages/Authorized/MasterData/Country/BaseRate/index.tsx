@@ -150,10 +150,7 @@ const BaseRate = ({ stepProps }: IStepProps) => {
 
   return (
     <Flex direction={"column"} gap={"16px"}>
-      <Card
-        borderRadius={"32px"}
-        boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"
-      >
+      <Card borderRadius={"32px"}>
         <CardBody>
           <Stack
             as="form"

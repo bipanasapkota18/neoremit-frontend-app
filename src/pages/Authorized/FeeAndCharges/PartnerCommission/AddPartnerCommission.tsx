@@ -1,5 +1,4 @@
 import {
-  Badge,
   Box,
   Button,
   Card,
@@ -19,101 +18,102 @@ import { DataTable } from "@neo/components/DataTable";
 import TableActionButton from "@neo/components/DataTable/Action Buttons";
 import SearchInput from "@neo/components/Form/SearchInput";
 import Select from "@neo/components/Form/SelectComponent";
-import TextInput from "@neo/components/Form/TextInput";
 import ConfirmationModal from "@neo/components/Modal/DeleteModal";
-import {
-  CountriesList,
-  useGetAllCountries
-} from "@neo/services/MasterData/service-country";
+import { useGetCountryList } from "@neo/services/MasterData/service-country";
+import { useGetCurrencyList } from "@neo/services/MasterData/service-currency";
 import {
   FeeAndChargesDetail,
-  IFeeAndChargeResponse,
-  useAddFeesAndCharges,
-  useFeeAndChargesDetailDelete,
-  useGetFeeAndChargesbyId,
-  useUpdateFeesAndCharges
+  IFeeAndChargeResponse
 } from "@neo/services/service-fees-and-charges";
+import {
+  useAddPartnerCommission,
+  useDeletePartnerCommissionDetails,
+  useGetPartnerCommissionById,
+  useUpdatePartnerCommission
+} from "@neo/services/service-partner-commission";
+import { useGetAllPartners } from "@neo/services/service-partner-setup";
 import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
-import { CellContext, Row } from "@tanstack/react-table";
+import { CellContext } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-
-import { currencyFormat } from "@neo/utility/currencyFormat";
-import { object, string } from "yup";
-import AddFeeAndChargesDetails from "./AddFeeAndChargesDetails";
+import * as yup from "yup";
+import AddPartnerCommissionDetails from "./AddPartnerCommissionDetails";
 
 const defaultValues = {
-  feeName: "",
-  countryId: null as ISelectOptions<number> | null,
-  currencyId: null as ISelectOptions<number> | null
+  partnerId: null as ISelectOptions<number> | null,
+  payoutCountryId: null as ISelectOptions<number> | null,
+  commissionCurrencyId: null as ISelectOptions<number> | null,
+  partnerCommissionPaymentRequestList: []
 };
 
 export interface IArrayValues {
   addId: number;
-  payoutMethods: any;
-  feeAndChargeType: string;
+  paymentMethod: any;
+  type: string;
   fromAmount: number;
   toAmount: number;
-  fee: number;
+  commission: number;
 }
-interface AddFeeAndChargesProps {
+interface AddPartnerCommissionProps {
   onClose: () => void;
   editId: number | null;
-  data: IFeeAndChargeResponse[] | undefined;
   setEditId: Dispatch<SetStateAction<number | null>>;
 }
 
-const AddFeeAndCharges = ({
+const AddPartnerCommission = ({
   onClose,
   editId,
-  data: editData,
   setEditId
-}: AddFeeAndChargesProps) => {
-  const schema = object({
-    feeName: string().required("Fee Name is required"),
-    // countryId: object().nonNullable("Country is required.")
-    countryId: object().required("Country is required.")
+}: AddPartnerCommissionProps) => {
+  const schema = yup.object().shape({
+    partnerId: yup.object().required("Select a Partner").nullable(),
+    payoutCountryId: yup.object().required("Select a country").nullable(),
+    commissionCurrencyId: yup.object().required("Select a curency").nullable()
   });
-
-  const { control, handleSubmit, watch, reset } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues,
     resolver: yupResolver(schema)
   });
-
   const [tableData, setTableData] = useState<IArrayValues[]>([]);
-  const { mutateAsync: mutateAddFeeandCharges } = useAddFeesAndCharges();
-  const { mutateAsync: mutateUpdateFeeandCharges } = useUpdateFeesAndCharges();
+  const { mutateAsync: mutatePartnerCommission, isLoading: isAddLoading } =
+    useAddPartnerCommission();
+  const {
+    mutateAsync: mutateUpdatePartnerCommission,
+    isLoading: isUpdateLoading
+  } = useUpdatePartnerCommission();
   const { mutateAsync: mutateDeleteFeeAndCharges, isLoading: isDeleteLoading } =
-    useFeeAndChargesDetailDelete();
+    useDeletePartnerCommissionDetails();
   const {
     isOpen: isOpenAddDetailModal,
     onOpen: onOpenAddDetailModal,
     onClose: onModalClose
   } = useDisclosure();
-
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
   const [editDetailId, setEditDetailId] = useState<number | null>(null);
-  const [changeId, setChangeId] = useState(null as number | null);
-  const { data: feeAndChargeDetails, isLoading: isGetFeeAndChargesLoading } =
-    useGetFeeAndChargesbyId(editId);
-  const { data: countryList, mutateAsync } = useGetAllCountries();
 
-  useEffect(() => {
-    mutateAsync({
-      pageParams: {
-        page: 0,
-        size: countryList?.data?.data?.totalItems ?? 20
-      },
-      filterParams: {}
-    });
-  }, []);
+  const { data: partnerData } = useGetAllPartners();
+  const partnerOptions = formatSelectOptions({
+    data: partnerData?.filter((item: any) => item.status),
+    valueKey: "id",
+    labelKey: "companyName"
+  });
 
-  const countryOptions = formatSelectOptions({
-    data: countryList?.data?.data?.countriesList,
+  const { data: currencyList } = useGetCurrencyList();
+  const currencyOptions = formatSelectOptions({
+    data: currencyList?.filter((item: any) => item.isActive),
     valueKey: "id",
     labelKey: "name"
   });
 
+  const { data: partnerCommissionData, isLoading: isGetFeeAndChargesLoading } =
+    useGetPartnerCommissionById(editId);
+  const { data: countryList } = useGetCountryList();
+
+  const countryOptions = formatSelectOptions({
+    data: countryList?.data?.data,
+    valueKey: "id",
+    labelKey: "name"
+  });
   const {
     isOpen: isOpenFeeAndChargeDeleteModal,
     onOpen: onOpenFeeAndChargeDeleteModal,
@@ -122,22 +122,22 @@ const AddFeeAndCharges = ({
 
   useEffect(() => {
     if (editId) {
-      const selectedFee = editData?.find(data => data.id === editId);
-
-      const selectedCountry = countryList?.data?.data?.countriesList?.find(
-        (country: any) => {
-          return selectedFee?.country?.name === country?.name;
-        }
-      )?.name;
       reset({
-        feeName: selectedFee?.feeName,
-        countryId: {
-          value: selectedFee?.country?.id,
-          label: selectedCountry
+        partnerId: {
+          value: partnerCommissionData?.partner?.id,
+          label: partnerCommissionData?.partner?.companyName
+        },
+        payoutCountryId: {
+          value: partnerCommissionData?.payoutCountry?.id,
+          label: partnerCommissionData?.payoutCountry?.name
+        },
+        commissionCurrencyId: {
+          value: partnerCommissionData?.commissionCurrency?.id,
+          label: partnerCommissionData?.commissionCurrency?.name
         }
       });
     }
-  }, [editId, editData, countryList?.data?.data?.countriesList]);
+  }, [partnerCommissionData]);
 
   const columns = useMemo(
     () => [
@@ -150,46 +150,21 @@ const AddFeeAndCharges = ({
       },
       {
         header: "Payment Method",
-        accessorKey: "payoutMethods",
-        size: 100,
-        cell: (data: CellContext<FeeAndChargesDetail, any>) => {
-          return data?.row?.original?.payoutMethods?.map(
-            (item: any, index: number) => {
-              return (
-                <Badge
-                  key={index}
-                  padding="8px 24px"
-                  mx={2}
-                  borderRadius={"16px"}
-                >
-                  {tableData?.length > 0 ? item?.label : item?.name}
-                </Badge>
-              );
-            }
-          );
-        }
+        accessorKey:
+          tableData?.length !== 0 ? "paymentMethod.label" : "paymentMethod",
+        size: 100
       },
       {
-        header: "From Amount",
-        accessorKey: "fromAmount",
-        cell: ({ row }: { row: Row<FeeAndChargesDetail> }) => {
-          return currencyFormat(row?.original?.fromAmount ?? 0);
-        }
+        header: "From",
+        accessorKey: "fromAmount"
       },
       {
-        header: "To Amount",
-        accessorKey: "toAmount",
-        cell: ({ row }: { row: Row<FeeAndChargesDetail> }) => {
-          return currencyFormat(row?.original?.toAmount ?? 0);
-        }
+        header: "To",
+        accessorKey: "toAmount"
       },
       {
-        header: "Fee and Charge Type",
-        accessorKey: "feeAndChargeType"
-      },
-      {
-        header: "Fee",
-        accessorKey: "fee"
+        header: "Commission",
+        accessorKey: "commission"
       },
       {
         header: "Action",
@@ -213,9 +188,9 @@ const AddFeeAndCharges = ({
               <TableActionButton
                 onClickAction={() => {
                   if (tableData.length > 0) {
-                    setChangeId(cell?.row?.original?.addId ?? null);
+                    setEditDetailId(cell?.row?.original?.addId ?? null);
                   } else {
-                    setChangeId(cell?.row?.original?.id);
+                    setEditDetailId(cell?.row?.original?.id);
                   }
                   onOpenFeeAndChargeDeleteModal();
                 }}
@@ -229,54 +204,56 @@ const AddFeeAndCharges = ({
     ],
     [tableData]
   );
-
   const handleDelete = async () => {
     try {
       if (tableData.length > 0) {
-        const newTableData = tableData?.filter(data => data.addId !== changeId);
+        const newTableData = tableData?.filter(
+          data => data.addId !== editDetailId
+        );
         setTableData(newTableData);
       } else {
-        await mutateDeleteFeeAndCharges(changeId);
+        await mutateDeleteFeeAndCharges(editDetailId);
       }
-      reset();
-      setChangeId(null);
+      setEditDetailId(null);
       onCloseFeeAndChargeDeleteModal();
     } catch (e) {
       console.error(e);
     }
   };
-
   const handleSaveFeeandCharges = async (data: typeof defaultValues) => {
     if (editId) {
-      const selectedFee = editData?.find(data => data.id === editId);
-      await mutateUpdateFeeandCharges({
+      await mutateUpdatePartnerCommission({
         id: editId,
-        ...data,
-        countryId: data?.countryId?.value ?? "",
-        currencyId:
-          countryList?.data?.data?.countriesList?.find(
-            (country: CountriesList) => data.countryId?.label === country?.name
-          )?.currency?.id ?? selectedFee?.currencyDetailResponseDto?.id
+        data: {
+          partnerId: data?.partnerId?.value ?? null,
+          commissionCurrencyId: data?.commissionCurrencyId?.value ?? null,
+          payoutCountryId: data?.payoutCountryId?.value ?? null
+        }
       });
     } else {
       const finalTable = tableData.map(item => ({
         fromAmount: item.fromAmount,
         toAmount: item.toAmount,
-        feeAndChargeType: item.feeAndChargeType,
-        fee: item.fee,
-        payoutMethods:
-          item?.payoutMethods?.map(
-            (item: ISelectOptions<number>) => item.value
-          ) ?? []
+        commission: item.commission,
+        paymentMethod: item?.paymentMethod?.label.toUpperCase() ?? null,
+        type: item.type
       }));
-      await mutateAddFeeandCharges({
+
+      await mutatePartnerCommission({
         ...data,
-        countryId: data.countryId?.value ?? "",
-        currencyId: countryList?.data?.data?.countriesList?.find(
-          (country: CountriesList) => data.countryId?.label === country?.name
-        )?.currency?.id,
-        feeAndChargesDetails: finalTable
+        partnerId: data.partnerId?.value ?? null,
+        commissionCurrencyId: data.commissionCurrencyId?.value ?? null,
+        payoutCountryId: data.payoutCountryId?.value ?? null,
+        partnerCommissionPaymentRequestList: finalTable ?? []
       });
+      // await mutatePartnerCommission({
+      //   ...data,
+      //   countryId: data.countryId?.value ?? "",
+      //   currencyId: countryData?.find(
+      //     (country: CountriesList) => data.countryId?.label === country?.name
+      //   )?.currency?.id,
+      //   feeAndChargesDetails: []
+      // });
     }
     onClose();
     reset();
@@ -285,10 +262,7 @@ const AddFeeAndCharges = ({
 
   return (
     <Flex direction={"column"} gap={"16px"}>
-      <Card
-        borderRadius={"16px"}
-        boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"
-      >
+      <Card>
         <CardBody>
           <HStack
             display={"flex"}
@@ -302,23 +276,23 @@ const AddFeeAndCharges = ({
               lineHeight="normal"
               color={"#2D3748"}
             >
-              Fee Details
+              Commission Details
             </Heading>
-            <form>
-              <Box padding={"24px"} gap={"20px"} width={"100%"}>
+            <Box padding={"24px"} gap={"20px"} width={"100%"}>
+              <form>
                 <SimpleGrid columns={{ sm: 1, md: 1, lg: 3 }} spacing={10}>
                   <GridItem colSpan={1}>
-                    <TextInput
+                    <Select
+                      name="partnerId"
+                      placeholder="-Select Partner-"
                       control={control}
-                      name="feeName"
-                      label="Enter Fee Name"
-                      type="text"
+                      options={partnerOptions ?? []}
                       required
                     />
                   </GridItem>
                   <GridItem colSpan={1}>
                     <Select
-                      name="countryId"
+                      name="payoutCountryId"
                       placeholder="Country"
                       control={control}
                       options={countryOptions ?? []}
@@ -326,30 +300,19 @@ const AddFeeAndCharges = ({
                     />
                   </GridItem>
                   <GridItem colSpan={1}>
-                    <TextInput
+                    <Select
                       control={control}
-                      name="currencyId"
-                      label="Currency"
-                      type="text"
-                      isRequired
-                      isReadOnly
-                      value={
-                        watch("countryId")
-                          ? countryList?.data?.data?.countriesList?.find(
-                              (country: CountriesList) => {
-                                return (
-                                  watch("countryId")?.label === country?.name
-                                );
-                              }
-                            )?.currency?.name
-                          : ""
-                      }
+                      name="commissionCurrencyId"
+                      placeholder="Currency"
+                      required
+                      options={currencyOptions}
                     />
                   </GridItem>
                 </SimpleGrid>
-              </Box>
-            </form>
+              </form>
+            </Box>
           </HStack>
+
           <Heading
             fontSize="17px"
             fontStyle="normal"
@@ -358,9 +321,9 @@ const AddFeeAndCharges = ({
             color={"#2D3748"}
             p={4}
           >
-            Fees and Charges Details
+            Partner Commission Details
           </Heading>
-          <Card borderRadius={"16px"} borderTop={"1px solid #EDF2F7"}>
+          <Card borderTop={"1px solid #EDF2F7"}>
             <CardBody>
               <HStack justifyContent={"space-between"}>
                 <HStack
@@ -388,9 +351,10 @@ const AddFeeAndCharges = ({
                     onOpenAddDetailModal();
                   }}
                 >
-                  Add Fee and Charges Details
+                  Add Partner Commssion Details
                 </Button>
               </HStack>
+
               <DataTable
                 isLoading={isGetFeeAndChargesLoading}
                 pagination={{
@@ -399,13 +363,13 @@ const AddFeeAndCharges = ({
                 data={
                   tableData?.length > 0
                     ? tableData
-                    : feeAndChargeDetails?.data?.data?.feeAndChargesDetails ??
-                      []
+                    : partnerCommissionData?.paymentDetails ?? []
                 }
                 columns={columns}
               />
             </CardBody>
           </Card>
+
           <Flex
             justifyContent={"flex-end"}
             padding={"16px"}
@@ -431,8 +395,8 @@ const AddFeeAndCharges = ({
               <Button
                 padding={"16px 32px"}
                 fontWeight={600}
-                // onClick={}
                 type="submit"
+                isLoading={isAddLoading || isUpdateLoading}
               >
                 Save
               </Button>
@@ -440,12 +404,13 @@ const AddFeeAndCharges = ({
           </Flex>
         </CardBody>
       </Card>
-      <AddFeeAndChargesDetails
+
+      <AddPartnerCommissionDetails
         tableData={tableData}
         EditDetailId={editDetailId}
         setEditDetailId={setEditDetailId}
         setTableData={setTableData}
-        data={feeAndChargeDetails?.data?.data}
+        data={partnerCommissionData}
         isOpen={isOpenAddDetailModal}
         onClose={() => {
           setEditDetailId(null);
@@ -460,13 +425,10 @@ const AddFeeAndCharges = ({
         onApprove={handleDelete}
         message="Deleting will permanently remove this data from the system. This cannot be Undone."
         isOpen={isOpenFeeAndChargeDeleteModal}
-        onClose={() => {
-          setChangeId(null);
-          onCloseFeeAndChargeDeleteModal();
-        }}
+        onClose={onCloseFeeAndChargeDeleteModal}
       />
     </Flex>
   );
 };
 
-export default AddFeeAndCharges;
+export default AddPartnerCommission;

@@ -32,12 +32,12 @@ import * as yup from "yup";
 const defaultValues = {
   partnerType: null as ISelectOptions<string> | null,
   countryHeadQuarterId: null as ISelectOptions<number> | null,
-  companyName: null,
-  address: null,
-  chainId: null,
-  partnerCode: null,
-  phoneNumber: null,
-  emailAddress: null,
+  companyName: "",
+  address: "",
+  chainId: "",
+  partnerCode: "",
+  phoneNumber: "",
+  emailAddress: "",
   timeZone: null as ISelectOptions<string> | null,
   operatingCountryIds: null as ISelectOptions<number>[] | null,
   partnerSettlementInfo: {
@@ -48,9 +48,9 @@ const defaultValues = {
   },
   partnerContactInfo: [
     {
-      contactName: null,
-      designation: null,
-      email: null
+      contactName: "",
+      designation: "",
+      email: ""
     }
   ]
 };
@@ -97,26 +97,17 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
       .nullable(),
     partnerType: yup.object().required("Partner Type is required").nullable(),
     companyName: yup.string().required("Company Name is required").nullable(),
-    address: yup.string().required("Address is required").nullable(),
+    address: yup.string().nullable(),
     chainId: yup.string().required("Chain Id is required").nullable(),
     partnerCode: yup.string().required("Partner Code is required").nullable(),
-    phoneNumber: yup
-      .number()
-      .typeError("Please enter number")
-      .required("Phone Number is required")
-      .positive("Phone Number cannot be negative")
-      .nullable(),
+    phoneNumber: yup.string().nullable(),
     emailAddress: yup
       .string()
       .email("Enter a valid email address")
       .required("Email Address is required")
       .nullable(),
     timeZone: yup.object().required("Time Zone is required").nullable(),
-    operatingCountryIds: yup
-      .array()
-      .min(1, "Enter at least one country")
-      .required("Operating Country is required")
-      .nullable(),
+    operatingCountryIds: yup.array().nullable(),
     partnerSettlementInfo: yup.object().shape({
       fundingCurrencyId: yup
         .object()
@@ -252,8 +243,10 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
       partnerType: data.partnerType?.value,
       partnerSettlementInfo: {
         ...data.partnerSettlementInfo,
-        fundingCurrencyId: data.partnerSettlementInfo.fundingCurrencyId?.value,
-        localCurrencyId: data.partnerSettlementInfo.localCurrencyId?.value
+        fundingCurrencyId:
+          data.partnerSettlementInfo.fundingCurrencyId?.value ?? null,
+        localCurrencyId:
+          data.partnerSettlementInfo.localCurrencyId?.value ?? null
       },
       partnerContactInfo: data.partnerContactInfo
         ?.map((contact: PartnerContactInfo) => ({
@@ -327,7 +320,6 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
                 name="operatingCountryIds"
                 options={country_options}
                 isMulti
-                required
               />
             </GridItem>
             <GridItem colSpan={1}>
@@ -336,7 +328,6 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
                 type="text"
                 label="Enter Address"
                 name="address"
-                required
               />
             </GridItem>
             <GridItem colSpan={1}>
@@ -345,7 +336,6 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
                 type="number"
                 label="Enter Phone Number"
                 name="phoneNumber"
-                required
               />
             </GridItem>
             <GridItem colSpan={1}>
@@ -483,9 +473,9 @@ const AddPartner = ({ onClose, editId, setEditId }: AddPartnerProps) => {
                     type="button"
                     onClick={() =>
                       append({
-                        contactName: null,
-                        designation: null,
-                        email: null
+                        contactName: "",
+                        designation: "",
+                        email: ""
                       })
                     }
                     display={"flex"}

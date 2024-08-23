@@ -6,7 +6,7 @@ import { NeoHttpClient } from "./service-axios";
 
 export interface IPartnerRequest {
   countryHeadQuarterId: number | null;
-  chainId: number | null;
+  chainId: string | null;
   partnerCode: string | null;
   partnerType: string | undefined;
   companyName: string | null;
@@ -15,25 +15,78 @@ export interface IPartnerRequest {
   emailAddress: string | null;
   timeZone: string | undefined;
   operatingCountryIds: number[] | undefined;
-  partnerSettlementInfo: PartnerSettlementInfo;
-  partnerContactInfo: PartnerContactInfo[] | undefined;
+  partnerSettlementInfo: PartnerSettlementInfoRequest;
+  partnerContactInfo: PartnerContactInfo[];
 }
 
 export interface PartnerContactInfo {
-  contactName?: string | null;
-  designation?: string | null;
-  email?: string | null;
+  contactName?: string;
+  designation?: string;
+  email?: string;
 }
-
+export interface PartnerSettlementInfoRequest {
+  fundingCurrencyId: number | null;
+  localCurrencyId: number | null;
+  transactionLimit: number;
+  acceptPinNo: boolean;
+}
 export interface PartnerSettlementInfo {
-  fundingCurrencyId: number | null | undefined;
-  localCurrencyId: number | null | undefined;
-  transactionLimit: number | null;
+  id: number;
+  fundingCurrency: Country;
+  localCurrency: Country;
+  transactionLimit: number;
   acceptPinNo: boolean;
 }
 
+export interface IPartnerResponse {
+  id: number;
+  partnerType: string;
+  companyName: string;
+  address: string;
+  phoneNumber: string;
+  emailAddress: string;
+  timeZone: string;
+  partnerCode: string;
+  chainId: string;
+  countryHeadQuarter: Country;
+  operatingCountries: OperatingCountry[];
+  partnerSettlementInfo: PartnerSettlementInfo;
+  partnerContactInfo: PartnerContactInfo[];
+  fundingCurrency: Currency;
+  localCurrency: Currency;
+  status: boolean;
+}
+export interface OperatingCountry {
+  id: number;
+  code: string;
+  name: string;
+  shortName: string;
+  phoneCode: string;
+  isoNumber: string;
+  currency: Currency;
+  canReceive: boolean;
+  canSend: boolean;
+  isActive: boolean;
+  flagIcon?: any;
+  hasState: boolean;
+}
+export interface Currency {
+  id: number;
+  code: string;
+  name: string;
+  shortName: string;
+  symbol: string;
+  isActive: boolean;
+}
+export interface Country {
+  id: number;
+  name: string;
+}
+
 const getAllPartners = () => {
-  return NeoHttpClient.get<NeoResponse>(api.partner_setup.getAll);
+  return NeoHttpClient.get<NeoResponse<IPartnerResponse[]>>(
+    api.partner_setup.getAll
+  );
 };
 const useGetAllPartners = () => {
   return useQuery([api.partner_setup.getAll], getAllPartners, {
@@ -151,7 +204,7 @@ const useTogglePartnerStatus = () => {
 };
 
 const getPartnerById = (id: number | null) => {
-  return NeoHttpClient.get<NeoResponse>(
+  return NeoHttpClient.get<NeoResponse<IPartnerResponse>>(
     api.partner_setup.getById.replace("{partnerId}", id + "")
   );
 };

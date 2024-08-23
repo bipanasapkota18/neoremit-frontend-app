@@ -33,9 +33,11 @@ const AddState = ({
   refetchData,
   countryId
 }: AddStateProps) => {
-  const { mutateAsync: mutateAddState } = useAddState();
+  const { mutateAsync: mutateAddState, isLoading: isAddLoading } =
+    useAddState();
 
-  const { mutateAsync: mutateEditState } = useUpdateState();
+  const { mutateAsync: mutateEditState, isLoading: isUpdateLoading } =
+    useUpdateState();
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: defaultValues,
@@ -77,6 +79,7 @@ const AddState = ({
       <Modal
         isOpen={isOpen}
         onClose={handleCloseModal}
+        isSubmitting={isAddLoading || isUpdateLoading}
         submitButtonText="Save"
         cancelButtonText="Cancel"
         title={editId ? "Edit State" : "Add State"}

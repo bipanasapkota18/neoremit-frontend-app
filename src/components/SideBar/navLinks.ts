@@ -10,35 +10,11 @@ export const navLinks = [
     label: "Dashboard"
   },
 
-  // {
-  //   icon: sidebarAssets.ProfileCircle,
-  //   // href: NAVIGATION_ROUTES.COLLAPSE,
-  //   label: "User Management",
-  //   isNotLink: true,
-  //   childNav: [
-  //     {
-  //       icon: sidebarAssets.Ellipse,
-  //       href: NAVIGATION_ROUTES.USER_MANAGEMENT.ROLES,
-  //       label: "Roles"
-  //     },
-  //     {
-  //       icon: sidebarAssets.Ellipse,
-  //       href: NAVIGATION_ROUTES.USER_MANAGEMENT.USER,
-  //       label: "User"
-  //     }
-  //   ]
-  // },
   {
     icon: sidebarAssets.MasterData,
-    // href: NAVIGATION_ROUTES.COLLAPSE,
     label: "Master Data",
     isNotLink: true,
     childNav: [
-      // {
-      //   icon: sidebarAssets.Ellipse,
-      //   href: NAVIGATION_ROUTES.MASTER_DATA.COUNTRY_SETUP,
-      //   label: "Country Setup"
-      // },
       {
         icon: sidebarAssets.Ellipse,
         href: NAVIGATION_ROUTES.MASTER_DATA.CURRENCY_SETUP,
@@ -85,7 +61,6 @@ export const navLinks = [
 
   {
     icon: sidebarAssets.MasterData,
-    // href: NAVIGATION_ROUTES.COLLAPSE,
     label: "Payout Configuration",
     isNotLink: true,
     childNav: [
@@ -104,8 +79,21 @@ export const navLinks = [
 
   {
     icon: sidebarAssets.MasterData,
-    href: NAVIGATION_ROUTES.FEES_AND_CHARGES,
-    label: "Fees and Charges"
+    // href: NAVIGATION_ROUTES.COLLAPSE,
+    label: "Fee and Charges",
+    isNotLink: true,
+    childNav: [
+      {
+        icon: sidebarAssets.Ellipse,
+        href: NAVIGATION_ROUTES.FEES_AND_CHARGES,
+        label: "Sender Service Charge"
+      },
+      {
+        icon: sidebarAssets.Ellipse,
+        href: NAVIGATION_ROUTES.PARTNER_COMMISION,
+        label: "Payout Partner Commission"
+      }
+    ]
   },
   {
     icon: sidebarAssets.MasterData,
@@ -156,11 +144,6 @@ export const navLinks = [
       }
     ]
   }
-  // {
-  //   icon: sidebarAssets.MasterData,
-  //   href: NAVIGATION_ROUTES.ACCOUNTING,
-  //   label: " Accounting"
-  // }
 
   // {
   //   icon: FaIcons,

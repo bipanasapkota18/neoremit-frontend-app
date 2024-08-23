@@ -40,11 +40,13 @@ const Document = () => {
     onOpen: onOpenDocumentDeleteModal,
     onClose: onCloseDocumentDeleteModal
   } = useDisclosure();
+
   const {
     isOpen: isOpenDocumentStatusUpdateModal,
     onOpen: onOpenDocumentStatusUpdateModal,
     onClose: onCloseDocumentStatusUpdateModal
   } = useDisclosure();
+
   const { pathname } = useLocation();
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
   const [searchText, setSearchText] = useState<string>("" as string);
@@ -55,14 +57,17 @@ const Document = () => {
     pageIndex: 0,
     pageSize: 10
   });
+
   const {
     isLoading: isToggling,
     refetch,
     isFetching
   } = useToggleDocumentStatus(changeId);
+
   const { mutateAsync: mutateDelete, isLoading: isDeleteLoading } =
     useDeleteDocument();
-  const { data: documentData } = useGetAllDocument();
+
+  const { data: documentData, isLoading } = useGetAllDocument();
   const columns = [
     {
       header: "S.N",
@@ -160,10 +165,7 @@ const Document = () => {
   return (
     <Flex direction={"column"} gap={"16px"}>
       <BreadCrumb currentPage="Document Setup" options={activePath} />
-      <Card
-        borderRadius={"16px"}
-        boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"
-      >
+      <Card>
         <CardBody>
           <HStack justifyContent={"space-between"}>
             <HStack
@@ -205,6 +207,7 @@ const Document = () => {
               onChangePagination: setPageParams
             }}
             data={Array.isArray(documentData) ? documentData : []}
+            isLoading={isLoading}
             columns={columns}
             filter={{
               globalFilter: searchText,

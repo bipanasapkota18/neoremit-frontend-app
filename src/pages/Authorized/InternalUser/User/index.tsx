@@ -96,7 +96,7 @@ const CreateUser = () => {
             size="lg"
             isChecked={data?.row?.original?.isUnlocked}
             onChange={() => {
-              setActive(!active);
+              setActive(data?.row?.original?.isUnlocked);
               setChangeId(data?.row?.original?.id);
               onOpenUserEditModal();
             }}
@@ -124,7 +124,7 @@ const CreateUser = () => {
   return (
     <Flex direction={"column"} gap={"16px"}>
       <BreadCrumb currentPage="User" options={activePath} />
-      <Card borderRadius={"16px"} boxShadow="0px 4px 18px 0px rgba (0,0,0,0,3)">
+      <Card boxShadow="0px 4px 18px 0px rgba (0,0,0,0,3)">
         <CardBody>
           <HStack justifyContent="space-between">
             <HStack

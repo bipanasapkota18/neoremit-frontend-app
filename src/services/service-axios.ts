@@ -19,7 +19,6 @@ const NeoHttpClient = axios.create({
  */
 NeoHttpClient.interceptors.request.use(async config => {
   const token = TokenService.getToken()?.accessToken;
-
   if (config && config.headers) {
     if (token && config.headers["Authorization"] !== "") {
       config.headers["Authorization"] = "Bearer " + token;

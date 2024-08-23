@@ -138,7 +138,7 @@ const AddAutomaticDiscount = ({
     resolver: yupResolver(promocodeSchema)
   });
   const payout_method_options = formatSelectOptions<number>({
-    data: payoutMethodData,
+    data: payoutMethodData?.filter(item => item.isActive),
     valueKey: "id",
     labelKey: "name"
   });

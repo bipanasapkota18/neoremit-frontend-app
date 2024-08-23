@@ -84,10 +84,7 @@ const useLoginMutation = () => {
 
       NeoToast({
         type: "error",
-        message:
-          loginErr.response?.data?.message ??
-          loginErr.response?.data?.error ??
-          "Login failed !"
+        message: loginErr.response?.data?.message ?? "Login failed !"
       });
     }
   });

@@ -1,5 +1,4 @@
 import {
-  Badge,
   Button,
   Card,
   CardBody,
@@ -19,104 +18,104 @@ import SearchInput from "@neo/components/Form/SearchInput";
 import ConfirmationModal from "@neo/components/Modal/DeleteModal";
 import breadcrumbTitle from "@neo/components/SideBar/breadcrumb";
 import {
-  IRoleResponse,
-  useGetAllRoles,
-  useToggleRoleStatus
-} from "@neo/services/MasterData/service-role";
-import { CellContext, PaginationState } from "@tanstack/react-table";
+  IFeeAndChargeResponse,
+  useFeeAndChargesDelete,
+  useFeeandChargeToggle,
+  useGetAllFeesAndCharges
+} from "@neo/services/service-fees-and-charges";
+import { CellContext } from "@tanstack/react-table";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import AddRole from "./AddRoleModal";
-
-const PayoutMethod = () => {
+import AddFeeAndCharges from "./AddFeeAndCharges";
+const FeeAndCharges = () => {
   const [flag, setFlag] = useBoolean();
   const { pathname } = useLocation();
-
-  const {
-    isOpen: isOpenRoleStatusToggleModal,
-    onOpen: onOpenRoleStatusToggleModal,
-    onClose: onCloseRoleStatusToggleModal
-  } = useDisclosure();
-
   const [isDesktop] = useMediaQuery("(min-width: 1000px)");
-  const [editId, setEditId] = useState(null as number | null);
-  const [active, setActive] = useState(false);
   const [changeId, setChangeId] = useState(null as number | null);
+  const [active, setActive] = useState(false);
   const [searchText, setSearchText] = useState<string>("" as string);
-  const [pageParams, setPageParams] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10
-  });
-  const { data: roleData, isLoading: isPayoutMethodLoading } = useGetAllRoles();
-  const { refetch, isLoading: isToggling } = useToggleRoleStatus(changeId);
+  const [editId, setEditId] = useState(null as number | null);
+  const {
+    isOpen: isOpenFeeAndChargeDeleteModal,
+    onOpen: onOpenFeeAndChargeDeleteModal,
+    onClose: onCloseFeeAndChargeDeleteModal
+  } = useDisclosure();
+  const {
+    isOpen: isOpenFeeAndChargeToggleModal,
+    onOpen: onOpenFeeAndChargeToggleModal,
+    onClose: onCloseFeeAndChargeToggleModal
+  } = useDisclosure();
+  const { data: feeAndChargesData, isLoading: isDataLoading } =
+    useGetAllFeesAndCharges();
+  const { mutateAsync: mutateDeleteFeeAndCharges, isLoading: isDeleteLoading } =
+    useFeeAndChargesDelete();
+  const {
+    mutateAsync: mutateStatusUpdateFeeAndCharges,
+    isLoading: isStatusUPdateLoading
+  } = useFeeandChargeToggle();
+
+  const handleDelete = async () => {
+    try {
+      await mutateDeleteFeeAndCharges(changeId);
+      setChangeId(null);
+      onCloseFeeAndChargeDeleteModal();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleStatusChange = async () => {
+    try {
+      await mutateStatusUpdateFeeAndCharges(changeId);
+      setChangeId(null);
+      onCloseFeeAndChargeToggleModal();
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const columns = [
     {
       header: "S.N",
       accessorKey: "sn",
-      cell: (data: any) => {
-        return data.row.index + 1;
+      cell: (cell: CellContext<IFeeAndChargeResponse, any>) => {
+        return cell?.row?.index + 1;
       }
     },
-
     {
-      header: "Role Name",
-      accessorKey: "roleName",
-      size: 20
+      header: "Fee Name",
+      accessorKey: "feeName",
+      size: 40
     },
     {
-      header: "Permissions",
-      accessorKey: "moduleList",
-      cell: (cell: CellContext<IRoleResponse, any>) => {
-        return cell?.row?.original?.moduleList
-          ?.slice(0, 5)
-          .map((item, index) => {
-            return (
-              <Badge
-                key={index}
-                padding="8px 24px"
-                mr={2}
-                borderRadius={"16px"}
-              >
-                {item?.moduleName}
-              </Badge>
-            );
-          })
-          .concat(
-            cell?.row?.original?.moduleList?.length > 5 ? (
-              <Badge
-                key="ellipsis"
-                padding="8px 24px"
-                mx={2}
-                borderRadius={"16px"}
-              >
-                + {cell?.row?.original?.moduleList?.length - 5} more
-              </Badge>
-            ) : (
-              []
-            )
-          );
-      },
-      size: 100
+      header: "Country",
+      accessorKey: "country",
+      size: 30,
+      cell: (data: CellContext<IFeeAndChargeResponse, any>) => {
+        return data.row.original?.country?.name;
+      }
     },
     {
-      header: "Hierarchy",
-      accessorKey: "roleHierarchy"
+      header: "Currency",
+      accessorKey: "currency",
+      size: 20,
+      cell: (data: CellContext<IFeeAndChargeResponse, any>) => {
+        return data.row.original?.currencyDetailResponseDto?.name;
+      }
     },
     {
       header: "Status",
       accessorKey: "status",
+      size: 20,
       cell: (data: any) => {
         return (
           <Switch
-            name="status"
             size="lg"
-            colorScheme="facebook"
-            isChecked={data?.row?.original?.active}
+            isChecked={data?.row?.original?.isActive}
             onChange={() => {
-              setActive(data?.row?.original?.active);
-              setChangeId(data?.row?.original?.roleId);
-              onOpenRoleStatusToggleModal();
+              setActive(data?.row?.original?.isActive);
+              setChangeId(data?.row?.original?.id);
+              onOpenFeeAndChargeToggleModal();
             }}
           />
         );
@@ -125,16 +124,24 @@ const PayoutMethod = () => {
     {
       header: "Action",
       accessorKey: "action",
-      cell: (cell: CellContext<IRoleResponse, any>) => {
+      cell: (cell: CellContext<IFeeAndChargeResponse, any>) => {
         return (
           <HStack>
             <TableActionButton
               onClickAction={() => {
-                setEditId(cell?.row?.original?.roleId || null);
+                setEditId(cell?.row?.original?.id);
                 setFlag.on();
               }}
               icon={<svgAssets.EditButton />}
               label="Edit"
+            />
+            <TableActionButton
+              onClickAction={() => {
+                setChangeId(cell?.row?.original?.id);
+                onOpenFeeAndChargeDeleteModal();
+              }}
+              icon={<svgAssets.DeleteButton />}
+              label="Delete"
             />
           </HStack>
         );
@@ -143,21 +150,9 @@ const PayoutMethod = () => {
   ];
   const activePath = breadcrumbTitle(pathname);
 
-  const handleStatusChange = async () => {
-    try {
-      await refetch();
-      setChangeId(null);
-      onCloseRoleStatusToggleModal();
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   return (
     <Flex direction={"column"} gap={"16px"}>
       <BreadCrumb
-        currentPage="Roles"
-        options={activePath}
         customOnClick={{
           trigger: !!editId || flag,
           func: () => {
@@ -165,13 +160,16 @@ const PayoutMethod = () => {
             setFlag.off();
           }
         }}
+        currentPage={flag ? "Fee and Charges Setup" : "Fee and Charges"}
+        options={activePath}
       />
       <Card>
         <CardBody>
           {flag ? (
-            <AddRole
-              editId={editId ?? null}
+            <AddFeeAndCharges
+              editId={editId}
               setEditId={setEditId}
+              data={feeAndChargesData}
               onClose={() => {
                 setFlag.off();
               }}
@@ -209,43 +207,51 @@ const PayoutMethod = () => {
                   leftIcon={<svgAssets.AddButton />}
                   onClick={setFlag.on}
                 >
-                  Add Role
+                  Add Fees and Charges
                 </Button>
               </HStack>
               <DataTable
+                isLoading={isDataLoading}
                 pagination={{
-                  manual: false,
-                  pageParams: pageParams,
-                  onChangePagination: setPageParams
+                  manual: false
                 }}
-                data={roleData ?? []}
-                columns={columns}
                 filter={{
                   globalFilter: searchText,
                   setGlobalFilter: setSearchText
                 }}
-                isLoading={isPayoutMethodLoading}
-              />{" "}
+                data={feeAndChargesData ?? []}
+                columns={columns}
+              />
             </>
           )}
         </CardBody>
       </Card>
+      <ConfirmationModal
+        variant={"delete"}
+        buttonText={"Delete"}
+        title={"Are You Sure?"}
+        isLoading={isDeleteLoading}
+        onApprove={handleDelete}
+        message="Deleting will permanently remove this data from the system. This cannot be Undone."
+        isOpen={isOpenFeeAndChargeDeleteModal}
+        onClose={onCloseFeeAndChargeDeleteModal}
+      />
 
       <ConfirmationModal
         variant={"edit"}
         buttonText={`${active ? "Disable" : "Enable"}`}
         title={"Are You Sure?"}
-        isLoading={isToggling}
+        isLoading={isStatusUPdateLoading}
         onApprove={handleStatusChange}
-        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this role?`}
-        isOpen={isOpenRoleStatusToggleModal}
+        message={`Are you sure you want to ${active ? "Disable" : "Enable"} this fee and charge?`}
+        isOpen={isOpenFeeAndChargeToggleModal}
         onClose={() => {
           setChangeId(null);
-          onCloseRoleStatusToggleModal();
+          onCloseFeeAndChargeToggleModal();
         }}
       />
     </Flex>
   );
 };
 
-export default PayoutMethod;
+export default FeeAndCharges;

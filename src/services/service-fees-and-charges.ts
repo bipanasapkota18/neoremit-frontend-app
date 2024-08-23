@@ -69,7 +69,7 @@ const getAllFeesAndCharges = () => {
   );
 };
 const useGetAllFeesAndCharges = () => {
-  return useQuery(api.fee_and_charges.getAll, getAllFeesAndCharges, {
+  return useQuery([api.fee_and_charges.getAll], getAllFeesAndCharges, {
     select: data => data?.data?.data,
     onError: (error: AxiosError<{ message: string }>) => {
       NeoToast({

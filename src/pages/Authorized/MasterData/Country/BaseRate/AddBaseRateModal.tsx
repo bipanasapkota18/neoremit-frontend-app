@@ -68,7 +68,7 @@ const AddBaseRate = ({
     resolver: yupResolver(baseRateSchema)
   });
 
-  const { mutateAsync } = useBaseRateConfig();
+  const { mutateAsync, isLoading } = useBaseRateConfig();
 
   const tableData = [
     {
@@ -142,6 +142,7 @@ const AddBaseRate = ({
         width="1080px"
         isOpen={isOpen}
         onClose={handleCloseModal}
+        isSubmitting={isLoading}
         submitButtonText="Save"
         cancelButtonText="Cancel"
         title={"Base Rate Configuration"}

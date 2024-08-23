@@ -90,12 +90,9 @@ const AutomaticDiscount = () => {
     },
 
     {
-      header: "Discount Code",
-      accessorKey: "discountCode"
-    },
-    {
       header: "Discount Name",
-      accessorKey: "discountName"
+      accessorKey: "discountName",
+      size: 100
     },
     {
       header: "Country",
@@ -217,10 +214,7 @@ const AutomaticDiscount = () => {
         />
       ) : (
         <>
-          <Card
-            borderRadius={"16px"}
-            boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"
-          >
+          <Card>
             <CardBody>
               <HStack justifyContent={"space-between"}>
                 <HStack

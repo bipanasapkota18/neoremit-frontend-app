@@ -21,9 +21,7 @@ const Currency = lazy(
   () => import("@neo/pages/Authorized/MasterData/Currency")
 );
 const Country = lazy(() => import("@neo/pages/Authorized/MasterData/Country"));
-// const State = lazy(
-//   () => import("@neo/pages/Authorized/MasterData/Country/State")
-// );
+
 const Relationship = lazy(
   () => import("@neo/pages/Authorized/MasterData/Relationship")
 );
@@ -40,7 +38,7 @@ const PayoutPartner = lazy(
   () => import("@neo/pages/Authorized/MasterData/Payout Partner")
 );
 const FeeAndCharges = lazy(
-  () => import("@neo/pages/Authorized/FeesAndCharges")
+  () => import("@neo/pages/Authorized/FeeAndCharges/SenderServiceCharge")
 );
 const Occupation = lazy(
   () => import("@neo/pages/Authorized/MasterData/Occupation")
@@ -55,6 +53,15 @@ const RoleSetup = lazy(
   () => import("@neo/pages/Authorized/InternalUser/Role/")
 );
 const User = lazy(() => import("@neo/pages/Authorized/InternalUser/User"));
+
+const PartnerCommission = lazy(
+  () => import("@neo/pages/Authorized/FeeAndCharges/PartnerCommission")
+);
+
+const PartnerDataMapping = lazy(
+  () => import("@neo/pages/Authorized/PartnerSetup/PartnerDataMapping")
+);
+
 export const appRoutes = [
   {
     path: "/",
@@ -105,13 +112,13 @@ export const appRoutes = [
         path: NAVIGATION_ROUTES.MASTER_DATA.COUNTRY_SETUP,
         element: <Country />
       },
-      // {
-      //   path: NAVIGATION_ROUTES.MASTER_DATA.STATE_SETUP,
-      //   element: <State />
-      // },
       {
         path: NAVIGATION_ROUTES.FEES_AND_CHARGES,
         element: <FeeAndCharges />
+      },
+      {
+        path: NAVIGATION_ROUTES.PARTNER_COMMISION,
+        element: <PartnerCommission />
       },
       {
         path: NAVIGATION_ROUTES.MASTER_DATA.OCCUPATION,

@@ -14,12 +14,13 @@ import SwitchInput from "@neo/components/Form/Switch";
 import TextInput from "@neo/components/Form/TextInput";
 import {
   useAddCountry,
+  useFetchAllCountryCode,
   useGetCountryById,
   useUpdateCountry
 } from "@neo/services/MasterData/service-country";
 import { useGetCurrencyList } from "@neo/services/MasterData/service-currency";
 import { baseURL } from "@neo/services/service-axios";
-import { formatSelectOptions } from "@neo/utility/format";
+import { ISelectOptions, formatSelectOptions } from "@neo/utility/format";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "react-router-dom";
@@ -30,7 +31,7 @@ const defaultValues = {
   shortName: "",
   phoneCode: "",
   isoNumber: "",
-  code: "",
+  code: null as ISelectOptions<string> | null,
   currencyId: null as any,
   hasState: false,
   flagIcon: "",
@@ -46,13 +47,20 @@ export interface IStepProps {
 }
 
 const AddCountry = ({ stepProps }: IStepProps) => {
+  const { data: countryCode } = useFetchAllCountryCode();
+
+  const countryCodeOptions = formatSelectOptions({
+    data: countryCode,
+    valueKey: "id",
+    labelKey: "countryCode"
+  });
   const [searchParams, setSearchParams] = useSearchParams();
   const countryAdd = yup.object().shape({
     flagIcon: searchParams.get("countryId")
       ? yup.mixed()
       : yup.mixed().required("Please select flag icon"),
     name: yup.string().required("Please enter country Name"),
-    code: yup.string().required("Please enter country Code"),
+    code: yup.object().required("Please enter country Code").nullable(),
     isoNumber: yup.string().required("Please enter country ISONumber"),
     phoneCode: yup.string().required("Plese enter country Phone Code"),
     shortName: yup
@@ -99,7 +107,10 @@ const AddCountry = ({ stepProps }: IStepProps) => {
       reset({
         name: selectedCountry?.name,
         shortName: selectedCountry?.shortName,
-        code: selectedCountry?.code,
+        code: {
+          label: selectedCountry?.code,
+          value: selectedCountry?.code
+        },
         phoneCode: selectedCountry?.phoneCode,
         isoNumber: selectedCountry?.isoNumber,
         hasState: selectedCountry?.hasState,
@@ -116,6 +127,7 @@ const AddCountry = ({ stepProps }: IStepProps) => {
         id: Number(searchParams?.get("countryId")),
         data: {
           ...data,
+          code: data?.code?.label ?? null,
           flagIcon: data.flagIcon[0] ?? "",
           currencyId: data?.currencyId?.value ?? null,
           isActive: selectedCountry?.isActive ?? true
@@ -137,6 +149,7 @@ const AddCountry = ({ stepProps }: IStepProps) => {
     } else {
       const createResponse = await mutateAddCountry({
         ...data,
+        code: data?.code?.label ?? null,
         flagIcon: data.flagIcon[0],
         currencyId: data?.currencyId?.value ?? null
       });
@@ -240,14 +253,22 @@ const AddCountry = ({ stepProps }: IStepProps) => {
           />
         </GridItem>
         <GridItem colSpan={1}>
-          <TextInput
+          <Select
+            size={"lg"}
+            name="code"
+            placeholder="-Select Country Code-"
+            control={control}
+            options={countryCodeOptions ?? []}
+            required
+          />
+          {/* <TextInput
             size={"lg"}
             name="code"
             label="Enter Country Code"
             control={control}
             type="text"
             required
-          />
+          /> */}
         </GridItem>
         <GridItem colSpan={1}>
           <TextInput

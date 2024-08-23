@@ -211,7 +211,7 @@ const AddPromoCode = ({
   });
 
   const payout_method_options = formatSelectOptions<number>({
-    data: payoutMethodData,
+    data: payoutMethodData?.filter(item => item.isActive),
     valueKey: "id",
     labelKey: "name"
   });
@@ -297,8 +297,11 @@ const AddPromoCode = ({
       capAmount: data?.capAmount,
       doesExpire: data?.doesExpire === "Yes" ? true : false,
       hasUsageLimit: data?.hasUsageLimit === "Yes" ? true : false,
-      validFrom: data?.validFrom,
-      validTo: data?.validTo ?? null
+      validFrom: moment(data?.validFrom).format("YYYY-MM-DD"),
+      validTo:
+        data?.doesExpire === "Yes"
+          ? moment(data?.validTo).format("YYYY-MM-DD")
+          : null
     };
     if (editId) {
       await useMutateUpdatePromoCode({

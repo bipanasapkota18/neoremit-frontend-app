@@ -8,6 +8,7 @@ import { CheckboxConfig } from "./components/Checkbox";
 import InputConfig from "./components/Input";
 import SwitchConfig from "./components/Switch";
 import { TableConfig } from "./components/Table";
+import { CardConfig } from "./components/Card";
 export { globalStyles } from "./global";
 
 export const theme = extendTheme(
@@ -24,6 +25,7 @@ export const theme = extendTheme(
       Switch: SwitchConfig,
       Radio: RadioConfig,
       Checkbox: CheckboxConfig,
+      Card: CardConfig,
       Steps
     },
     breakpoints: {

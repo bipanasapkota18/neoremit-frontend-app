@@ -90,7 +90,6 @@ const AddRole = ({ onClose, editId, setEditId }: AddRoleProps) => {
             moduleName: currentModule?.moduleName,
             scopeList: currentModule?.scopeList.reduce(
               (acc: any, curr: string) => {
-                console.log(typeof acc);
                 acc[curr] = true;
                 return acc;
               },

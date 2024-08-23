@@ -28,6 +28,7 @@ import { ReactComponent as Logout } from "@neo/assets/images/svgs/logout.svg";
 import { ReactComponent as MarginSetup } from "@neo/assets/images/svgs/margin-setup.svg";
 import { ReactComponent as NotificationIcon } from "@neo/assets/images/svgs/notification-bing.svg";
 import { ReactComponent as OTPBanner } from "@neo/assets/images/svgs/otp_banner.svg";
+import { ReactComponent as PartnerDataMappingIcon } from "@neo/assets/images/svgs/partner-data-mapping-setting.svg";
 import { ReactComponent as PasswordIcon } from "@neo/assets/images/svgs/password.svg";
 import { ReactComponent as SelectDropdown } from "@neo/assets/images/svgs/select-arrow.svg";
 import { ReactComponent as SetPasswordBanner } from "@neo/assets/images/svgs/set_pass_banner.svg";
@@ -73,5 +74,6 @@ export const svgAssets = {
   SuccessIccon,
   ErrorIcon,
   InfoIcon,
-  CloseIcon
+  CloseIcon,
+  PartnerDataMappingIcon
 };

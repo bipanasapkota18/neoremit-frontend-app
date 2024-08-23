@@ -143,10 +143,7 @@ const Relationship = () => {
   return (
     <Flex direction={"column"} gap={"16px"}>
       <BreadCrumb currentPage="Relationship" options={activePath} />
-      <Card
-        borderRadius={"16px"}
-        boxShadow="0px 4px 18px 0px rgba(0, 0, 0, 0.03)"
-      >
+      <Card>
         <CardBody>
           <HStack justifyContent={"space-between"}>
             <HStack
